@@ -57,11 +57,7 @@ class Uci constructor(private val search: Search) {
             }
             "startpos" -> {
                 val moves = mergeTokens(tokens, "moves", " ").trim()
-                if (moves.isNotBlank()) {
-                    search.setupPosition(moves)
-                } else {
-                    search.setupInitialPosition()
-                }
+                search.setupPosition(moves)
             }
             else -> println("info string ignoring malformed uci command")
 

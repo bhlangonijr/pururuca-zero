@@ -1,7 +1,5 @@
 package com.github.bhlangonijr.chesslib
 
-const val MIN_DEPTH = 1
-
 class SearchParams(val whiteTime: Long,
                    val blackTime: Long,
                    val whiteIncrement: Long,
