@@ -3,14 +3,22 @@ package com.github.bhlangonijr.chesslib
 fun mergeTokens(tokens: List<String>, startToken: String, separator: String): String {
 
     val start = tokens.indexOf(startToken)
-    return mergeTokens(tokens, start + 1, tokens.size - 1, separator)
+    return if (start == -1) {
+        ""
+    } else {
+        mergeTokens(tokens, start + 1, tokens.size - 1, separator)
+    }
 }
 
 fun mergeTokens(tokens: List<String>, startToken: String, endToken: String, separator: String): String {
 
     val start = tokens.indexOf(startToken)
     val end = tokens.indexOf(endToken) - 1
-    return mergeTokens(tokens, start + 1, end, separator)
+    return if (start == -1) {
+        ""
+    } else {
+        mergeTokens(tokens, start + 1, end, separator)
+    }
 }
 
 fun mergeTokens(tokens: List<String>, start: Int, end: Int, separator: String): String {
@@ -22,11 +30,28 @@ fun mergeTokens(tokens: List<String>, start: Int, end: Int, separator: String): 
     return str.toString()
 }
 
-fun getArg(tokens: List<String>, startToken: String): String? {
+fun getString(tokens: List<String>, startToken: String, defaultValue: String): String {
 
     val start = tokens.indexOf(startToken)
     if (start == -1) {
-        return null
+        return defaultValue
     }
     return mergeTokens(tokens, start + 1, start + 1, "")
 }
+
+fun getLong(tokens: List<String>, startToken: String, defaultValue: String): Long {
+
+    return getString(tokens, startToken, defaultValue).toLong()
+}
+
+fun getInt(tokens: List<String>, startToken: String, defaultValue: String): Int {
+
+    return getString(tokens, startToken, defaultValue).toInt()
+}
+
+fun getBoolean(tokens: List<String>, startToken: String, defaultValue: String): Boolean {
+
+    return getString(tokens, startToken, defaultValue).toBoolean()
+}
+
+

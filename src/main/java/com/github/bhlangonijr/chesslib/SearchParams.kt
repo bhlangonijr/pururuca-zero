@@ -2,17 +2,17 @@ package com.github.bhlangonijr.chesslib
 
 const val MIN_DEPTH = 1
 
-class SearchParams(val whiteTime: Long ?= 0,
-                   val blackTime: Long ?= 0,
-                   val whiteIncrement: Long ?= 0,
-                   val blackIncrement: Long ?= 0,
-                   val moveTime: Long ?= 0,
-                   val depth: Int ?= MIN_DEPTH,
-                   val movesToGo: Int ?= 0,
-                   val nodes: Long ?= 0,
-                   val searchMoves: String ?= "", //TODO implement this
-                   val infinite: Boolean ?= false,
-                   val ponder: Boolean ?= false) {
+class SearchParams(val whiteTime: Long,
+                   val blackTime: Long,
+                   val whiteIncrement: Long,
+                   val blackIncrement: Long,
+                   val moveTime: Long,
+                   val depth: Int,
+                   val movesToGo: Int,
+                   val nodes: Long,
+                   val searchMoves: String, //TODO implement this
+                   val infinite: Boolean,
+                   val ponder: Boolean) {
 
     override fun toString(): String {
 

@@ -22,11 +22,13 @@ class Uci constructor(private val search: Search) {
 
         println("id name $NAME $VERSION")
         println("id author $AUTHOR")
+        println("uciok")
         return true
     }
 
     private fun handleUciNewGame(): Boolean {
 
+        search.stop()
         search.reset()
         return true
     }
@@ -43,13 +45,23 @@ class Uci constructor(private val search: Search) {
         val positionType = tokens[1]
         when (positionType) {
             "fen" -> {
-                val fen = mergeTokens(tokens, "fen", "moves", "").trim()
                 val moves = mergeTokens(tokens, "moves", " ").trim()
+                val part = getString(tokens, "fen", "")
+                val state = if (moves.isNotBlank())
+                    mergeTokens(tokens, part, "moves", " ")
+                else
+                    mergeTokens(tokens, part, " ")
+                val fen = "$part $state".trim()
+                println(fen)
                 search.setupPosition(fen, moves)
             }
             "startpos" -> {
                 val moves = mergeTokens(tokens, "moves", " ").trim()
-                search.setupPosition(moves)
+                if (moves.isNotBlank()) {
+                    search.setupPosition(moves)
+                } else {
+                    search.setupInitialPosition()
+                }
             }
             else -> println("info string ignoring malformed uci command")
 
@@ -60,17 +72,18 @@ class Uci constructor(private val search: Search) {
     private fun handleGo(tokens: List<String>): Boolean {
 
         val params = SearchParams(
-                whiteTime = getArg(tokens, "wtime")?.toLong(),
-                blackTime = getArg(tokens, "btime")?.toLong(),
-                whiteIncrement = getArg(tokens, "winc")?.toLong(),
-                blackIncrement = getArg(tokens, "binc")?.toLong(),
-                moveTime = getArg(tokens, "movetime")?.toLong(),
-                movesToGo = getArg(tokens, "movestogo")?.toInt(),
-                depth = getArg(tokens, "depth")?.toInt(),
-                nodes = getArg(tokens, "nodes")?.toLong(),
-                infinite = getArg(tokens, "infinite")?.toBoolean(),
-                ponder = getArg(tokens, "ponder")?.toBoolean()
-                )
+                whiteTime = getLong(tokens, "wtime", "600000"),
+                blackTime = getLong(tokens, "btime", "600000"),
+                whiteIncrement = getLong(tokens, "winc", "1000"),
+                blackIncrement = getLong(tokens, "binc", "1000"),
+                moveTime = getLong(tokens, "movetime", "0"),
+                movesToGo = getInt(tokens, "movestogo", "1"),
+                depth = getInt(tokens, "depth", "1"),
+                nodes = getLong(tokens, "nodes", "50000000"),
+                infinite = getBoolean(tokens, "infinite", "false"),
+                ponder = getBoolean(tokens, "ponder", "false"),
+                searchMoves = getString(tokens, "movestogo", "")
+        )
 
         return search.start(params)
     }
@@ -88,6 +101,5 @@ class Uci constructor(private val search: Search) {
         println("info string unknown command: $cmd")
         return true
     }
-
 
 }
