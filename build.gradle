@@ -14,6 +14,15 @@ buildscript {
 
 apply plugin: 'kotlin'
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.github.bhlangonijr.chesslib.MainKt'
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
 repositories {
     mavenCentral()
     mavenLocal()
