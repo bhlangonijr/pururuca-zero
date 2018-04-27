@@ -52,7 +52,6 @@ class Uci constructor(private val search: Search) {
                 else
                     mergeTokens(tokens, part, " ")
                 val fen = "$part $state".trim()
-                println(fen)
                 search.setupPosition(fen, moves)
             }
             "startpos" -> {
@@ -68,8 +67,8 @@ class Uci constructor(private val search: Search) {
     private fun handleGo(tokens: List<String>): Boolean {
 
         val params = SearchParams(
-                whiteTime = getLong(tokens, "wtime", "600000"),
-                blackTime = getLong(tokens, "btime", "600000"),
+                whiteTime = getLong(tokens, "wtime", "6000000"),
+                blackTime = getLong(tokens, "btime", "6000000"),
                 whiteIncrement = getLong(tokens, "winc", "1000"),
                 blackIncrement = getLong(tokens, "binc", "1000"),
                 moveTime = getLong(tokens, "movetime", "0"),

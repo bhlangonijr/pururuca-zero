@@ -39,7 +39,7 @@ class Search {
     fun start(params: SearchParams): Boolean {
 
         stopped = false
-        executor.submit({Mcts(params, board, this).rooSearch()})
+        executor.submit({ Mcts(params, board, this).rooSearch() })
         return true
     }
 

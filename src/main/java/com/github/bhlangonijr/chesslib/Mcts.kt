@@ -56,10 +56,10 @@ class Mcts constructor(private val params: SearchParams,
 
         private fun select(): Node {
 
-            var selected: Node ?= null
+            var selected: Node? = null
             var best = Double.NEGATIVE_INFINITY
             for (node in children!!) {
-                val score =  score / (node.hits + EPSILON) +
+                val score = score / (node.hits + EPSILON) +
                         Math.sqrt(Math.log((hits + 1).toDouble()) / (node.hits + EPSILON)) +
                         random.nextDouble() * EPSILON
                 if (score > best) {
@@ -82,14 +82,14 @@ class Mcts constructor(private val params: SearchParams,
             var node = this
 
             var count = 0
-            while (!isLeaf(node)) {
+            while (!node.isLeaf()) {
                 node = node.select()
                 board.doMove(node.move)
                 visited.add(node)
                 count++
             }
             node.expand(board)
-            if (!isLeaf(node)) {
+            if (!node.isLeaf()) {
                 node = node.select()
                 board.doMove(node.move)
                 val lastSide = board.sideToMove
@@ -107,7 +107,7 @@ class Mcts constructor(private val params: SearchParams,
             return pickBest()?.move!!
         }
 
-        private fun isLeaf(node: Node) = node.children == null || node.children?.size == 0
+        private fun isLeaf() = children == null || children?.size == 0
 
         private fun eval(board: Board): Double {
 
