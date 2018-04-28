@@ -8,9 +8,11 @@ class SearchParams(val whiteTime: Long,
                    val depth: Int,
                    val movesToGo: Int,
                    val nodes: Long,
-                   val searchMoves: String, //TODO implement this
+                   val searchMoves: String,
                    val infinite: Boolean,
                    val ponder: Boolean) {
+
+    val initialTime = System.currentTimeMillis()
 
     override fun toString(): String {
 

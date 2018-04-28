@@ -73,7 +73,7 @@ class Uci constructor(private val search: Search) {
                 blackIncrement = getLong(tokens, "binc", "1000"),
                 moveTime = getLong(tokens, "movetime", "0"),
                 movesToGo = getInt(tokens, "movestogo", "1"),
-                depth = getInt(tokens, "depth", "1"),
+                depth = getInt(tokens, "depth", "100"),
                 nodes = getLong(tokens, "nodes", "50000000"),
                 infinite = getBoolean(tokens, "infinite", "false"),
                 ponder = getBoolean(tokens, "ponder", "false"),

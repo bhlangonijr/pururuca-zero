@@ -39,7 +39,7 @@ class Search {
     fun start(params: SearchParams): Boolean {
 
         stopped = false
-        executor.submit({ Mcts(params, board, this).rooSearch() })
+        executor.submit({ Abts(params, board, this).rooSearch() })
         return true
     }
 
@@ -49,12 +49,12 @@ class Search {
         return true
     }
 
-    fun shouldStop(params: SearchParams, nodes: Long, initialTime: Long): Boolean {
+    fun shouldStop(params: SearchParams, nodes: Long): Boolean {
 
         if (stopped || nodes >= params.nodes) {
             return true
         }
-        val elapsed = System.currentTimeMillis() - initialTime
+        val elapsed = System.currentTimeMillis() - params.initialTime
         return elapsed >= timeLeft(params)
     }
 

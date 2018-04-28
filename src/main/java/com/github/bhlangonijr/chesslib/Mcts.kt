@@ -1,5 +1,6 @@
 package com.github.bhlangonijr.chesslib
 
+import com.github.bhlangonijr.chesslib.Eval.Companion.KING_VALUE
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import java.util.*
@@ -13,25 +14,19 @@ class Mcts constructor(private val params: SearchParams,
 
         val node = Node(Move(Square.NONE, Square.NONE))
         var bestMove: Move? = Move(Square.NONE, Square.NONE)
-        val initialTime = System.currentTimeMillis()
         var nodes = 0L
-        while (!search.shouldStop(params, nodes, initialTime)) {
+        while (!search.shouldStop(params, nodes)) {
             nodes++
             bestMove = node.selectMove(board)
         }
         node.children!!.forEach { println(it) }
         println("bestmove $bestMove")
-        println("info string total time ${System.currentTimeMillis() - initialTime}")
+        println("info string total time ${System.currentTimeMillis() - params.initialTime}")
     }
 
     class Node(val move: Move) {
 
         companion object {
-            val PAWN_VALUE = 1.0
-            val BISHOP_VALUE = 3.0
-            val KNIGHT_VALUE = 3.0
-            val ROOK_VALUE = 5.0
-            val QUEEN_VALUE = 9.0
             val EPSILON: Double = 1e-6
             val random = Random()
         }
@@ -112,27 +107,11 @@ class Mcts constructor(private val params: SearchParams,
         private fun eval(board: Board): Double {
 
             return when {
-                board.isMated -> -1.0
+                board.isMated -> (-KING_VALUE).toDouble()
                 board.isDraw -> 0.0
-                else -> random.nextGaussian()
+                else -> scoreMaterial(board).toDouble()
             }
         }
-
-        private fun scoreMaterial(board: Board): Double {
-
-            val side = board.sideToMove
-            val other = side.flip()
-            return countMaterial(board, side) - countMaterial(board, other)
-        }
-
-        private fun countMaterial(board: Board, side: Side) =
-                bitCount(board.getBitboard(Piece.make(side, PieceType.PAWN))) * PAWN_VALUE +
-                        bitCount(board.getBitboard(Piece.make(side, PieceType.BISHOP))) * BISHOP_VALUE +
-                        bitCount(board.getBitboard(Piece.make(side, PieceType.KNIGHT))) * KNIGHT_VALUE +
-                        bitCount(board.getBitboard(Piece.make(side, PieceType.ROOK))) * ROOK_VALUE +
-                        bitCount(board.getBitboard(Piece.make(side, PieceType.QUEEN))) * QUEEN_VALUE
-
-        private fun bitCount(bb: Long) = java.lang.Long.bitCount(bb).toDouble()
 
         override fun toString(): String {
             return "Node(move=$move, hits=$hits, score=$score)"
