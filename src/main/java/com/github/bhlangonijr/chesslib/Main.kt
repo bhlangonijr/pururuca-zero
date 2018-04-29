@@ -10,7 +10,7 @@ class Main
 
 fun main(args: Array<String>) {
 
-    val search = Search()
+    val search = Search(Board(), Abts())
     val uci = Uci(search)
     while (uci.exec(readLine()!!)) {
     }

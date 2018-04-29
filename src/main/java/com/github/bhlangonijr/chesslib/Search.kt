@@ -3,11 +3,10 @@ package com.github.bhlangonijr.chesslib
 import com.github.bhlangonijr.chesslib.move.MoveList
 import java.util.concurrent.Executors
 
-class Search {
+class Search(val board: Board, val engine: SearchEngine) {
 
     private val executor = Executors.newSingleThreadExecutor()
-    private val board = Board()
-    private var stopped = true
+    private var state: SearchState? = null
 
     fun reset() {
 
@@ -36,35 +35,28 @@ class Search {
         }
     }
 
+    @Synchronized
     fun start(params: SearchParams): Boolean {
 
-        stopped = false
-        executor.submit({ Abts(params, board, this).rooSearch() })
+        val search = this
+        if (state == null) {
+            val state = SearchState(params, board)
+            executor.submit({
+                engine.rooSearch(state)
+                search.stop()
+            })
+            this.state = state
+        } else {
+            println("info string search in progress...")
+        }
         return true
     }
 
+    @Synchronized
     fun stop(): Boolean {
 
-        stopped = true
+        state?.stopped = true
+        state = null
         return true
     }
-
-    fun shouldStop(params: SearchParams, nodes: Long): Boolean {
-
-        if (stopped || nodes >= params.nodes) {
-            return true
-        }
-        val elapsed = System.currentTimeMillis() - params.initialTime
-        return elapsed >= timeLeft(params)
-    }
-
-    private fun timeLeft(params: SearchParams): Long {
-
-        return when (board.sideToMove) {
-            Side.WHITE -> params.whiteTime / 40 + params.whiteIncrement
-            else -> params.blackTime / 40 + params.blackIncrement
-        }
-    }
 }
-
-

@@ -4,25 +4,21 @@ import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
 
 
-class Abts constructor(private val params: SearchParams,
-                       private val board: Board,
-                       private val search: Search) {
+class Abts : SearchEngine {
 
-    val MAX_DEPTH = 100
+    override fun rooSearch(state: SearchState): Move {
 
-    fun rooSearch() {
+        search(state.board, Int.MIN_VALUE, Int.MAX_VALUE, state.params.depth, 0, state)
 
-        val pv = Array(MAX_DEPTH, { Move(Square.NONE, Square.NONE)})
-        search(board, Int.MIN_VALUE, Int.MAX_VALUE, params.depth, 0, pv)
-
-        println("bestmove ${pv[0]}")
-        println("info string eval ${pv[0]}")
-        println("info string total time ${System.currentTimeMillis() - params.initialTime}")
+        println("bestmove ${state.pv[0]}")
+        println("info string eval ${state.pv[0]}")
+        println("info string total time ${System.currentTimeMillis() - state.params.initialTime}")
+        return state.pv[0]
     }
 
-    private fun search(board: Board, alpha: Int, beta: Int, depth: Int, ply: Int, pv: Array<Move>): Int {
+    private fun search(board: Board, alpha: Int, beta: Int, depth: Int, ply: Int, state: SearchState): Int {
 
-        if (depth == 0 || search.shouldStop(params, 0)) {
+        if (depth == 0 || state.shouldStop()) {
             return scoreMaterial(board)
         }
 
@@ -41,16 +37,16 @@ class Abts constructor(private val params: SearchParams,
             if (!board.doMove(move, true)) {
                 continue
             }
-            val score = -search(board, -beta, -newAlpha, depth - 1, ply + 1, pv)
+            val score = -search(board, -beta, -newAlpha, depth - 1, ply + 1, state)
             board.undoMove()
             if (score >= beta) {
                 bestScore = score
-                pv[ply] = move
+                state.pv[ply] = move
                 break
             }
             if (score > bestScore) {
                 bestScore = score
-                pv[ply] = move
+                state.pv[ply] = move
                 if (score > newAlpha) {
                     newAlpha = score
                 }

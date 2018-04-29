@@ -6,22 +6,21 @@ import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import java.util.*
 import java.util.stream.Collectors
 
-class Mcts constructor(private val params: SearchParams,
-                       private val board: Board,
-                       private val search: Search) {
+class Mcts : SearchEngine {
 
-    fun rooSearch() {
+    override fun rooSearch(state: SearchState): Move {
 
         val node = Node(Move(Square.NONE, Square.NONE))
         var bestMove: Move? = Move(Square.NONE, Square.NONE)
         var nodes = 0L
-        while (!search.shouldStop(params, nodes)) {
+        while (!state.shouldStop()) {
             nodes++
-            bestMove = node.selectMove(board)
+            bestMove = node.selectMove(state.board)
         }
         node.children!!.forEach { println(it) }
         println("bestmove $bestMove")
-        println("info string total time ${System.currentTimeMillis() - params.initialTime}")
+        println("info string total time ${System.currentTimeMillis() - state.params.initialTime}")
+        return bestMove!!
     }
 
     class Node(val move: Move) {
