@@ -1,16 +1,16 @@
 package com.github.bhlangonijr.chesslib
 
-class SearchParams(val whiteTime: Long,
-                   val blackTime: Long,
-                   val whiteIncrement: Long,
-                   val blackIncrement: Long,
-                   val moveTime: Long,
-                   val depth: Int,
-                   val movesToGo: Int,
-                   val nodes: Long,
-                   val searchMoves: String,
-                   val infinite: Boolean,
-                   val ponder: Boolean) {
+class SearchParams(var whiteTime: Long = 60000000,
+                   var blackTime: Long = 60000000,
+                   var whiteIncrement: Long = 0,
+                   var blackIncrement: Long = 0,
+                   var moveTime: Long = 60000,
+                   var depth: Int = 100,
+                   var movesToGo: Int = 1,
+                   var nodes: Long = 50000000,
+                   var searchMoves: String = "",
+                   var infinite: Boolean = false,
+                   var ponder: Boolean = false) {
 
     val initialTime = System.currentTimeMillis()
 

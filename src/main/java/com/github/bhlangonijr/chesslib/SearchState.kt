@@ -1,6 +1,7 @@
 package com.github.bhlangonijr.chesslib
 
 import com.github.bhlangonijr.chesslib.move.Move
+import com.github.bhlangonijr.chesslib.move.MoveList
 import java.util.concurrent.atomic.AtomicLong
 
 class SearchState(val params: SearchParams, val board: Board) {
@@ -10,8 +11,10 @@ class SearchState(val params: SearchParams, val board: Board) {
     @Volatile
     var stopped = false
     val nodes = AtomicLong()
+    var pvPly = 0
+    val noMove = Move(Square.NONE, Square.NONE)
 
-    val pv = Array(MAX_DEPTH, { Move(Square.NONE, Square.NONE) })
+    val pv = Array(MAX_DEPTH, { noMove })
 
     fun shouldStop(): Boolean {
 
@@ -28,6 +31,20 @@ class SearchState(val params: SearchParams, val board: Board) {
             Side.WHITE -> params.whiteTime / 40 + params.whiteIncrement
             else -> params.blackTime / 40 + params.blackIncrement
         }
+    }
+
+    fun updatePv(move: Move, ply: Int) {
+
+        if (pvPly > ply) pv.fill(noMove, ply, pvPly)
+        pvPly = ply
+        pv[ply] = move
+    }
+
+    fun pvLine(): MoveList {
+
+        val moves = MoveList(board.fen)
+        moves += pv.takeWhile { !(it.from == Square.NONE || it.to == Square.NONE) }
+        return moves
     }
 
 }

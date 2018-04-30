@@ -15,6 +15,7 @@ class Eval {
         val ROOK_VALUE = 5
         val QUEEN_VALUE = 9
         val KING_VALUE = 100000
+        val MATE_VALUE = 200000
     }
 }
 

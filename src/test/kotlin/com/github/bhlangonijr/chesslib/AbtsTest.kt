@@ -1,31 +1,19 @@
 package com.github.bhlangonijr.chesslib
 
 import com.github.bhlangonijr.chesslib.move.Move
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class AbtsTest {
 
 
     @Test
-    fun testSearchWithDepth() {
+    fun testSearchWithDepth1() {
 
         val board = Board()
         board.loadFromFen("r1b1kb1r/ppp2ppp/8/4n3/4n3/PPP1P3/6PP/RNBK1BNR w kq - 0 19")
 
-        val params = SearchParams(
-                whiteTime = 60000,
-                blackTime = 60000,
-                whiteIncrement = 1000,
-                blackIncrement = 1000,
-                moveTime = 0,
-                movesToGo = 1,
-                depth = 100,
-                nodes = 50000000,
-                infinite = false,
-                ponder = false,
-                searchMoves = "")
-
+        val params = SearchParams(depth = 5)
         val state = SearchState(params, board)
 
         val bestMove = Abts().rooSearch(state)
@@ -34,6 +22,44 @@ class AbtsTest {
 
     }
 
+    @Test
+    fun testSearchWithDepth2() {
+
+        val board = Board()
+        board.loadFromFen("r1b1kb1r/ppp2ppp/8/4n3/4n3/PPP1P1P1/7P/RNBK1BNR b kq - 0 20")
+
+        val params = SearchParams(depth = 5)
+        val state = SearchState(params, board)
+
+        val bestMove = Abts().rooSearch(state)
+
+    }
+
+    @Test
+    fun testSearchWithDepth3() {
+
+        val board = Board()
+        board.loadFromFen("r1b1kb1r/ppp2ppp/8/4n3/8/PPP1P1P1/5n1P/RNBK1BNR w kq - 1 21")
+
+        val params = SearchParams(depth = 1)
+        val state = SearchState(params, board)
+
+        val bestMove = Abts().rooSearch(state)
+
+    }
+
+    @Test
+    fun testSearchWithDepth4() {
+
+        val board = Board()
+        board.loadFromFen("r1b1kb1r/ppp2ppp/8/4n3/8/PPP1P1P1/5n1P/RNB1KBNR b kq - 2 22")
+
+        val params = SearchParams(depth = 2)
+        val state = SearchState(params, board)
+
+        val bestMove = Abts().rooSearch(state)
+
+    }
 
 }
 
