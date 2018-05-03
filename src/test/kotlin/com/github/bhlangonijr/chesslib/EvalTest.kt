@@ -39,7 +39,7 @@ class EvalTest {
         println(board.fen)
         println(scoreMaterial(board))
         println(board.isKingAttacked)
-        assertEquals(-5, scoreMaterial(board))
+        assertEquals(-500, scoreMaterial(board))
 
     }
 }

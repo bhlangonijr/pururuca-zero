@@ -1,6 +1,5 @@
 package com.github.bhlangonijr.chesslib
 
-import com.github.bhlangonijr.chesslib.Eval.Companion.KING_VALUE
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import java.util.*
@@ -12,21 +11,22 @@ class Mcts : SearchEngine {
 
         val node = Node(Move(Square.NONE, Square.NONE))
         var bestMove: Move? = Move(Square.NONE, Square.NONE)
-        var nodes = 0L
+
         while (!state.shouldStop()) {
-            nodes++
-            bestMove = node.selectMove(state.board)
+            state.nodes.incrementAndGet()
+            bestMove = node.selectMove(state)
         }
         node.children!!.forEach { println(it) }
         println("bestmove $bestMove")
         println("info string total time ${System.currentTimeMillis() - state.params.initialTime}")
+        println("info string total nodes ${state.nodes.get()}")
         return bestMove!!
     }
 
     class Node(val move: Move) {
 
         companion object {
-            val EPSILON: Double = 1e-6
+            val EPSILON = 1.43
             val random = Random()
         }
 
@@ -69,47 +69,76 @@ class Mcts : SearchEngine {
             this.score += score
         }
 
-        fun selectMove(board: Board): Move {
+        fun selectMove(state: SearchState): Move {
 
-            val side = board.sideToMove
+            val side = state.board.sideToMove
             val visited = LinkedList<Node>()
             var node = this
 
             var count = 0
             while (!node.isLeaf()) {
                 node = node.select()
-                board.doMove(node.move)
+                state.board.doMove(node.move)
                 visited.add(node)
                 count++
             }
-            node.expand(board)
+            node.expand(state.board)
             if (!node.isLeaf()) {
                 node = node.select()
-                board.doMove(node.move)
-                val lastSide = board.sideToMove
+                state.board.doMove(node.move)
+                val lastSide = state.board.sideToMove
                 count++
                 visited.add(node)
-                val value = if (side == lastSide) node.eval(board) else -node.eval(board)
+                val value = if (side == lastSide) node.playOut(state) else -node.playOut(state)
                 visited.forEach {
                     it.updateStats(value)
                 }
             }
 
             for (i in 1..count) {
-                board.undoMove()
+                state.board.undoMove()
             }
             return pickBest()?.move!!
         }
 
         private fun isLeaf() = children == null || children?.size == 0
 
-        private fun eval(board: Board): Double {
+        private fun playOut(state: SearchState): Double {
 
+            val moves = MoveGenerator.generateLegalMoves(state.board)
+            val isKingAttacked = state.board.isKingAttacked
             return when {
-                board.isMated -> (-KING_VALUE).toDouble()
-                board.isDraw -> 0.0
-                else -> scoreMaterial(board).toDouble()
+                moves.size == 0 && isKingAttacked -> -1.0
+                moves.size == 0 && !isKingAttacked -> 0.0
+                //moves.size > 0 && !isKingAttacked -> -10.0
+                else -> 0.000//moves.size.toDouble()/100.0
             }
+        }
+
+        private fun playOut_(state: SearchState): Double {
+
+            try {
+                val moves = MoveGenerator.generateLegalMoves(state.board)
+                val isKingAttacked = state.board.isKingAttacked
+                return when {
+                    moves.size == 0 && isKingAttacked -> -1.0
+                    moves.size == 0 && !isKingAttacked -> 0.0
+                    state.board.isDraw -> 0.0
+                    else -> {
+                        state.board.doMove(moves[random.nextInt(moves.size)])
+                        state.nodes.incrementAndGet()
+                        val score = playOut(state)
+                        state.board.undoMove()
+                        return score
+                    }
+                }
+            } catch (e: Exception) {
+                println("Error $e")
+                println(state.board.fen)
+                println(state.board)
+                return 0.0
+            }
+
         }
 
         override fun toString(): String {

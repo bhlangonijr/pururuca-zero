@@ -1,20 +1,27 @@
 package com.github.bhlangonijr.chesslib
 
-import com.github.bhlangonijr.chesslib.Eval.Companion.MATE_VALUE
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
+import com.github.bhlangonijr.chesslib.move.MoveList
+import kotlin.math.min
 
+const val MAX_DEPTH = 100
 
 class Abts : SearchEngine {
 
     override fun rooSearch(state: SearchState): Move {
         val fen = state.board.fen
-        val score = search(state.board, Int.MIN_VALUE, Int.MAX_VALUE, state.params.depth, 0, state)
+
+        state.moveScore.clear()
+        for (i in 1..min(MAX_DEPTH, state.params.depth)) {
+            val score = search(state.board, -MAX_VALUE, MAX_VALUE, i, 0, state)
+
+            println("info string eval $score moves ${state.pvLine()}")
+        }
+        println("bestmove ${state.pv[0]}")
         if (state.board.fen != fen) {
             println("info string board state error: initial fen [$fen], final fen[${state.board.fen}]")
         }
-        println("bestmove ${state.pv[0]}")
-        println("info string eval $score moves ${state.pvLine()}")
         println("info string total time ${System.currentTimeMillis() - state.params.initialTime}")
         return state.pv[0]
     }
@@ -25,9 +32,12 @@ class Abts : SearchEngine {
             return scoreMaterial(board)
         }
 
-        var bestScore = Int.MIN_VALUE
+        var bestScore = -MAX_VALUE
         var newAlpha = alpha
-        val moves = MoveGenerator.generatePseudoLegalMoves(board)
+        val moves =
+                if (ply == 0) orderMoves(state, MoveGenerator.generatePseudoLegalMoves(board))
+                else MoveGenerator.generatePseudoLegalMoves(board)
+
         for (move in moves) {
             if (!board.doMove(move)) {
                 continue
@@ -44,12 +54,25 @@ class Abts : SearchEngine {
                     state.updatePv(move, ply)
                 }
             }
-            if (ply == 0) println("info string score $move = $score")
+            if (ply == 0) {
+                state.moveScore.put(move, score)
+            }
         }
 
-        if (bestScore == Int.MIN_VALUE) {
+        if (bestScore == -MAX_VALUE) {
             return if (board.isKingAttacked) -MATE_VALUE + ply else 0
         }
         return bestScore
     }
+
+    private fun orderMoves(state: SearchState, moves: MoveList): MoveList{
+
+        if (state.moveScore.size == 0) return moves
+        val sorted = MoveList()
+        sorted.addAll(moves.sortedWith(Comparator { o1, o2 -> moveScore(o1, state) - moveScore(o2, state) }).reversed())
+        return sorted
+    }
+
+    private fun moveScore(move: Move, state: SearchState) = state.moveScore[move] ?: 0
+
 }

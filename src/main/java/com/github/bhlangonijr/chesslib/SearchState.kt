@@ -3,16 +3,18 @@ package com.github.bhlangonijr.chesslib
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveList
 import java.util.concurrent.atomic.AtomicLong
+import kotlin.collections.HashMap
 
 class SearchState(val params: SearchParams, val board: Board) {
 
-    val MAX_DEPTH = 100
+
+    private val noMove = Move(Square.NONE, Square.NONE)
 
     @Volatile
     var stopped = false
     val nodes = AtomicLong()
     var pvPly = 0
-    val noMove = Move(Square.NONE, Square.NONE)
+    var moveScore = HashMap<Move, Int>()
 
     val pv = Array(MAX_DEPTH, { noMove })
 
