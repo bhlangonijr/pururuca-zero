@@ -1,5 +1,6 @@
 package com.github.bhlangonijr.chesslib
 
+import com.github.bhlangonijr.chesslib.abts.Abts
 import com.github.bhlangonijr.chesslib.move.Move
 import org.junit.Assert.assertEquals
 import org.junit.Test

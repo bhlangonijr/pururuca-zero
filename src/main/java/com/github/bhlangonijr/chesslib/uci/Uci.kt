@@ -1,4 +1,6 @@
-package com.github.bhlangonijr.chesslib
+package com.github.bhlangonijr.chesslib.uci
+
+import com.github.bhlangonijr.chesslib.*
 
 class Uci constructor(private val search: Search) {
 
@@ -20,8 +22,8 @@ class Uci constructor(private val search: Search) {
 
     private fun handleUci(): Boolean {
 
-        println("id name $NAME $VERSION")
-        println("id author $AUTHOR")
+        println("id name ${NAME} ${VERSION}")
+        println("id author ${AUTHOR}")
         println("uciok")
         return true
     }

@@ -1,5 +1,11 @@
-package com.github.bhlangonijr.chesslib
+package com.github.bhlangonijr.chesslib.abts
 
+import com.github.bhlangonijr.chesslib.Board
+import com.github.bhlangonijr.chesslib.SearchEngine
+import com.github.bhlangonijr.chesslib.SearchState
+import com.github.bhlangonijr.chesslib.eval.MATE_VALUE
+import com.github.bhlangonijr.chesslib.eval.MAX_VALUE
+import com.github.bhlangonijr.chesslib.eval.scoreMaterial
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import com.github.bhlangonijr.chesslib.move.MoveList
@@ -15,8 +21,8 @@ class Abts : SearchEngine {
         state.moveScore.clear()
         for (i in 1..min(MAX_DEPTH, state.params.depth)) {
             val score = search(state.board, -MAX_VALUE, MAX_VALUE, i, 0, state)
-
             println("info string eval $score moves ${state.pvLine()}")
+            if (state.shouldStop()) break
         }
         println("bestmove ${state.pv[0]}")
         if (state.board.fen != fen) {

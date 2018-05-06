@@ -1,5 +1,6 @@
 package com.github.bhlangonijr.chesslib
 
+import com.github.bhlangonijr.chesslib.abts.MAX_DEPTH
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveList
 import java.util.concurrent.atomic.AtomicLong

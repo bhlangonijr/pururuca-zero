@@ -1,5 +1,6 @@
 package com.github.bhlangonijr.chesslib
 
+import com.github.bhlangonijr.chesslib.eval.scoreMaterial
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import org.junit.Assert.assertEquals

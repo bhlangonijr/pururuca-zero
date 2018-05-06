@@ -1,4 +1,9 @@
-package com.github.bhlangonijr.chesslib
+package com.github.bhlangonijr.chesslib.eval
+
+import com.github.bhlangonijr.chesslib.Board
+import com.github.bhlangonijr.chesslib.Piece
+import com.github.bhlangonijr.chesslib.PieceType
+import com.github.bhlangonijr.chesslib.Side
 
 const val PAWN_VALUE = 100
 const val BISHOP_VALUE = 300
