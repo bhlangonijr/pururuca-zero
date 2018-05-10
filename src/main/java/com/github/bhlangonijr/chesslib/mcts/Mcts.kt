@@ -1,29 +1,47 @@
 package com.github.bhlangonijr.chesslib.mcts
 
 import com.github.bhlangonijr.chesslib.*
-import com.github.bhlangonijr.chesslib.eval.scoreMaterial
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import com.github.bhlangonijr.chesslib.move.MoveList
 import java.util.*
+import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicLong
 import java.util.stream.Collectors
 
 val random = Random()
-const val EPSILON = 0.003
+val EPSILON = Math.sqrt(2.0)
+const val NUM_THREADS = 2
 
 class Mcts : SearchEngine {
 
+    val executor = Executors.newFixedThreadPool(NUM_THREADS)
     override fun rooSearch(state: SearchState): Move {
 
         val node = Node(Move(Square.NONE, Square.NONE), state.board.sideToMove)
         var bestMove: Move? = Move(Square.NONE, Square.NONE)
 
-        var count = 0
+        val boards = Array(NUM_THREADS, {state.board.clone()})
+
+        for (i in 1 until NUM_THREADS) {
+            executor.submit({
+                println("Submitting thread $i")
+                while (!state.shouldStop()) {
+                    state.nodes.incrementAndGet()
+                    node.selectMove(state, boards[i])
+                }
+            })
+        }
+        var counter = 0L
         while (!state.shouldStop()) {
             state.nodes.incrementAndGet()
-            bestMove = node.selectMove(state)
-            if ((count++ % 1000L) == 0L) println("info string total nodes ${state.nodes.get()}")
+            bestMove = node.selectMove(state, boards[0])
+            if ((state.nodes.get() - counter) > 50000L) {
+                println("info string total nodes ${state.nodes.get()}")
+                counter = state.nodes.get()
+            }
         }
+
         node.children!!.forEach { println(it) }
         println("bestmove $bestMove")
         println("info string total time ${System.currentTimeMillis() - state.params.initialTime}")
@@ -33,28 +51,35 @@ class Mcts : SearchEngine {
 
     class Node(val move: Move, val side: Side) {
 
-        var hits: Long = 0
-        var score: Double = 0.0
+        val hits = AtomicLong(0)
+        val wins = AtomicLong(0)
+        val losses = AtomicLong(0)
+        val score = AtomicLong(0)
         var children: List<Node>? = null
 
         private fun pickBest(): Node {
 
             var selected: Node = children!![0]
             for (node in children!!) {
-                if (node.score > selected.score) {
+                val nodeScore = node.score.get() / (node.hits.get() + 1.0)
+                val currentScore = selected.score.get() / (selected.hits.get() + 1.0)
+                if (nodeScore > currentScore) {
                     selected = node
                 }
             }
             return selected
         }
 
-        private fun expand(board: Board) {
+        private fun expand(board: Board) : List<Node>? {
 
-            children = MoveGenerator
-                    .generateLegalMoves(board)
-                    .stream()
-                    .map { Node(it, board.sideToMove) }
-                    .collect(Collectors.toList())
+            if (children == null) {
+                children = MoveGenerator
+                        .generateLegalMoves(board)
+                        .stream()
+                        .map { Node(it, board.sideToMove) }
+                        .collect(Collectors.toList())
+            }
+            return children
         }
 
         private fun select(): Node {
@@ -62,8 +87,8 @@ class Mcts : SearchEngine {
             var selected: Node? = null
             var best = Double.NEGATIVE_INFINITY
             for (node in children!!) {
-                val score = score / (node.hits + EPSILON) +
-                        Math.sqrt(Math.log((hits + 1).toDouble()) / (node.hits + EPSILON)) +
+                val score = wins.get() / (node.hits.get() + EPSILON) +
+                        Math.sqrt(Math.log((hits.get() + 1.0)) / (node.hits.get() + EPSILON)) +
                         random.nextDouble() * EPSILON
                 if (score > best) {
                     selected = node
@@ -73,35 +98,40 @@ class Mcts : SearchEngine {
             return selected!!
         }
 
-        private fun updateStats(score: Double) {
-            this.hits++
-            this.score += score
+        private fun updateStats(score: Long) {
+            this.hits.incrementAndGet()
+            if (score > 0.0) this.wins.incrementAndGet()
+            if (score < 0.0) this.losses.incrementAndGet()
+            this.score.accumulateAndGet(score, {left, right ->  left + right})
         }
 
-        fun selectMove(state: SearchState): Move {
+        fun selectMove(state: SearchState, board: Board): Move {
 
             val visited = LinkedList<Node>()
             var node = this
 
             while (!node.isLeaf()) {
                 node = node.select()
-                state.board.doMove(node.move)
+                board.doMove(node.move)
                 state.nodes.incrementAndGet()
                 visited += node
             }
-            node.expand(state.board)
+            if (!board.isDraw && !board.isMated) {
+                synchronized(this as Any, { node.expand(board) })
+            }
             if (!node.isLeaf()) {
                 node = node.select()
-                state.board.doMove(node.move)
+                board.doMove(node.move)
                 state.nodes.incrementAndGet()
                 visited += node
             }
-            val value = if (state.board.sideToMove == side) playOut(state, 40) else -playOut(state, 40)
+
+            val value = if (board.sideToMove == side) playOut(state, board, 0, side) else -playOut(state, board, 0, side)
 
             for (i in 0 until visited.size) {
                 val n = visited[i]
                 n.updateStats(value)
-                state.board.undoMove()
+                board.undoMove()
             }
 
             return pickBest().move
@@ -110,65 +140,60 @@ class Mcts : SearchEngine {
         private fun isLeaf() = children == null || children?.size == 0
 
         override fun toString(): String {
-            return "Node(move=$move, hits=$hits, score=$score)"
+            return "Node(move=$move, side=$side, hits=$hits, wins=$wins, losses=$losses, score=$score"
         }
     }
 
 }
 
-fun playOut(state: SearchState, depth: Int): Double {
+fun playOut(state: SearchState, board: Board, ply: Int, side: Side): Long {
 
     return try {
-        val moves = MoveGenerator.generateLegalMoves(state.board)
-        val isKingAttacked = state.board.isKingAttacked
+        val moves = MoveGenerator.generateLegalMoves(board)
+        val isKingAttacked = board.isKingAttacked
         when {
-            //depth == 0 -> resolvePosition(state, moves)
-            moves.size == 0 && isKingAttacked -> -1.0
-            moves.size == 0 && !isKingAttacked -> 0.0
-            state.board.isDraw -> 0.0
+            moves.size == 0 && isKingAttacked -> -1
+            moves.size == 0 && !isKingAttacked -> 0
+            board.isDraw -> 0
             else -> {
-                val move = moves[random.nextInt(moves.size)]
-                state.board.doMove(move)
+                val move = selectMove(state, moves)
+                board.doMove(move)
                 state.nodes.incrementAndGet()
-                val playOutScore = playOut(state, depth - 1)
-                state.board.undoMove()
+                val playOutScore = playOut(state, board,ply + 1, side)
+                board.undoMove()
                 return playOutScore
             }
         }
     } catch (e: Exception) {
-        println("Error $e")
+        println("Error ${e.message}")
+        println(board.fen)
+        println(board)
         e.printStackTrace()
-        println(state.board.fen)
-        println(state.board)
-        0.0
+        0
     }
 
 }
 
-private fun winProbability(score: Double) = 2.0/(1.0 + Math.exp(-10.0 * (score / 3000))) - 1.0
-
-private fun resolvePosition(state: SearchState, moves: MoveList): Double {
-
-    val score = scoreMaterial(state.board)
-    //if (Math.abs(score) > 600) println("score = $score   = ${winProbability(score.toDouble())}")
-    return when {
-    // heuristic cut-off if side is up/down 500 points
-        Math.abs(score) >= 0 -> winProbability(score.toDouble())
-        else -> {
-            val move = moves[random.nextInt(moves.size)]
-            state.board.doMove(move)
-            state.nodes.incrementAndGet()
-            val playOutScore = playOut(state, 100)
-            state.board.undoMove()
-            return playOutScore
-        }
-    }
-}
-
-//        private fun selectMove(state: SearchState, moves: MoveList): Move {
-//            var score = 1.0
-//            for (move in moves) {
-//                state.board.isAttackedBy(move)
+//private fun winProbability(score: Double) = 2.0/(1.0 + Math.exp(-10.0 * (score / 3000))) - 1.0
 //
-//            }
+//private fun resolvePosition(state: SearchState, moves: MoveList, isCheck: Boolean, depth: Int, side: Side): Double {
+//
+//    val score = scoreMaterial(state.board)
+//    //if (Math.abs(score) > 600) println("score = $score   = ${winProbability(score.toDouble())}")
+//    return when {
+//    // heuristic cut-off if side is up/down 900 points
+//        depth <= 0 && !isCheck && Math.abs(score) >= 900 -> winProbability(score.toDouble())
+//        else -> {
+//            val move = selectMove(state, moves)
+//            state.board.doMove(move)
+//            state.nodes.incrementAndGet()
+//            val playOutScore = -playOut(state, depth - 1, side)
+//            state.board.undoMove()
+//            return playOutScore
 //        }
+//    }
+//}
+
+private fun selectMove(state: SearchState, moves: MoveList): Move {
+    return  moves[random.nextInt(moves.size)]
+}
