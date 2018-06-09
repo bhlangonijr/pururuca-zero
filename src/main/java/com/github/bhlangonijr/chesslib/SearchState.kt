@@ -4,7 +4,6 @@ import com.github.bhlangonijr.chesslib.abts.MAX_DEPTH
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveList
 import java.util.concurrent.atomic.AtomicLong
-import kotlin.collections.HashMap
 
 class SearchState(val params: SearchParams, val board: Board) {
 

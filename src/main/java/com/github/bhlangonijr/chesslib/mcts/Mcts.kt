@@ -18,7 +18,7 @@ class Mcts : SearchEngine {
     override fun rooSearch(state: SearchState): Move {
 
         val node = Node(Move(Square.NONE, Square.NONE), state.board.sideToMove)
-        val boards = Array(NUM_THREADS, {state.board.clone()})
+        val boards = Array(NUM_THREADS, { state.board.clone() })
 
         for (i in 1 until NUM_THREADS) {
             executor.submit({
@@ -84,7 +84,7 @@ fun playOut(state: SearchState, board: Board, ply: Int, player: Side): Long {
                 val move = selectMove(state, moves)
                 board.doMove(move)
                 state.nodes.incrementAndGet()
-                val playOutScore = playOut(state, board,ply + 1, player)
+                val playOutScore = playOut(state, board, ply + 1, player)
                 board.undoMove()
                 return playOutScore
             }
@@ -102,5 +102,5 @@ fun playOut(state: SearchState, board: Board, ply: Int, player: Side): Long {
 //private fun winProbability(score: Double) = if ((2.0/(1.0 + Math.exp(-10.0 * (score / 3000))) - 1.0) > 0.5) 1L else -1L
 
 private fun selectMove(state: SearchState, moves: MoveList): Move {
-    return  moves[random.nextInt(moves.size)]
+    return moves[random.nextInt(moves.size)]
 }

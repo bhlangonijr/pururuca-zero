@@ -71,7 +71,7 @@ class Abts : SearchEngine {
         return bestScore
     }
 
-    private fun orderMoves(state: SearchState, moves: MoveList): MoveList{
+    private fun orderMoves(state: SearchState, moves: MoveList): MoveList {
 
         if (state.moveScore.size == 0) return moves
         val sorted = MoveList()

@@ -28,7 +28,7 @@ class Node(val move: Move, val side: Side) {
         return selected
     }
 
-    fun expand(board: Board) : List<Node>? {
+    fun expand(board: Board): List<Node>? {
 
         if (children == null) {
             children = MoveGenerator
@@ -60,7 +60,7 @@ class Node(val move: Move, val side: Side) {
         this.hits.incrementAndGet()
         if (score > 0.0) this.wins.incrementAndGet()
         if (score < 0.0) this.losses.incrementAndGet()
-        this.score.accumulateAndGet(score, {left, right ->  left + right})
+        this.score.accumulateAndGet(score, { left, right -> left + right })
     }
 
     fun isLeaf() = children == null || children?.size == 0

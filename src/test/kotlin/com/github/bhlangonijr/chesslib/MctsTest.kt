@@ -2,7 +2,6 @@ package com.github.bhlangonijr.chesslib
 
 import com.github.bhlangonijr.chesslib.mcts.Mcts
 import com.github.bhlangonijr.chesslib.move.Move
-import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
