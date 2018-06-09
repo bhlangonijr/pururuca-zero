@@ -1,6 +1,7 @@
 package com.github.bhlangonijr.chesslib.mcts
 
 import com.github.bhlangonijr.chesslib.*
+import com.github.bhlangonijr.chesslib.eval.scoreMaterial
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import com.github.bhlangonijr.chesslib.move.MoveList
@@ -87,7 +88,7 @@ class Mcts : SearchEngine {
             var selected: Node? = null
             var best = Double.NEGATIVE_INFINITY
             for (node in children!!) {
-                val score = wins.get() / (node.hits.get() + EPSILON) +
+                val score = node.wins.get() / (node.hits.get() + EPSILON) +
                         Math.sqrt(Math.log((hits.get() + 1.0)) / (node.hits.get() + EPSILON)) +
                         random.nextDouble() * EPSILON
                 if (score > best) {
@@ -126,7 +127,7 @@ class Mcts : SearchEngine {
                 visited += node
             }
 
-            val value = if (board.sideToMove == side) playOut(state, board, 0, side) else -playOut(state, board, 0, side)
+            val value = playOut(state, board, 0, side)
 
             for (i in 0 until visited.size) {
                 val n = visited[i]
@@ -151,10 +152,12 @@ fun playOut(state: SearchState, board: Board, ply: Int, side: Side): Long {
     return try {
         val moves = MoveGenerator.generateLegalMoves(board)
         val isKingAttacked = board.isKingAttacked
+        //val score = scoreMaterial(state.board)
         when {
-            moves.size == 0 && isKingAttacked -> -1
+            moves.size == 0 && isKingAttacked -> if (board.sideToMove == side) -1 else 1
             moves.size == 0 && !isKingAttacked -> 0
             board.isDraw -> 0
+            //ply > 10 && !isKingAttacked && Math.abs(score) >= 900 -> winProbability(side, score.toDouble())
             else -> {
                 val move = selectMove(state, moves)
                 board.doMove(move)
@@ -174,7 +177,7 @@ fun playOut(state: SearchState, board: Board, ply: Int, side: Side): Long {
 
 }
 
-//private fun winProbability(score: Double) = 2.0/(1.0 + Math.exp(-10.0 * (score / 3000))) - 1.0
+private fun winProbability(score: Double) = if ((2.0/(1.0 + Math.exp(-10.0 * (score / 3000))) - 1.0) > 0.5) 1L else -1L
 //
 //private fun resolvePosition(state: SearchState, moves: MoveList, isCheck: Boolean, depth: Int, side: Side): Double {
 //
