@@ -4,6 +4,7 @@ import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.chesslib.Side
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
+import com.github.bhlangonijr.chesslib.move.MoveList
 import java.util.concurrent.atomic.AtomicLong
 import java.util.stream.Collectors
 
@@ -28,14 +29,13 @@ class Node(val move: Move, val side: Side) {
         return selected
     }
 
-    fun expand(board: Board): List<Node>? {
+    fun expand(moves: MoveList, side: Side): List<Node>? {
 
         synchronized(this as Any, {
             if (children == null) {
-                children = MoveGenerator
-                        .generateLegalMoves(board)
+                children = moves
                         .stream()
-                        .map { Node(it, board.sideToMove.flip()) }
+                        .map { Node(it, side) }
                         .collect(Collectors.toList())
             }
         })
@@ -51,7 +51,6 @@ class Node(val move: Move, val side: Side) {
             val score = node.wins.get() / (node.hits.get() + EPSILON) +
                     Math.sqrt(Math.log((hits.get() + 1.0)) / (node.hits.get() + EPSILON)) +
                     random.nextDouble() * EPSILON
-            //println("SCORE = $score")
             if (score > best) {
                 selected = node
                 best = score
@@ -62,9 +61,9 @@ class Node(val move: Move, val side: Side) {
 
     fun updateStats(score: Long) {
         this.hits.incrementAndGet()
-        if (score > 0.0) this.wins.incrementAndGet()
-        if (score < 0.0) this.losses.incrementAndGet()
-        this.score.accumulateAndGet(score, { left, right -> left + right })
+        if (score > 0.0) wins.incrementAndGet()
+        if (score < 0.0) losses.incrementAndGet()
+        this.score.getAndAdd(score)
     }
 
     fun isLeaf() = children == null || children?.size == 0
