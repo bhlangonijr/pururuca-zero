@@ -30,24 +30,28 @@ class Node(val move: Move, val side: Side) {
 
     fun expand(board: Board): List<Node>? {
 
-        if (children == null) {
-            children = MoveGenerator
-                    .generateLegalMoves(board)
-                    .stream()
-                    .map { Node(it, board.sideToMove) }
-                    .collect(Collectors.toList())
-        }
+        synchronized(this as Any, {
+            if (children == null) {
+                children = MoveGenerator
+                        .generateLegalMoves(board)
+                        .stream()
+                        .map { Node(it, board.sideToMove.flip()) }
+                        .collect(Collectors.toList())
+            }
+        })
+
         return children
     }
 
     fun select(): Node {
 
         var selected: Node? = null
-        var best = Double.NEGATIVE_INFINITY
+        var best = Double.MIN_VALUE
         for (node in children!!) {
             val score = node.wins.get() / (node.hits.get() + EPSILON) +
                     Math.sqrt(Math.log((hits.get() + 1.0)) / (node.hits.get() + EPSILON)) +
                     random.nextDouble() * EPSILON
+            //println("SCORE = $score")
             if (score > best) {
                 selected = node
                 best = score

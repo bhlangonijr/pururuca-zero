@@ -51,7 +51,7 @@ class Mcts : SearchEngine {
             board.isMated -> if (board.sideToMove == player) -1 else 1
             board.isDraw -> 0
             node.isLeaf() -> {
-                synchronized(node as Any, { node.expand(board) })
+                node.expand(board)
                 val childNode = node.select()
                 board.doMove(childNode.move)
                 val score = playOut(state, board, ply + 1, player)
