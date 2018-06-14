@@ -1,7 +1,6 @@
 package com.github.bhlangonijr.chesslib.mcts
 
 import com.github.bhlangonijr.chesslib.*
-import com.github.bhlangonijr.chesslib.eval.scoreMaterial
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import com.github.bhlangonijr.chesslib.move.MoveList
@@ -70,7 +69,7 @@ class Mcts : SearchEngine {
                     val searchMoves = MoveList()
                     searchMoves.addAll(moves
                             .stream()
-                            .filter({state.params.searchMoves.contains(it.toString())})
+                            .filter({ state.params.searchMoves.contains(it.toString()) })
                             .collect(Collectors.toList()))
                     node.expand(searchMoves, board.sideToMove)
                 } else {

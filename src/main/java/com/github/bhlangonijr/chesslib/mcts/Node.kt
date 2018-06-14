@@ -18,8 +18,8 @@ class Node(val move: Move, val side: Side) {
 
         var selected = children!![0]
         for (node in children!!) {
-            val nodeScore = node.score.get() * (node.hits.get() )
-            val currentScore = selected.score.get() * (selected.hits.get() )
+            val nodeScore = node.score.get() * (node.hits.get())
+            val currentScore = selected.score.get() * (selected.hits.get())
             if (nodeScore > currentScore) {
                 selected = node
             }
