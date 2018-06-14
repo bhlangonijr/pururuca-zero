@@ -1,9 +1,7 @@
 package com.github.bhlangonijr.chesslib.mcts
 
-import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.chesslib.Side
 import com.github.bhlangonijr.chesslib.move.Move
-import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import com.github.bhlangonijr.chesslib.move.MoveList
 import java.util.concurrent.atomic.AtomicLong
 import java.util.stream.Collectors
@@ -20,8 +18,8 @@ class Node(val move: Move, val side: Side) {
 
         var selected = children!![0]
         for (node in children!!) {
-            val nodeScore = node.score.get() / (node.hits.get() + 1.0)
-            val currentScore = selected.score.get() / (selected.hits.get() + 1.0)
+            val nodeScore = node.score.get() * (node.hits.get() )
+            val currentScore = selected.score.get() * (selected.hits.get() )
             if (nodeScore > currentScore) {
                 selected = node
             }
@@ -43,13 +41,13 @@ class Node(val move: Move, val side: Side) {
         return children
     }
 
-    fun select(): Node {
+    fun select(explorationFactor: Double): Node {
 
         var selected: Node? = null
         var best = Double.MIN_VALUE
         for (node in children!!) {
-            val score = node.wins.get() / (node.hits.get() + EPSILON) +
-                    Math.sqrt(Math.log((hits.get() + 1.0)) / (node.hits.get() + EPSILON)) +
+            val score = node.wins.get() / (node.hits.get() + 1.0) +
+                    explorationFactor * Math.sqrt(2 * Math.log((hits.get() + 1.0)) / (node.hits.get() + 1.0)) +
                     random.nextDouble() * EPSILON
             if (score > best) {
                 selected = node

@@ -13,7 +13,7 @@ class MctsTest {
         val board = Board()
         board.loadFromFen("r2qkb1r/pp2nppp/3p4/2pNN1B1/2BnP3/3P4/PPP2PPP/R2bK2R w KQkq - 1 0")
         println(board)
-        val params = SearchParams(nodes = 2000000)
+        val params = SearchParams(nodes = 4000000)
         val state = SearchState(params, board)
 
         val bestMove = Mcts().rooSearch(state)
