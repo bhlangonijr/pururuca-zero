@@ -48,7 +48,7 @@ class Node(val move: Move, val side: Side) {
         for (node in children!!) {
             val score = node.wins.get() / (node.hits.get() + 1.0) +
                     explorationFactor * Math.sqrt(2 * Math.log((hits.get() + 1.0)) / (node.hits.get() + 1.0)) +
-                    random.nextDouble() * EPSILON
+                    random.nextDouble() * DEFAULT_EPSILON
             if (score > best) {
                 selected = node
                 best = score

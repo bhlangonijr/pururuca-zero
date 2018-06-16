@@ -26,11 +26,12 @@ jar {
 repositories {
     mavenCentral()
     mavenLocal()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compile "com.github.bhlangonijr.chesslib:chesslib:1.1.0"
+    implementation 'com.github.bhlangonijr:chesslib:1.1.1'
     testCompile "junit:junit:4.12"
 }
 

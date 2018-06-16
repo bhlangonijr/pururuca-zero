@@ -4,19 +4,24 @@ import com.github.bhlangonijr.chesslib.*
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import com.github.bhlangonijr.chesslib.move.MoveList
+import com.sun.tools.internal.xjc.reader.gbind.Expression.EPSILON
 import java.util.*
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicLong
 import java.util.stream.Collectors
 
 val random = Random()
-const val EPSILON = 1.9
-const val COOLING_FACTOR = 0.9997
+const val DEFAULT_EPSILON = 1.45
+const val DEFAULT_COOLING_FACTOR = 0.99997
 const val NUM_THREADS = 4
 
-class Mcts : SearchEngine {
+class Mcts(private val epsilon: Double = DEFAULT_EPSILON,
+           private val coolingFactor: Double = DEFAULT_COOLING_FACTOR) : SearchEngine {
 
-    private val executor = Executors.newFixedThreadPool(NUM_THREADS)
+
+
+    private val executor: ExecutorService = Executors.newFixedThreadPool(NUM_THREADS)
 
     override fun rooSearch(state: SearchState): Move {
 
@@ -26,19 +31,19 @@ class Mcts : SearchEngine {
 
         for (i in 1 until NUM_THREADS) {
             executor.submit({
-                var explorationFactor: Double = EPSILON
+                var explorationFactor: Double = epsilon
                 while (!state.shouldStop()) {
-                    explorationFactor *= COOLING_FACTOR
-                    searchMove(node, state, boards[i], boards[i].sideToMove, 0, EPSILON)
+                    explorationFactor *= coolingFactor
+                    searchMove(node, state, boards[i], boards[i].sideToMove, 0, epsilon)
                     simulations.incrementAndGet()
                 }
             })
         }
         var timestamp = System.currentTimeMillis()
-        var explorationFactor: Double = EPSILON
+        var explorationFactor: Double = epsilon
         while (!state.shouldStop()) {
-            explorationFactor *= COOLING_FACTOR
-            searchMove(node, state, boards[0], boards[0].sideToMove, 0, EPSILON)
+            explorationFactor *= coolingFactor
+            searchMove(node, state, boards[0], boards[0].sideToMove, 0, epsilon)
             simulations.incrementAndGet()
             if ((System.currentTimeMillis() - timestamp) > 5000L) {
                 println("info string total nodes ${state.nodes.get()} - exploration: $explorationFactor")
@@ -77,7 +82,7 @@ class Mcts : SearchEngine {
                 }
                 val childNode = node.select(explorationUpdate)
                 board.doMove(childNode.move)
-                val score = playOut(state, board, ply + 1, player)
+                val score = playOut(state, board, ply + 1, player, childNode.move)
                 childNode.updateStats(score)
                 board.undoMove()
                 score
@@ -92,13 +97,13 @@ class Mcts : SearchEngine {
             }
         }
     }
+    private fun exploration(explorationFactor: Double) = explorationFactor * coolingFactor
 }
 
-fun exploration(explorationFactor: Double) = explorationFactor * COOLING_FACTOR
-
-fun playOut(state: SearchState, board: Board, ply: Int, player: Side): Long {
+fun playOut(state: SearchState, board: Board, ply: Int, player: Side, lastMove: Move): Long {
 
     return try {
+
         val moves = MoveGenerator.generateLegalMoves(board)
         val isKingAttacked = board.isKingAttacked
         when {
@@ -107,16 +112,22 @@ fun playOut(state: SearchState, board: Board, ply: Int, player: Side): Long {
             board.isDraw -> 0
             else -> {
                 val move = selectMove(state, moves)
+                val kq = board.getKingSquare(board.sideToMove.flip())
+                if (kq == move.to) {
+                    println("FEN: ${board.fen}")
+                    println("move: $move")
+                    println("last lastMove: $lastMove")
+                }
                 board.doMove(move)
                 state.nodes.incrementAndGet()
-                val playOutScore = playOut(state, board, ply + 1, player)
+                val playOutScore = playOut(state, board, ply + 1, player, move)
                 board.undoMove()
                 return playOutScore
             }
         }
     } catch (e: Exception) {
-        println("Error ${e.message}")
-        println(board.fen)
+        println("Error: ${e.message}")
+        println("FEN error pos: ${board.fen}")
         println(board)
         e.printStackTrace()
         0

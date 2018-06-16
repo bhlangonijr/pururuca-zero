@@ -43,12 +43,15 @@ class Abts : SearchEngine {
         val moves =
                 if (ply == 0) orderMoves(state, MoveGenerator.generatePseudoLegalMoves(board))
                 else MoveGenerator.generatePseudoLegalMoves(board)
-
+        val isKingAttacked = board.isKingAttacked
         for (move in moves) {
+
+            val isCapture = (board.getBitboard(board.sideToMove.flip()) and move.to.bitboard) != 0L
+            val newDepth = if (isKingAttacked || isCapture) depth else depth - 1
             if (!board.doMove(move)) {
                 continue
             }
-            val score = -search(board, -beta, -newAlpha, depth - 1, ply + 1, state)
+            val score = -search(board, -beta, -newAlpha, newDepth, ply + 1, state)
             board.undoMove()
             if (score >= beta) {
                 return score

@@ -10,7 +10,7 @@ class SelfPlayIntegrationTest {
 
 
     @Test
-    fun matchPrograms() {
+    fun `Match Abts and Mcts engines`() {
 
         val board = Board()
         board.loadFromFen("r1b1kb1r/ppp2ppp/8/4n3/4n3/PPP1P1P1/7P/RNBK1BNR b kq - 0 20")
@@ -21,6 +21,36 @@ class SelfPlayIntegrationTest {
         val moves = MoveList(board.fen)
         while (!board.isDraw && !board.isMated) {
             val move = play(board, abts, mcts)
+            if (move != Move(Square.NONE, Square.NONE) && board.doMove(move)) {
+                moves += move
+                println("Played: $move = ${board.fen}")
+            }
+        }
+
+        if (board.isDraw) {
+            println("result = 1/2 - 1/2")
+        } else if (board.isMated && board.sideToMove == Side.BLACK) {
+            println("result = 1 - 0")
+        } else {
+            println("result = 0 - 1")
+        }
+
+        println("move list: ${moves.toSan()}")
+        println("final fen: ${board.fen}")
+    }
+
+    @Test
+    fun `Match Mcts engine with different parameters`() {
+
+        val board = Board()
+        board.loadFromFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq -")
+
+        val mcts1 = Mcts(1.9, 0.999)
+        val mcts2 = Mcts()
+
+        val moves = MoveList(board.fen)
+        while (!board.isDraw && !board.isMated) {
+            val move = play(board, mcts1, mcts2)
             if (move != Move(Square.NONE, Square.NONE) && board.doMove(move)) {
                 moves += move
                 println("Played: $move = ${board.fen}")
