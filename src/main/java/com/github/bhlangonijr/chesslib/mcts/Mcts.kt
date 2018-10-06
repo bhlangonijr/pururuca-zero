@@ -4,68 +4,57 @@ import com.github.bhlangonijr.chesslib.*
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import com.github.bhlangonijr.chesslib.move.MoveList
-import com.sun.tools.internal.xjc.reader.gbind.Expression.EPSILON
 import java.util.*
-import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicLong
 import java.util.stream.Collectors
 
 val random = Random()
-const val DEFAULT_EPSILON = 1.45
-const val DEFAULT_COOLING_FACTOR = 0.99997
+const val DEFAULT_EPSILON = 1.47
 const val NUM_THREADS = 4
 
-class Mcts(private val epsilon: Double = DEFAULT_EPSILON,
-           private val coolingFactor: Double = DEFAULT_COOLING_FACTOR) : SearchEngine {
-
-
-
-    private val executor: ExecutorService = Executors.newFixedThreadPool(NUM_THREADS)
+class Mcts(private val epsilon: Double = DEFAULT_EPSILON) : SearchEngine {
 
     override fun rooSearch(state: SearchState): Move {
 
+        val executor = Array(NUM_THREADS) { Executors.newFixedThreadPool(NUM_THREADS) }
         val node = Node(Move(Square.NONE, Square.NONE), state.board.sideToMove)
-        val boards = Array(NUM_THREADS, { state.board.clone() })
+        val boards = Array(NUM_THREADS) { state.board.clone() }
         val simulations = AtomicLong(0)
 
         for (i in 1 until NUM_THREADS) {
-            executor.submit({
-                var explorationFactor: Double = epsilon
+            executor[i].submit {
                 while (!state.shouldStop()) {
-                    explorationFactor *= coolingFactor
-                    searchMove(node, state, boards[i], boards[i].sideToMove, 0, epsilon)
+                    val score = searchMove(node, state, boards[i], boards[i].sideToMove, 0)
+                    node.updateStats(score)
                     simulations.incrementAndGet()
                 }
-            })
+            }
         }
+
         var timestamp = System.currentTimeMillis()
-        var explorationFactor: Double = epsilon
         while (!state.shouldStop()) {
-            explorationFactor *= coolingFactor
-            searchMove(node, state, boards[0], boards[0].sideToMove, 0, epsilon)
+            val score = searchMove(node, state, boards[0], boards[0].sideToMove, 0)
+            node.updateStats(score)
             simulations.incrementAndGet()
             if ((System.currentTimeMillis() - timestamp) > 5000L) {
-                println("info string total nodes ${state.nodes.get()} - exploration: $explorationFactor")
+                println("info string total nodes ${state.nodes.get()}")
                 timestamp = System.currentTimeMillis()
             }
         }
 
-        node.children!!.forEach {
-            println(it)
-        }
+        node.children!!.forEach { println(it) }
         println("bestmove ${node.pickBest().move}")
         println("info string total time ${System.currentTimeMillis() - state.params.initialTime}")
         println("info string total nodes [${state.nodes.get()}], simulations[${simulations.get()}]")
         return node.pickBest().move
     }
 
-    private fun searchMove(node: Node, state: SearchState, board: Board, player: Side, ply: Int, explorationFactor: Double): Long {
+    private fun searchMove(node: Node, state: SearchState, board: Board, player: Side, ply: Int): Long {
 
         state.nodes.incrementAndGet()
         val moves = MoveGenerator.generateLegalMoves(board)
         val isKingAttacked = board.isKingAttacked
-        val explorationUpdate = exploration(explorationFactor)
         return when {
             moves.size == 0 && isKingAttacked -> if (board.sideToMove == player) -1 else 1
             moves.size == 0 && !isKingAttacked -> 0
@@ -74,13 +63,13 @@ class Mcts(private val epsilon: Double = DEFAULT_EPSILON,
                     val searchMoves = MoveList()
                     searchMoves.addAll(moves
                             .stream()
-                            .filter({ state.params.searchMoves.contains(it.toString()) })
+                            .filter { state.params.searchMoves.contains(it.toString()) }
                             .collect(Collectors.toList()))
                     node.expand(searchMoves, board.sideToMove)
                 } else {
                     node.expand(moves, board.sideToMove)
                 }
-                val childNode = node.select(explorationUpdate)
+                val childNode = node.select(epsilon, board, player)
                 board.doMove(childNode.move)
                 val score = playOut(state, board, ply + 1, player, childNode.move)
                 childNode.updateStats(score)
@@ -88,16 +77,15 @@ class Mcts(private val epsilon: Double = DEFAULT_EPSILON,
                 score
             }
             else -> {
-                val childNode = node.select(explorationUpdate)
+                val childNode = node.select(epsilon, board, player)
                 board.doMove(childNode.move)
-                val score = searchMove(childNode, state, board, player, ply + 1, explorationUpdate)
+                val score = searchMove(childNode, state, board, player, ply + 1)
                 childNode.updateStats(score)
                 board.undoMove()
                 score
             }
         }
     }
-    private fun exploration(explorationFactor: Double) = explorationFactor * coolingFactor
 }
 
 fun playOut(state: SearchState, board: Board, ply: Int, player: Side, lastMove: Move): Long {
@@ -133,16 +121,6 @@ fun playOut(state: SearchState, board: Board, ply: Int, player: Side, lastMove: 
         0
     }
 
-}
-
-private fun winProbability(score: Double): Long {
-
-    val r = (2.0 / (1.0 + Math.exp(-10.0 * (score / 3000))) - 1.0)
-    return when {
-        r >= 0.3 -> 1L
-        r <= -0.3 -> -1L
-        else -> 0L
-    }
 }
 
 private fun selectMove(state: SearchState, moves: MoveList): Move {

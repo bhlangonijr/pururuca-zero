@@ -45,7 +45,7 @@ class SelfPlayIntegrationTest {
         val board = Board()
         board.loadFromFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq -")
 
-        val mcts1 = Mcts(1.9, 0.999)
+        val mcts1 = Mcts(1.4)
         val mcts2 = Mcts()
 
         val moves = MoveList(board.fen)

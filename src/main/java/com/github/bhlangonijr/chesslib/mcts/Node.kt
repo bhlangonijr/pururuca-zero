@@ -1,6 +1,8 @@
 package com.github.bhlangonijr.chesslib.mcts
 
+import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.chesslib.Side
+import com.github.bhlangonijr.chesslib.eval.scoreMaterial
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveList
 import java.util.concurrent.atomic.AtomicLong
@@ -18,9 +20,7 @@ class Node(val move: Move, val side: Side) {
 
         var selected = children!![0]
         for (node in children!!) {
-            val nodeScore = node.score.get() * (node.hits.get())
-            val currentScore = selected.score.get() * (selected.hits.get())
-            if (nodeScore > currentScore) {
+            if (node.hits.get() > selected.hits.get()) {
                 selected = node
             }
         }
@@ -29,33 +29,44 @@ class Node(val move: Move, val side: Side) {
 
     fun expand(moves: MoveList, side: Side): List<Node>? {
 
-        synchronized(this as Any, {
-            if (children == null) {
-                children = moves
-                        .stream()
-                        .map { Node(it, side) }
-                        .collect(Collectors.toList())
+        if (children == null) {
+            synchronized(this as Any) {
+                if (children == null) {
+                    children = moves
+                            .stream()
+                            .map { Node(it, side) }
+                            .collect(Collectors.toList())
+                }
             }
-        })
+        }
 
         return children
     }
 
-    fun select(explorationFactor: Double): Node {
+    fun select(explorationFactor: Double, board: Board, player: Side): Node {
 
         var selected: Node? = null
-        var best = Double.MIN_VALUE
+        var best = Double.NEGATIVE_INFINITY
         for (node in children!!) {
-            val score = node.wins.get() / (node.hits.get() + 1.0) +
-                    explorationFactor * Math.sqrt(2 * Math.log((hits.get() + 1.0)) / (node.hits.get() + 1.0)) +
-                    random.nextDouble() * DEFAULT_EPSILON
+            board.doMove(node.move)
+            val winRate = node.wins.get() / (node.hits.get() + 1.0)
+            val winProb = (winProbability(scoreMaterial(board, player).toDouble()))
+            //println("Winprob [$winProb] vs [${scoreMaterial(board, player)}]")
+            val exploration = 2 * winProb * explorationFactor *
+                    Math.sqrt(2.0 * Math.log((hits.get() + 1.0)) / (node.hits.get() + 1.0))
+            val score = winRate + exploration + random.nextDouble() * explorationFactor
+            //println("move [$move] prob: [$winProb] rate: [$winRate] exploration: [$exploration] score: [$score] hits: [$hits] nodes.hit: [${node.hits}]")
+
             if (score > best) {
                 selected = node
                 best = score
             }
+            board.undoMove()
         }
         return selected!!
     }
+
+    private fun winProbability(score: Double) = 1.0 / (1.0 + Math.exp(-10.0 * (score / 40000)))
 
     fun updateStats(score: Long) {
         this.hits.incrementAndGet()

@@ -15,11 +15,11 @@ const val MATE_VALUE = 39000
 
 class Eval
 
-fun scoreMaterial(board: Board): Int {
+fun scoreMaterial(board: Board) = scoreMaterial(board, board.sideToMove)
 
-    val side = board.sideToMove
-    val other = side.flip()
-    return countMaterial(board, side) - countMaterial(board, other)
+fun scoreMaterial(board: Board, player: Side): Int {
+
+    return countMaterial(board, player) - countMaterial(board, player.flip())
 }
 
 private fun countMaterial(board: Board, side: Side) =
