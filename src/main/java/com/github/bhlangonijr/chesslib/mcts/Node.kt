@@ -2,7 +2,6 @@ package com.github.bhlangonijr.chesslib.mcts
 
 import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.chesslib.Side
-import com.github.bhlangonijr.chesslib.eval.scoreMaterial
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveList
 import java.util.concurrent.atomic.AtomicLong
@@ -20,7 +19,7 @@ class Node(val move: Move, val side: Side) {
 
         var selected = children!![0]
         for (node in children!!) {
-            if (node.hits.get() > selected.hits.get()) {
+            if (node.wins.get() / (node.hits.get() + 1.0) > selected.wins.get() / (selected.hits.get() + 1.0)) {
                 selected = node
             }
         }
@@ -48,20 +47,19 @@ class Node(val move: Move, val side: Side) {
         var selected: Node? = null
         var best = Double.NEGATIVE_INFINITY
         for (node in children!!) {
-            board.doMove(node.move)
-            val winRate = node.wins.get() / (node.hits.get() + 1.0)
-            val winProb = (winProbability(scoreMaterial(board, player).toDouble()))
+            //board.doMove(node.move)
+            val winRate = node.wins.get() / (node.hits.get() + explorationFactor)
+            //val winProb = (winProbability(scoreMaterial(board, player).toDouble()))
             //println("Winprob [$winProb] vs [${scoreMaterial(board, player)}]")
-            val exploration = 2 * winProb * explorationFactor *
-                    Math.sqrt(2.0 * Math.log((hits.get() + 1.0)) / (node.hits.get() + 1.0))
+            val exploration = Math.sqrt(Math.log((hits.get() + 1.0)) / (node.hits.get() + explorationFactor))
             val score = winRate + exploration + random.nextDouble() * explorationFactor
             //println("move [$move] prob: [$winProb] rate: [$winRate] exploration: [$exploration] score: [$score] hits: [$hits] nodes.hit: [${node.hits}]")
-
+            //println("$score / $best")
             if (score > best) {
                 selected = node
                 best = score
             }
-            board.undoMove()
+            //board.undoMove()
         }
         return selected!!
     }

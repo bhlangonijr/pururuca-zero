@@ -21,7 +21,7 @@ class Abts : SearchEngine {
         state.moveScore.clear()
         for (i in 1..min(MAX_DEPTH, state.params.depth)) {
             val score = search(state.board, -MAX_VALUE, MAX_VALUE, i, 0, state)
-            println("info string eval $score moves ${state.pvLine()}")
+            println("info string eval $score moves ${state.pvLine()} depth $i")
             if (state.shouldStop()) break
         }
         println("bestmove ${state.pv[0]}")
@@ -43,11 +43,11 @@ class Abts : SearchEngine {
         val moves =
                 if (ply == 0) orderMoves(state, MoveGenerator.generatePseudoLegalMoves(board))
                 else MoveGenerator.generatePseudoLegalMoves(board)
+
         val isKingAttacked = board.isKingAttacked
         for (move in moves) {
 
-            val isCapture = (board.getBitboard(board.sideToMove.flip()) and move.to.bitboard) != 0L
-            val newDepth = if (isKingAttacked || isCapture) depth else depth - 1
+            val newDepth = if (isKingAttacked) depth else depth - 1
             if (!board.doMove(move)) {
                 continue
             }
@@ -64,7 +64,7 @@ class Abts : SearchEngine {
                 }
             }
             if (ply == 0) {
-                state.moveScore.put(move, score)
+                state.moveScore[move] = score
             }
         }
 

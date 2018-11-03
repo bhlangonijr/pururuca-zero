@@ -56,7 +56,7 @@ class Mcts(private val epsilon: Double = DEFAULT_EPSILON) : SearchEngine {
         val moves = MoveGenerator.generateLegalMoves(board)
         val isKingAttacked = board.isKingAttacked
         return when {
-            moves.size == 0 && isKingAttacked -> if (board.sideToMove == player) -1 else 1
+            moves.size == 0 && isKingAttacked -> -1
             moves.size == 0 && !isKingAttacked -> 0
             node.isLeaf() -> {
                 if (ply == 0 && state.params.searchMoves.isNotBlank()) {
@@ -71,7 +71,7 @@ class Mcts(private val epsilon: Double = DEFAULT_EPSILON) : SearchEngine {
                 }
                 val childNode = node.select(epsilon, board, player)
                 board.doMove(childNode.move)
-                val score = playOut(state, board, ply + 1, player, childNode.move)
+                val score = -playOut(state, board, ply + 1, player, childNode.move)
                 childNode.updateStats(score)
                 board.undoMove()
                 score
@@ -79,7 +79,7 @@ class Mcts(private val epsilon: Double = DEFAULT_EPSILON) : SearchEngine {
             else -> {
                 val childNode = node.select(epsilon, board, player)
                 board.doMove(childNode.move)
-                val score = searchMove(childNode, state, board, player, ply + 1)
+                val score = -searchMove(childNode, state, board, player, ply + 1)
                 childNode.updateStats(score)
                 board.undoMove()
                 score
@@ -90,12 +90,13 @@ class Mcts(private val epsilon: Double = DEFAULT_EPSILON) : SearchEngine {
 
 fun playOut(state: SearchState, board: Board, ply: Int, player: Side, lastMove: Move): Long {
 
+    var m: Move? = null
     return try {
 
         val moves = MoveGenerator.generateLegalMoves(board)
         val isKingAttacked = board.isKingAttacked
         when {
-            moves.size == 0 && isKingAttacked -> if (board.sideToMove == player) -1 else 1
+            moves.size == 0 && isKingAttacked -> -1
             moves.size == 0 && !isKingAttacked -> 0
             board.isDraw -> 0
             else -> {
@@ -106,15 +107,16 @@ fun playOut(state: SearchState, board: Board, ply: Int, player: Side, lastMove: 
                     println("move: $move")
                     println("last lastMove: $lastMove")
                 }
+                m = move
                 board.doMove(move)
                 state.nodes.incrementAndGet()
-                val playOutScore = playOut(state, board, ply + 1, player, move)
+                val playOutScore = -playOut(state, board, ply + 1, player, move)
                 board.undoMove()
                 return playOutScore
             }
         }
     } catch (e: Exception) {
-        println("Error: ${e.message}")
+        println("Error: ${e.message} - $m")
         println("FEN error pos: ${board.fen}")
         println(board)
         e.printStackTrace()

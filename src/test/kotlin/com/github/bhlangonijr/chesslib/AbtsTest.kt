@@ -43,7 +43,7 @@ class AbtsTest {
         val state = SearchState(params, board)
 
         val bestMove = Abts().rooSearch(state)
-        assertEquals(Move(Square.D1, Square.D2), bestMove)
+        assertEquals(Move(Square.D1, Square.E2), bestMove)
     }
 
     @Test
