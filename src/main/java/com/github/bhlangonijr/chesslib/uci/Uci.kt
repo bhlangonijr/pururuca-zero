@@ -16,14 +16,15 @@ class Uci constructor(private val search: Search) {
             "go" -> handleGo(tokens)
             "stop" -> handleStop()
             "quit" -> handleQuit()
+            "setoption" -> handleSetoption(tokens)
             else -> handleUnknownCommand(cmd)
         }
     }
 
     private fun handleUci(): Boolean {
 
-        println("id name ${NAME} ${VERSION}")
-        println("id author ${AUTHOR}")
+        println("id name $NAME $VERSION")
+        println("id author $AUTHOR")
         println("uciok")
         return true
     }
@@ -79,10 +80,27 @@ class Uci constructor(private val search: Search) {
                 nodes = getLong(tokens, "nodes", "50000000"),
                 infinite = getBoolean(tokens, "infinite", "false"),
                 ponder = getBoolean(tokens, "ponder", "false"),
-                searchMoves = getString(tokens, "movestogo", "")
+                searchMoves = getString(tokens, "movestogo", ""),
+                threads = search.threads
         )
 
         return search.start(params)
+    }
+
+    private fun handleSetoption(tokens: List<String>): Boolean {
+
+        val option = tokens[2]
+        val value = tokens[4]
+
+        when (option) {
+            "fen" -> {
+                search.threads = value.toInt()
+            }
+            else -> println("info string ignoring unsupported uci option")
+
+        }
+
+        return true
     }
 
     private fun handleStop(): Boolean = search.stop()

@@ -10,7 +10,8 @@ class SearchParams(var whiteTime: Long = 60000000,
                    var nodes: Long = 50000000,
                    var searchMoves: String = "",
                    var infinite: Boolean = false,
-                   var ponder: Boolean = false) {
+                   var ponder: Boolean = false,
+                   var threads: Int = 1) {
 
     val initialTime = System.currentTimeMillis()
 
@@ -26,6 +27,7 @@ class SearchParams(var whiteTime: Long = 60000000,
                 "nodes=$nodes, " +
                 "searchMoves=$searchMoves, " +
                 "infinite=$infinite, " +
-                "ponder=$ponder)"
+                "ponder=$ponder, " +
+                "threads=$threads)"
     }
 }

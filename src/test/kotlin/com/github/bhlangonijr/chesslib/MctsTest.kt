@@ -43,6 +43,18 @@ class MctsTest {
         val bestMove = Mcts().rooSearch(state)
         assertEquals(Move(Square.G5, Square.G6), bestMove)
     }
+
+    @Test
+    fun testSearchWithNodes4() {
+
+        val board = Board()
+        board.loadFromFen("2k5/7R/4K3/8/8/8/8/8 w - - 1 0")
+        val params = SearchParams(nodes = 4000000)
+        val state = SearchState(params, board)
+
+        val bestMove = Mcts().rooSearch(state)
+        assertEquals(Move(Square.E6, Square.D6), bestMove)
+    }
 }
 
 

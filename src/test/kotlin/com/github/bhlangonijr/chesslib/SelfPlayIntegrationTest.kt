@@ -27,16 +27,7 @@ class SelfPlayIntegrationTest {
             }
         }
 
-        if (board.isDraw) {
-            println("result = 1/2 - 1/2")
-        } else if (board.isMated && board.sideToMove == Side.BLACK) {
-            println("result = 1 - 0")
-        } else {
-            println("result = 0 - 1")
-        }
-
-        println("move list: ${moves.toSan()}")
-        println("final fen: ${board.fen}")
+        printResult(moves, board)
     }
 
     @Test
@@ -57,6 +48,11 @@ class SelfPlayIntegrationTest {
             }
         }
 
+        printResult(moves, board)
+    }
+
+    private fun printResult(moves: MoveList, board: Board) {
+
         if (board.isDraw) {
             println("result = 1/2 - 1/2")
         } else if (board.isMated && board.sideToMove == Side.BLACK) {
@@ -67,7 +63,6 @@ class SelfPlayIntegrationTest {
 
         println("move list: ${moves.toSan()}")
         println("final fen: ${board.fen}")
-
     }
 
     private fun play(board: Board,

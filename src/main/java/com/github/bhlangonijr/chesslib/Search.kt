@@ -7,6 +7,7 @@ class Search(val board: Board, val engine: SearchEngine) {
 
     private val executor = Executors.newSingleThreadExecutor()
     private var state: SearchState? = null
+    var threads: Int = 1
 
     fun reset() {
 
@@ -41,10 +42,10 @@ class Search(val board: Board, val engine: SearchEngine) {
         val search = this
         if (state == null) {
             val state = SearchState(params, board)
-            executor.submit({
+            executor.submit {
                 engine.rooSearch(state)
                 search.stop()
-            })
+            }
             this.state = state
         } else {
             println("info string search in progress...")

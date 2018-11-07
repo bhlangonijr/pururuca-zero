@@ -11,18 +11,17 @@ import java.util.stream.Collectors
 
 val random = Random()
 const val DEFAULT_EPSILON = 1.47
-const val NUM_THREADS = 4
 
 class Mcts(private val epsilon: Double = DEFAULT_EPSILON) : SearchEngine {
 
     override fun rooSearch(state: SearchState): Move {
 
-        val executor = Array(NUM_THREADS) { Executors.newFixedThreadPool(NUM_THREADS) }
+        val executor = Array(state.params.threads) { Executors.newFixedThreadPool(state.params.threads) }
         val node = Node(Move(Square.NONE, Square.NONE), state.board.sideToMove)
-        val boards = Array(NUM_THREADS) { state.board.clone() }
+        val boards = Array(state.params.threads) { state.board.clone() }
         val simulations = AtomicLong(0)
 
-        for (i in 1 until NUM_THREADS) {
+        for (i in 1 until state.params.threads) {
             executor[i].submit {
                 while (!state.shouldStop()) {
                     val score = searchMove(node, state, boards[i], boards[i].sideToMove, 0)
