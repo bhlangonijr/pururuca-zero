@@ -23,8 +23,8 @@ class Uci constructor(private val search: Search) {
 
     private fun handleUci(): Boolean {
 
-        println("id name $NAME $VERSION")
-        println("id author $AUTHOR")
+        println("classId name $NAME $VERSION")
+        println("classId author $AUTHOR")
         println("uciok")
         return true
     }

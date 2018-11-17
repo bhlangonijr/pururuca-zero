@@ -4,6 +4,7 @@ import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.chesslib.Side
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveList
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 import java.util.stream.Collectors
 
@@ -14,6 +15,8 @@ class Node(val move: Move, val side: Side) {
     val losses = AtomicLong(0)
     val score = AtomicLong(0)
     var children: List<Node>? = null
+    var terminal = AtomicBoolean(false)
+    var result = AtomicLong(0)
 
     fun pickBest(): Node {
 
@@ -71,6 +74,11 @@ class Node(val move: Move, val side: Side) {
         if (score > 0.0) wins.incrementAndGet()
         if (score < 0.0) losses.incrementAndGet()
         this.score.getAndAdd(score)
+    }
+
+    fun terminate(result: Long) {
+        this.terminal.set(true)
+        this.result.set(result)
     }
 
     fun isLeaf() = children == null || children?.size == 0
