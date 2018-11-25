@@ -8,10 +8,12 @@ class DataSet(val samples: List<FeatureSet>, val featureNames: List<String>) {
 
         var sum = 0.0
         var count = 0
-        samples.filter { predicate.invoke(it) }.forEach {
-            sum += it.get(featureId)
-            count++
-        }
+        samples.filter { predicate.invoke(it) }
+                .filter { it.exist(featureId) }
+                .forEach {
+                    sum += it.get(featureId)
+                    count++
+                }
         return sum / count
     }
 
@@ -19,10 +21,12 @@ class DataSet(val samples: List<FeatureSet>, val featureNames: List<String>) {
 
         var sum = 0.0
         var count = 0
-        samples.filter { predicate.invoke(it) }.forEach {
-            sum += (it.get(featureId) - mean).pow(2.0)
-            count++
-        }
+        samples.filter { predicate.invoke(it) }
+                .filter { it.exist(featureId) }
+                .forEach {
+                    sum += (it.get(featureId) - mean).pow(2.0)
+                    count++
+                }
         return sum / (count - 1)
     }
 
@@ -32,6 +36,8 @@ class DataSet(val samples: List<FeatureSet>, val featureNames: List<String>) {
 }
 
 class FeatureSet(val id: Int, val features: List<Double>, val featureNameMap: Map<String, Int>) {
+
+    fun exist(featureId: String): Boolean = featureNameMap[featureId] != null
 
     fun get(featureId: String): Double {
         val idx = featureNameMap[featureId]
