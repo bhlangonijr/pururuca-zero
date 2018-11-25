@@ -1,5 +1,6 @@
 package com.github.bhlangonijr.chesslib
 
+import com.github.bhlangonijr.chesslib.Constants.startStandardFENPosition
 import com.github.bhlangonijr.chesslib.abts.Abts
 import com.github.bhlangonijr.chesslib.mcts.Mcts
 import com.github.bhlangonijr.chesslib.move.Move
@@ -13,7 +14,7 @@ class SelfPlayIntegrationTest {
     fun `Match Abts and Mcts engines`() {
 
         val board = Board()
-        board.loadFromFen("r1b1kb1r/ppp2ppp/8/4n3/4n3/PPP1P1P1/7P/RNBK1BNR b kq - 0 20")
+        board.loadFromFen(startStandardFENPosition)
 
         val abts = Abts()
         val mcts = Mcts()
@@ -26,7 +27,6 @@ class SelfPlayIntegrationTest {
                 println("Played: $move = ${board.fen}")
             }
         }
-
         printResult(moves, board)
     }
 
@@ -60,7 +60,6 @@ class SelfPlayIntegrationTest {
         } else {
             println("result = 0 - 1")
         }
-
         println("move list: ${moves.toSan()}")
         println("final fen: ${board.fen}")
     }
