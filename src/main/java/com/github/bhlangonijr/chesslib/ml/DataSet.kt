@@ -1,5 +1,6 @@
 package com.github.bhlangonijr.chesslib.ml
 
+import kotlin.math.max
 import kotlin.math.pow
 
 class DataSet(val samples: List<FeatureSet>, val featureNames: List<String>) {
@@ -14,7 +15,7 @@ class DataSet(val samples: List<FeatureSet>, val featureNames: List<String>) {
                     sum += it.get(featureId)
                     count++
                 }
-        return sum / count
+        return sum / max(1, count)
     }
 
     fun variance(featureId: String, mean: Double, predicate: (FeatureSet) -> Boolean): Double {
@@ -27,7 +28,7 @@ class DataSet(val samples: List<FeatureSet>, val featureNames: List<String>) {
                     sum += (it.get(featureId) - mean).pow(2.0)
                     count++
                 }
-        return sum / (count - 1)
+        return sum / max(1, (count - 1))
     }
 
     override fun toString(): String {
@@ -49,7 +50,7 @@ class FeatureSet(val id: Int, val features: List<Double>, val featureNameMap: Ma
     }
 
     override fun toString(): String {
-        return "FeatureSet(classId=$id, features=$features, featureNameMap=$featureNameMap)\n"
+        return "FeatureSet(id=$id, features=$features, featureNameMap=$featureNameMap)\n"
     }
 
 }

@@ -37,16 +37,18 @@ class NaiveBayes {
 
         val classification = Classification()
         var sum = 0.0
-        stats.values.forEach {
-            val prediction = Prediction(it.classId)
+        stats.values.forEach  {s ->
+            val prediction = Prediction(s.classId)
 
-            prediction.classLikelihood = it.prior
-            testFeatureSet.featureNameMap.keys.forEach { name ->
-                val result = likelihood(testFeatureSet.get(name), it.featureMean[name]!!, it.featureVariance[name]!!)
-                prediction.classLikelihood *= result
-                prediction.featureLikelihood[name] = result
-            }
-            classification.predictions[it.classId] = prediction
+            prediction.classLikelihood = s.prior
+            testFeatureSet.featureNameMap.keys
+                    .filter { s.featureMean[it] != null && s.featureVariance[it] != null}
+                    .forEach { name ->
+                        val result = posterior(testFeatureSet.get(name), s.featureMean[name]!!, s.featureVariance[name]!!)
+                        prediction.classLikelihood *= result
+                        prediction.featureLikelihood[name] = result
+                    }
+            classification.predictions[s.classId] = prediction
             sum += prediction.classLikelihood
         }
         classification.predictions.values.forEach {
@@ -55,11 +57,9 @@ class NaiveBayes {
         return classification
     }
 
-    private fun likelihood(feature: Double, mean: Double, variance: Double) =
-            (1.0 / sqrt(2 * Math.PI * variance)) * exp((-(feature - mean).pow(2.0)) / (2.0 * variance))
-
+    private fun posterior(feature: Double, mean: Double, variance: Double) =
+            (1.0 / sqrt(2.0 * Math.PI * variance)) * exp((-(feature - mean).pow(2.0)) / (2.0 * variance))
 }
-
 
 class ClassStats(val classId: Double) {
 
@@ -76,10 +76,8 @@ class ClassStats(val classId: Double) {
 class Classification {
 
     val predictions = mutableMapOf<Double, Prediction>()
-
     fun predict() =
             predictions.values.sortedBy { it.probability }.reversed()[0].classId
-
     override fun toString(): String {
         return "Classification(predictions=$predictions)"
     }
@@ -91,8 +89,6 @@ class Prediction(val classId: Double) {
     var classLikelihood: Double = 0.0
     var probability: Double = 0.0
     override fun toString(): String {
-        return "Prediction(classId=$classId, featureLikelihood=$featureLikelihood, classLikelihood=$classLikelihood, probability=$probability)\n"
+        return "Prediction(classId=$classId, probability=$probability, classLikelihood=$classLikelihood, featureLikelihood=$featureLikelihood)\n"
     }
 }
-
-
