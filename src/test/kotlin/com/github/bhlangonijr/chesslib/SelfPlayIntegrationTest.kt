@@ -9,7 +9,6 @@ import org.junit.Test
 
 class SelfPlayIntegrationTest {
 
-
     @Test
     fun `Match Abts and Mcts engines`() {
 
@@ -51,30 +50,4 @@ class SelfPlayIntegrationTest {
         printResult(moves, board)
     }
 
-    private fun printResult(moves: MoveList, board: Board) {
-
-        if (board.isDraw) {
-            println("result = 1/2 - 1/2")
-        } else if (board.isMated && board.sideToMove == Side.BLACK) {
-            println("result = 1 - 0")
-        } else {
-            println("result = 0 - 1")
-        }
-        println("move list: ${moves.toSan()}")
-        println("final fen: ${board.fen}")
-    }
-
-    private fun play(board: Board,
-                     player1: SearchEngine,
-                     player2: SearchEngine): Move {
-
-        val params1 = SearchParams(whiteTime = 180000, whiteIncrement = 0, blackTime = 180000, blackIncrement = 0)
-        val params2 = SearchParams(whiteTime = 180000, whiteIncrement = 0, blackTime = 180000, blackIncrement = 0)
-
-        return if (board.sideToMove == Side.WHITE) {
-            player1.rooSearch(SearchState(params1, board))
-        } else {
-            player2.rooSearch(SearchState(params2, board))
-        }
-    }
 }

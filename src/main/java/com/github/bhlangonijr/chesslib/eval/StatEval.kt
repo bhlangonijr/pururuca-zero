@@ -63,6 +63,9 @@ class StatEval {
         // number of black pawns occupying a given rank
         val blackPawnRank = DoubleArray(Rank.values().size - 1) { Double.NaN }
 
+        // piece counts
+        val pieceCount = DoubleArray(pieceList.size) { Double.NaN }
+
         val pieceLocation = pieceList
                 .filter { board.getBitboard(it) > 0 }
                 .associateBy({ it }, { board.getPieceLocation(it) })
@@ -72,6 +75,8 @@ class StatEval {
                 .associateBy({ it.key }, { attacks(board, it.key, it.value, it.key.pieceSide) })
 
         pieceLocation.entries.forEach { (p1, squares) ->
+            initArray(pieceCount, p1.ordinal)
+            pieceCount[p1.ordinal] += bitCount(board.getBitboard(p1)).toDouble()
             squares.forEach { sq1 ->
                 if (p1.pieceType == PieceType.PAWN) {
                     if (p1.pieceSide == Side.WHITE) {
@@ -97,10 +102,10 @@ class StatEval {
             }
         }
 
-        val allAttacks = pieceAttacks.entries.associateBy({it.key}, {it.value.map { it.second }.reduce {l1, l2 -> l1 or l2}})
+        val allAttacks = pieceAttacks.entries.associateBy({it.key}, {it.value.map { it.second }.fold(0L) {l1, l2 -> l1 or l2}})
 
-        val whiteAttacks = allAttacks.filter { it.key.pieceSide == Side.WHITE }.values.reduce { l1, l2 -> l1 or l2}
-        val blackAttacks = allAttacks.filter { it.key.pieceSide == Side.BLACK }.values.reduce { l1, l2 -> l1 or l2}
+        val whiteAttacks = allAttacks.filter { it.key.pieceSide == Side.WHITE }.values.fold(0L) { l1, l2 -> l1 or l2}
+        val blackAttacks = allAttacks.filter { it.key.pieceSide == Side.BLACK }.values.fold(0L) { l1, l2 -> l1 or l2}
         val allSideAttacks = mapOf(Side.WHITE to whiteAttacks, Side.BLACK to blackAttacks)
 
         val whitePawnMoves = pawnMoves(board, pieceLocation[Piece.WHITE_PAWN] ?: emptyList(), Side.WHITE)
@@ -147,17 +152,26 @@ class StatEval {
 
         val boardState = arrayOf(board.sideToMove.ordinal + 1.0, board.moveCounter.toDouble(),
                 if (board.halfMoveCounter == 0) Double.NaN else board.halfMoveCounter.toDouble())
+/*
+                pieceCount.toTypedArray() +
+                boardState
 
-        return  moves.toTypedArray() +
+                whitePawnRank.toTypedArray() +
+                blackPawnRank.toTypedArray()
+
+                distanceSide.toTypedArray() +
+                distanceOther.toTypedArray()
+
+ */
+        return moves.toTypedArray() +
                 attacksSide.toTypedArray() +
                 attacksOther.toTypedArray() +
                 closeAttacksSide.toTypedArray() +
                 closeAttacksOther.toTypedArray() +
                 whitePawnRank.toTypedArray() +
                 blackPawnRank.toTypedArray() +
-                boardState /*+
-                distanceSide.toTypedArray() +
-                distanceOther.toTypedArray()*/
+                boardState +
+                pieceCount.toTypedArray()
     }
 
     private fun initArray(array: DoubleArray, idx: Int) {

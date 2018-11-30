@@ -42,11 +42,15 @@ class NaiveBayes {
 
             prediction.classLikelihood = s.prior
             testFeatureSet.featureNameMap.keys
-                    .filter { s.featureMean[it] != null && s.featureVariance[it] != null}
+                    .filter { s.isAvailable(it) }
                     .forEach { name ->
-                        val result = posterior(testFeatureSet.get(name), s.featureMean[name]!!, s.featureVariance[name]!!)
-                        prediction.classLikelihood *= result
-                        prediction.featureLikelihood[name] = result
+                        val result = posterior(testFeatureSet.get(name), s.featureMean[name]!! + 0.0000001, s.featureVariance[name]!! + 0.0000001)
+                        if (!result.isNaN()) {
+                            prediction.classLikelihood *= result
+                            prediction.featureLikelihood[name] = result
+                        } else {
+                            println("NaN returned: $name: ${s.featureMean[name]} - ${s.featureVariance[name]}" )
+                        }
                     }
             classification.predictions[s.classId] = prediction
             sum += prediction.classLikelihood
@@ -67,6 +71,10 @@ class ClassStats(val classId: Double) {
     var prior = 0.0
     val featureMean = mutableMapOf<String, Double>()
     val featureVariance = mutableMapOf<String, Double>()
+
+    fun isAvailable(featureId: String) =
+            featureMean[featureId] != null && featureVariance[featureId] != null &&
+                    !featureMean[featureId]!!.isNaN() && !featureVariance[featureId]!!.isNaN()
 
     override fun toString(): String {
         return "ClassStats(classId=$classId, count=$count, prior=$prior, featureMean=$featureMean, featureVariance=$featureVariance)\n"

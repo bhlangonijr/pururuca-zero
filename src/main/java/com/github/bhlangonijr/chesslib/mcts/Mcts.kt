@@ -1,6 +1,9 @@
 package com.github.bhlangonijr.chesslib.mcts
 
 import com.github.bhlangonijr.chesslib.*
+import com.github.bhlangonijr.chesslib.eval.StatEval
+import com.github.bhlangonijr.chesslib.ml.ClassStats
+import com.github.bhlangonijr.chesslib.ml.NaiveBayes
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import com.github.bhlangonijr.chesslib.move.MoveList
@@ -12,7 +15,7 @@ import java.util.stream.Collectors
 val random = Random()
 const val DEFAULT_EPSILON = 1.47
 
-class Mcts(private val epsilon: Double = DEFAULT_EPSILON) : SearchEngine {
+class Mcts(private var epsilon: Double = DEFAULT_EPSILON, private var stats: Map<Double, ClassStats>? = null) : SearchEngine {
 
     override fun rooSearch(state: SearchState): Move {
 
@@ -80,7 +83,10 @@ class Mcts(private val epsilon: Double = DEFAULT_EPSILON) : SearchEngine {
                 }
                 val childNode = node.select(epsilon, board, player)
                 board.doMove(childNode.move)
-                val score = -playOut(state, board, ply + 1, player, childNode.move)
+                val score = if (stats == null)
+                    -playOut(state, board, ply + 1, player, childNode.move)
+                else
+                    -predict(state, board, ply + 1, childNode.move, stats!!)
                 childNode.updateStats(score)
                 board.undoMove()
                 score
@@ -135,11 +141,12 @@ fun playOut(state: SearchState, board: Board, ply: Int, player: Side, lastMove: 
 
 }
 
-fun eval(state: SearchState, board: Board, ply: Int, player: Side, lastMove: Move): Long {
+val nb = NaiveBayes()
+val eval = StatEval()
 
-    var move: Move? = null
+fun predict(state: SearchState, board: Board, ply: Int, lastMove: Move, stats: Map<Double, ClassStats>): Long {
+
     return try {
-
         val moves = MoveGenerator.generateLegalMoves(board)
         val isKingAttacked = board.isKingAttacked
         when {
@@ -147,22 +154,19 @@ fun eval(state: SearchState, board: Board, ply: Int, player: Side, lastMove: Mov
             moves.size == 0 && !isKingAttacked -> 0
             board.isDraw -> 0
             else -> {
-                move = moves[random.nextInt(moves.size)]
-                val kq = board.getKingSquare(board.sideToMove.flip())
-                if (kq == move.to) {
-                    println("FEN: ${board.fen}")
-                    println("move: $move")
-                    println("last lastMove: $lastMove")
-                }
-                board.doMove(move)
                 state.nodes.incrementAndGet()
-                val playOutScore = -playOut(state, board, ply + 1, player, move)
-                board.undoMove()
-                return playOutScore
+                val prediction = nb.classify(eval.getFeatureSet(ply, board, -1.0), stats).predict()
+                return when {
+                    prediction == 1.0 && board.sideToMove == Side.WHITE -> 1
+                    prediction == 1.0 && board.sideToMove == Side.BLACK -> -1
+                    prediction == 2.0 && board.sideToMove == Side.BLACK -> 1
+                    prediction == 2.0 && board.sideToMove == Side.WHITE -> -1
+                    else -> 0
+                }
             }
         }
     } catch (e: Exception) {
-        println("Error: ${e.message} - $move")
+        println("Last move: ${e.message} - $lastMove")
         println("FEN error pos: ${board.fen}")
         println(board)
         e.printStackTrace()

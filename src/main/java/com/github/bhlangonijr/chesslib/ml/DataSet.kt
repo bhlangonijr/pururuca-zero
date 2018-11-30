@@ -36,7 +36,7 @@ class DataSet(val samples: List<FeatureSet>, val featureNames: List<String>) {
     }
 }
 
-class FeatureSet(val id: Int, val features: List<Double>, val featureNameMap: Map<String, Int>) {
+class FeatureSet(val id: Int, val features: MutableList<Double>, val featureNameMap: Map<String, Int>) {
 
     fun exist(featureId: String): Boolean = featureNameMap[featureId] != null
 
