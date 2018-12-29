@@ -62,7 +62,7 @@ class StatEval {
     fun getFeatureSet(id: Int, board: Board, classId: Float): FeatureSet {
 
         val features = extractFeatures(board)
-        val map = mutableMapOf<String, Int>()
+        val map = mutableMapOf<Int, Int>()
 
         var sparseIdx = 0
         val sparseFeatures = arrayListOf<Float>()
@@ -70,7 +70,7 @@ class StatEval {
         for ((idx, feature) in features.withIndex()) {
             if (!feature.isNaN()) {
                 sparseIdx++
-                map["$idx"] = sparseIdx
+                map[idx] = sparseIdx
                 sparseFeatures.add(sparseIdx, feature)
             }
         }
@@ -209,8 +209,8 @@ class StatEval {
         return pieceCount +
                 boardState +
                 moves +
-                distanceSide +
-                distanceOther +
+                //distanceSide +
+                //distanceOther +
                 attacksSide +
                 attacksOther +
                 closeAttacksSide +

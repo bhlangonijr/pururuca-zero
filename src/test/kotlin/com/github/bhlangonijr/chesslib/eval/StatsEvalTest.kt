@@ -66,7 +66,7 @@ class StatsEvalTest {
         printResult(moves, board)
     }
 
-    private val featureNames = IntRange(0, 400).map { "$it" }
+    private val featureNames = IntRange(0, 400).map { it }
 
     @Test
     fun `Match Mcts engine with statistical assisted playing against Abts`() {
@@ -150,7 +150,7 @@ class StatsEvalTest {
             //println()
         }
         println(stats)
-        println("Totals ${data.samples.size}/${test.samples.size} = ${countCorrect.toDouble()/countTotal*100}%")
+        println("Totals ${data.samples.size}/${test.samples.size} = ${countCorrect.toDouble() / countTotal * 100}%")
 
     }
 
@@ -185,7 +185,7 @@ class StatsEvalTest {
 
         predicts.forEachIndexed { i1, floats ->
             floats.forEachIndexed { i2, m ->
-                println("$i1,$i2 = $m [" + test.label[i1] + "]" )
+                println("$i1,$i2 = $m [" + test.label[i1] + "]")
             }
         }
 
@@ -198,7 +198,7 @@ class StatsEvalTest {
         val testMap = pgnToDataSetList("src/test/resources/test.pgn")
         val statMap = pgnToDataSetList("src/test/resources/test.pgn")
                 .entries
-                .associateBy({it.key}, {NaiveBayes().train(it.value)})
+                .associateBy({ it.key }, { NaiveBayes().train(it.value) })
 
         var countTotal = 0
         var countCorrect = 0
@@ -216,10 +216,9 @@ class StatsEvalTest {
                 }
                 //println()
             }
-            println("Totals ${data.samples.size} = ${countCorrect.toDouble()/countTotal*100}%")
+            println("Totals ${data.samples.size} = ${countCorrect.toDouble() / countTotal * 100}%")
         }
         println(statMap)
-
 
 
     }
@@ -329,7 +328,7 @@ class StatsEvalTest {
                     board.doMove(move)
                     val featureSet = stat.getFeatureSet(idx, board, mapResult[game.result.description] ?: 3.0f)
 
-                    featureMap.computeIfAbsent(dataSetKey(board)) { mutableListOf(featureSet)}
+                    featureMap.computeIfAbsent(dataSetKey(board)) { mutableListOf(featureSet) }
                     featureMap.computeIfPresent(dataSetKey(board)) { _, list ->
                         list.add(featureSet)
                         list
@@ -343,7 +342,7 @@ class StatsEvalTest {
             }
 
         }
-        return featureMap.entries.associateBy({it.key}, {DataSet(it.value, featureNames)})
+        return featureMap.entries.associateBy({ it.key }, { DataSet(it.value, featureNames) })
     }
 
     private fun dataSetKey(board: Board) =

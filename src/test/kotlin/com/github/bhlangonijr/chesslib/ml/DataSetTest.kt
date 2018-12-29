@@ -8,7 +8,7 @@ class DataSetTest {
     @Test
     fun testDataSetCreationAndCalculations() {
 
-        val featureNames = mapOf("height" to 1, "weight" to 2, "foot size" to 3)
+        val featureNames = mapOf(0 to 1, 1 to 2, 2 to 3)
         val data = DataSet(
                 arrayListOf(
                         FeatureSet(1, arrayListOf(0.0f, 6.0f, 180.0f, 12.0f), featureNames),
@@ -23,21 +23,21 @@ class DataSetTest {
                 featureNames.keys.toList()
         )
 
-        val maleHeightMean = data.mean("height") { it.getClass() == 0.0f }
-        val maleWeightMean = data.mean("weight") { it.getClass() == 0.0f }
-        val maleFootSizeMean = data.mean("foot size") { it.getClass() == 0.0f }
+        val maleHeightMean = data.mean(0) { it.getClass() == 0.0f }
+        val maleWeightMean = data.mean(1) { it.getClass() == 0.0f }
+        val maleFootSizeMean = data.mean(2) { it.getClass() == 0.0f }
 
-        val maleHeightVariance = data.variance("height", maleHeightMean) { it.getClass() == 0.0f }
-        val maleWeightVariance = data.variance("weight", maleWeightMean) { it.getClass() == 0.0f }
-        val maleFootSizeVariance = data.variance("foot size", maleFootSizeMean) { it.getClass() == 0.0f }
+        val maleHeightVariance = data.variance(0, maleHeightMean) { it.getClass() == 0.0f }
+        val maleWeightVariance = data.variance(1, maleWeightMean) { it.getClass() == 0.0f }
+        val maleFootSizeVariance = data.variance(2, maleFootSizeMean) { it.getClass() == 0.0f }
 
-        val femaleHeightMean = data.mean("height") { it.getClass() == 1.0f }
-        val femaleWeightMean = data.mean("weight") { it.getClass() == 1.0f }
-        val femaleFootSizeMean = data.mean("foot size") { it.getClass() == 1.0f }
+        val femaleHeightMean = data.mean(0) { it.getClass() == 1.0f }
+        val femaleWeightMean = data.mean(1) { it.getClass() == 1.0f }
+        val femaleFootSizeMean = data.mean(2) { it.getClass() == 1.0f }
 
-        val femaleHeightVariance = data.variance("height", femaleHeightMean) { it.getClass() == 1.0f }
-        val femaleWeightVariance = data.variance("weight", femaleWeightMean) { it.getClass() == 1.0f }
-        val femaleFootSizeVariance = data.variance("foot size", femaleFootSizeMean) { it.getClass() == 1.0f }
+        val femaleHeightVariance = data.variance(0, femaleHeightMean) { it.getClass() == 1.0f }
+        val femaleWeightVariance = data.variance(1, femaleWeightMean) { it.getClass() == 1.0f }
+        val femaleFootSizeVariance = data.variance(2, femaleFootSizeMean) { it.getClass() == 1.0f }
 
         println("male mean:     $maleHeightMean, $maleWeightMean, $maleFootSizeMean ")
         println("male variance: $maleHeightVariance, $maleWeightVariance, $maleFootSizeVariance ")

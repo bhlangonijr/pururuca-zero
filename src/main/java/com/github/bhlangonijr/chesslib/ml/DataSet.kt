@@ -3,9 +3,9 @@ package com.github.bhlangonijr.chesslib.ml
 import kotlin.math.max
 import kotlin.math.pow
 
-class DataSet(val samples: List<FeatureSet>, val featureNames: List<String>) {
+class DataSet(val samples: List<FeatureSet>, val featureIds: List<Int>) {
 
-    fun mean(featureId: String, predicate: (FeatureSet) -> Boolean): Float {
+    fun mean(featureId: Int, predicate: (FeatureSet) -> Boolean): Float {
 
         var sum = 0.0f
         var count = 0
@@ -18,7 +18,7 @@ class DataSet(val samples: List<FeatureSet>, val featureNames: List<String>) {
         return sum / max(1, count)
     }
 
-    fun variance(featureId: String, mean: Float, predicate: (FeatureSet) -> Boolean): Float {
+    fun variance(featureId: Int, mean: Float, predicate: (FeatureSet) -> Boolean): Float {
 
         var sum = 0.0f
         var count = 0
@@ -32,16 +32,16 @@ class DataSet(val samples: List<FeatureSet>, val featureNames: List<String>) {
     }
 
     override fun toString(): String {
-        return "DataSet(samples=\n$samples, featureNames=$featureNames)"
+        return "DataSet(samples=\n$samples, featureNames=$featureIds)"
     }
 }
 
-class FeatureSet(val id: Int, val features: MutableList<Float>, val featureNameMap: Map<String, Int>) {
+class FeatureSet(val id: Int, val features: ArrayList<Float>, val featureIdMap: Map<Int, Int>) {
 
-    fun exist(featureId: String): Boolean = featureNameMap[featureId] != null
+    fun exist(featureId: Int): Boolean = featureIdMap[featureId] != null
 
-    fun get(featureId: String): Float {
-        val idx = featureNameMap[featureId]
+    fun get(featureId: Int): Float {
+        val idx = featureIdMap[featureId]
         return features[idx!!]
     }
 
@@ -50,7 +50,7 @@ class FeatureSet(val id: Int, val features: MutableList<Float>, val featureNameM
     }
 
     override fun toString(): String {
-        return "FeatureSet(id=$id, features=$features, featureNameMap=$featureNameMap)\n"
+        return "FeatureSet(id=$id, features=$features, featureNameMap=$featureIdMap)\n"
     }
 
 }
