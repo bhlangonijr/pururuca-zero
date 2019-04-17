@@ -2,7 +2,6 @@ package com.github.bhlangonijr.chesslib.eval
 
 import com.github.bhlangonijr.chesslib.*
 import com.github.bhlangonijr.chesslib.ml.ClassStats
-import com.github.bhlangonijr.chesslib.ml.FeatureSet
 import com.github.bhlangonijr.chesslib.ml.NaiveBayes
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
@@ -12,7 +11,6 @@ import kotlin.math.max
 class StatEval {
 
     private val pieceList = Piece.values().filter { it != Piece.NONE }
-    private val maxDistanceSize = Rank.values().size - 1
     private val allBb = 0L.inv()
     private val pieceTypeValues = mapOf(
             PieceType.NONE to 0.0f,
@@ -39,7 +37,8 @@ class StatEval {
                     board.isDraw -> 0
                     else -> {
                         state.nodes.incrementAndGet()
-                        val prediction = nb.classify(eval.getFeatureSet(ply, board, -1.0f), stats).predict()
+                        val features = eval.extractFeatureSet(board)
+                        val prediction = nb.classify(features.first, features.second, stats).predict()
                         return when {
                             prediction == 1.0f && board.sideToMove == Side.WHITE -> 1
                             prediction == 1.0f && board.sideToMove == Side.BLACK -> -1
@@ -59,22 +58,18 @@ class StatEval {
         }
     }
 
-    fun getFeatureSet(id: Int, board: Board, classId: Float): FeatureSet {
+    fun extractFeatureSet(board: Board): Pair<FloatArray, IntArray> {
 
-        val features = extractFeatures(board)
-        val map = mutableMapOf<Int, Int>()
-
-        var sparseIdx = 0
-        val sparseFeatures = arrayListOf<Float>()
-        sparseFeatures.add(0, classId)
+        val colIndex = arrayListOf<Int>()
+        val data = mutableListOf<Float>()
+        val features = eval.extractFeatures(board)
         for ((idx, feature) in features.withIndex()) {
             if (!feature.isNaN()) {
-                sparseIdx++
-                map[idx] = sparseIdx
-                sparseFeatures.add(sparseIdx, feature)
+                colIndex.add(idx)
+                data.add(feature)
             }
         }
-        return FeatureSet(id, sparseFeatures, map)
+        return Pair(data.toFloatArray(), colIndex.toIntArray())
     }
 
     fun extractFeatures(board: Board): FloatArray {
@@ -188,7 +183,7 @@ class StatEval {
         val boardState = FloatArray(3)
         boardState[0] = board.sideToMove.ordinal + 1.0f
         boardState[1] = board.moveCounter.toFloat()
-        boardState[2] = if (board.halfMoveCounter == 0) Float.NaN else board.halfMoveCounter.toFloat()
+        boardState[2] = board.halfMoveCounter.toFloat()
 /*
                 pieceCount.toTypedArray() +
                 boardState

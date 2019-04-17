@@ -7,14 +7,19 @@ import kotlin.math.sqrt
 
 class NaiveBayes {
 
-    fun train(features: FloatArray, colIndex: IntArray, rowIndex: IntArray, labels: IntArray): Map<Float, ClassStats> {
+    fun train(dataSet: DataSet): Map<Float, ClassStats> {
+
+        return train(dataSet.features, dataSet.labels, dataSet.rowHeaders, dataSet.colIndex)
+    }
+
+    fun train(features: FloatArray, labels: FloatArray, rowIndex: LongArray, colIndex: IntArray): Map<Float, ClassStats> {
 
         val stats = mutableMapOf<Float, ClassStats>()
 
-        for(n in labels) {
-            stats.compute(n.toFloat()) { _, s ->
+        for (n in labels) {
+            stats.compute(n) { _, s ->
                 if (s == null) {
-                    ClassStats(n.toFloat())
+                    ClassStats(n)
                 } else {
                     s.count++
                     s
@@ -22,11 +27,10 @@ class NaiveBayes {
             }
         }
 
-        var r = 0
         var rows = 0
         for ((i, v) in features.withIndex()) {
             val featureId = colIndex[i]
-            val classId = labels[rows].toFloat()
+            val classId = labels[rows]
             stats.computeIfPresent(classId) { _, classStat ->
                 classStat.featureStats.compute(featureId) { _, stat ->
                     val feat = stat ?: FeatureStats(featureId)
@@ -36,17 +40,15 @@ class NaiveBayes {
                 }
                 classStat
             }
-            r++
-            if (r > rowIndex[rows]) {
+            if (i + 1 > rowIndex[rows + 1]) {
                 rows++
             }
         }
 
-        r = 0
         rows = 0
         for ((i, v) in features.withIndex()) {
             val featureId = colIndex[i]
-            val classId = labels[rows].toFloat()
+            val classId = labels[rows]
             stats.computeIfPresent(classId) { _, classStat ->
                 classStat.featureStats.computeIfPresent(featureId) { _, feat ->
                     feat.mean = feat.sum / feat.count
@@ -55,8 +57,7 @@ class NaiveBayes {
                 }
                 classStat
             }
-            r++
-            if (r > rowIndex[rows]) {
+            if (i + 1 > rowIndex[rows + 1]) {
                 rows++
             }
         }
@@ -74,70 +75,14 @@ class NaiveBayes {
         return stats
     }
 
-    fun train(dataSet: DataSet): Map<Float, ClassStats> {
-
-        val stats = mutableMapOf<Float, ClassStats>()
-
-        dataSet.samples.forEachIndexed { _, feat ->
-            stats.compute(feat.getClass()) { _, stats ->
-                if (stats == null) {
-                    ClassStats(feat.getClass())
-                } else {
-                    stats.count++
-                    stats
-                }
-            }
-        }
-
-        stats.values.forEach { s ->
-            dataSet.featureIds.forEach { id ->
-                val mean = dataSet.mean(id) { f -> f.getClass() == s.classId }
-                val variance = dataSet.variance(id, mean) { f -> f.getClass() == s.classId }
-                s.featureStats[id]!!.mean = mean
-                s.featureStats[id]!!.variance = variance
-            }
-            s.prior = s.count.toFloat() / dataSet.samples.size
-        }
-        return stats
-    }
-
-    fun classify(testFeatureSet: FeatureSet, stats: Map<Float, ClassStats>): Classification {
-
-        val classification = Classification()
-        var sum = 0.0f
-        stats.values.forEach { s ->
-            val prediction = Prediction(s.classId)
-
-            prediction.classLikelihood = s.prior
-            testFeatureSet.featureIdMap.keys
-                    .filter { s.isAvailable(it) }
-                    .forEach { name ->
-                        val result = posterior(testFeatureSet.get(name), s.featureMean(name), s.featureVariance(name))
-                        if (!result.isNaN()) {
-                            prediction.classLikelihood *= result
-                            prediction.featureLikelihood[name] = result
-                        } else {
-                            println("NaN returned: $name: ${s.featureMean(name)} - ${s.featureVariance(name)}")
-                        }
-                    }
-            classification.predictions[s.classId] = prediction
-            sum += prediction.classLikelihood
-        }
-        classification.predictions.values.forEach {
-            it.probability = it.classLikelihood / sum
-        }
-        return classification
-    }
-
     fun classify(features: FloatArray, colIndex: IntArray, stats: Map<Float, ClassStats>): Classification {
 
         val classification = Classification()
-        var sum = 0.0f
+        var sum = 0.0
         stats.values.forEach { s ->
             val prediction = Prediction(s.classId)
-
-            prediction.classLikelihood = s.prior
-
+            prediction.classLikelihood = 0.0
+            var logSum = 0.0
             features.withIndex()
                     .filter { s.isAvailable(colIndex[it.index]) }
                     .forEach {
@@ -145,12 +90,13 @@ class NaiveBayes {
                         val featureId = colIndex[it.index]
                         val result = posterior(value, s.featureMean(featureId), s.featureVariance(featureId))
                         if (!result.isNaN()) {
-                            prediction.classLikelihood *= result
                             prediction.featureLikelihood[featureId] = result
+                            logSum += Math.log(result.toDouble())
                         } else {
                             println("NaN returned: $featureId: ${s.featureMean(featureId)} - ${s.featureVariance(featureId)}")
                         }
                     }
+            prediction.classLikelihood = s.prior.toDouble() * Math.exp(logSum)
             classification.predictions[s.classId] = prediction
             sum += prediction.classLikelihood
         }
@@ -202,8 +148,8 @@ class Classification {
 class Prediction(val classId: Float) {
 
     val featureLikelihood = mutableMapOf<Int, Float>()
-    var classLikelihood: Float = 0.0f
-    var probability: Float = 0.0f
+    var classLikelihood: Double = 0.0
+    var probability: Double = 0.0
     override fun toString(): String {
         return "Prediction(classId=$classId, probability=$probability, " +
                 "classLikelihood=$classLikelihood, featureLikelihood=$featureLikelihood)\n"
@@ -217,4 +163,9 @@ class FeatureStats(val featureId: Int) {
     var sumDeltas = 0.0f
     var mean = 0.0f
     var variance = 0.0f
+    override fun toString(): String {
+        return "FeatureStats(featureId=$featureId, count=$count, sum=$sum, sumDeltas=$sumDeltas, " +
+                "mean=$mean, variance=$variance)"
+    }
+
 }
