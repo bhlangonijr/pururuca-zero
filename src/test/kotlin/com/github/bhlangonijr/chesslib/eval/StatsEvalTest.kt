@@ -99,7 +99,7 @@ class StatsEvalTest {
     @Test
     fun testLearningPgnXgBoost() {
 
-        val data = pgnToDMatrix("src/test/resources/big.pgn")
+        val data = pgnToDMatrix("src/test/resources/Stockfish_DD_64-bit_4CPU.pgn")
         val test = pgnToDMatrix("src/test/resources/test.pgn")
 
         println(data.rowNum())
