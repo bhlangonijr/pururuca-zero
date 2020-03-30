@@ -2,8 +2,7 @@ group 'com.github.bhlangonijr.chess'
 version '0.1.0'
 
 buildscript {
-    ext.kotlin_version = '1.2.10'
-
+    ext.kotlin_version = '1.3.71'
     repositories {
         mavenCentral()
     }
@@ -13,6 +12,8 @@ buildscript {
 }
 
 apply plugin: 'kotlin'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
 
 jar {
     manifest {
@@ -33,7 +34,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile "ml.dmlc:xgboost4j:0.81"
 
-    implementation 'com.github.bhlangonijr:chesslib:1.1.12'
+    implementation 'com.github.bhlangonijr:chesslib:1.1.13'
     testCompile "junit:junit:4.12"
 }
 
