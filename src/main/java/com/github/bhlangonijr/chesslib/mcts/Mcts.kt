@@ -23,12 +23,14 @@ class Mcts(private var epsilon: Double = DEFAULT_EPSILON, private var stats: Map
         val boards = Array(state.params.threads) { state.board.clone() }
         val simulations = AtomicLong(0)
 
-        for (i in 1 until state.params.threads) {
-            executor[i].submit {
-                while (!state.shouldStop()) {
-                    val score = searchMove(node, state, boards[i], boards[i].sideToMove, 0)
-                    node.updateStats(score)
-                    simulations.incrementAndGet()
+        if (state.params.threads > 1) {
+            for (i in 1 until state.params.threads) {
+                executor[i].submit {
+                    while (!state.shouldStop()) {
+                        val score = searchMove(node, state, boards[i], boards[i].sideToMove, 0)
+                        node.updateStats(score)
+                        simulations.incrementAndGet()
+                    }
                 }
             }
         }
@@ -111,9 +113,9 @@ fun playOut(state: SearchState, board: Board, ply: Int, player: Side, lastMove: 
         val moves = MoveGenerator.generateLegalMoves(board)
         val isKingAttacked = board.isKingAttacked
         when {
-            moves.size == 0 && isKingAttacked -> -1
-            moves.size == 0 && !isKingAttacked -> 0
-            board.isDraw -> 0
+            moves.size == 0 && isKingAttacked -> -1L
+            moves.size == 0 && !isKingAttacked -> 0L
+            board.isDraw -> 0L
             else -> {
                 val move = moves[random.nextInt(moves.size)]
                 val kq = board.getKingSquare(board.sideToMove.flip())
@@ -135,7 +137,7 @@ fun playOut(state: SearchState, board: Board, ply: Int, player: Side, lastMove: 
         println("FEN error pos: ${board.fen}")
         println(board)
         e.printStackTrace()
-        0
+        0L
     }
 
 }

@@ -32,19 +32,19 @@ class StatEval {
                 val moves = MoveGenerator.generateLegalMoves(board)
                 val isKingAttacked = board.isKingAttacked
                 when {
-                    moves.size == 0 && isKingAttacked -> -1
-                    moves.size == 0 && !isKingAttacked -> 0
+                    moves.size == 0 && isKingAttacked -> -1L
+                    moves.size == 0 && !isKingAttacked -> 0L
                     board.isDraw -> 0
                     else -> {
                         state.nodes.incrementAndGet()
                         val features = eval.extractFeatureSet(board)
                         val prediction = nb.classify(features.first, features.second, stats).predict()
                         return when {
-                            prediction == 1.0f && board.sideToMove == Side.WHITE -> 1
-                            prediction == 1.0f && board.sideToMove == Side.BLACK -> -1
-                            prediction == 2.0f && board.sideToMove == Side.BLACK -> 1
-                            prediction == 2.0f && board.sideToMove == Side.WHITE -> -1
-                            else -> 0
+                            prediction == 1.0f && board.sideToMove == Side.WHITE -> 1L
+                            prediction == 1.0f && board.sideToMove == Side.BLACK -> -1L
+                            prediction == 2.0f && board.sideToMove == Side.BLACK -> 1L
+                            prediction == 2.0f && board.sideToMove == Side.WHITE -> -1L
+                            else -> 0L
                         }
                     }
                 }
@@ -53,7 +53,7 @@ class StatEval {
                 println("FEN error pos: ${board.fen}")
                 println(board)
                 e.printStackTrace()
-                0
+                0L
             }
         }
     }
@@ -79,15 +79,15 @@ class StatEval {
         // histogram of chebyshev distances between pieces of different color weighted by piece type
         val distanceOther = FloatArray(pieceList.size * pieceList.size) { Float.NaN }
         // pieces supported by other pieces of same color
-        val attacksSide = FloatArray(pieceList.size) { Float.NaN }
+        val attacks = FloatArray(Side.values().size) { Float.NaN }
         // piece attacked by pieces of other color
-        val attacksOther = FloatArray(pieceList.size) { Float.NaN }
+        //val attacksOther = FloatArray(Side.values().size) { Float.NaN }
         // how many squares a piece type can move
-        val moves = FloatArray(pieceList.size) { Float.NaN }
+        val moves = FloatArray(Side.values().size) { Float.NaN }
         // squares surrounding piece supported by other pieces of same color
-        val closeAttacksSide = FloatArray(pieceList.size) { Float.NaN }
+        val closeAttacks = FloatArray(Side.values().size) { Float.NaN }
         // squares surrounding piece attacked by pieces of other color
-        val closeAttacksOther = FloatArray(pieceList.size) { Float.NaN }
+        //val closeAttacksOther = FloatArray(Side.values().size) { Float.NaN }
         // number of white pawns occupying a given rank
         val whitePawnRank = FloatArray(Rank.values().size - 1) { Float.NaN }
         // number of black pawns occupying a given rank
@@ -145,45 +145,41 @@ class StatEval {
         //TODO Pinned pieces cannot move
         pieceAttacks.entries.forEach { e1 ->
             if (e1.key.pieceType == PieceType.PAWN) {
-                initArray(moves, e1.key.ordinal)
-                moves[e1.key.ordinal] += bitCount(pawnMoves[e1.key] ?: 0L and board.bitboard.inv()).toFloat()
+                initArray(moves, e1.key.pieceSide.ordinal)
+                moves[e1.key.pieceSide.ordinal] += bitCount(pawnMoves[e1.key] ?: 0L
+                and board.bitboard.inv()).toFloat()
             }
             e1.value.forEach { pair ->
                 val ownPiece = pair.first.bitboard
                 val attackedSquares = pair.second
                 if (e1.key.pieceType == PieceType.KING) {
                     val allowedSquares = attackedSquares and allSideAttacks[e1.key.pieceSide.flip()]!!.inv()
-                    initArray(moves, e1.key.ordinal)
-                    moves[e1.key.ordinal] += bitCount(allowedSquares and board.bitboard.inv()).toFloat()
+                    initArray(moves, e1.key.pieceSide.ordinal)
+                    moves[e1.key.pieceSide.ordinal] += bitCount(allowedSquares and board.bitboard.inv()).toFloat()
                 } else if (e1.key.pieceType != PieceType.PAWN) {
-                    initArray(moves, e1.key.ordinal)
-                    moves[e1.key.ordinal] += bitCount(attackedSquares and board.bitboard.inv()).toFloat()
+                    initArray(moves, e1.key.pieceSide.ordinal)
+                    moves[e1.key.pieceSide.ordinal] += bitCount(attackedSquares and board.bitboard.inv()).toFloat()
                 }
                 pieceAttacks.entries.filter { board.getBitboard(it.key) and ownPiece.inv() > 0L }.forEach { e2 ->
                     val piece = board.getBitboard(e2.key) and ownPiece.inv()
-                    if (e2.key.pieceSide == e1.key.pieceSide) {
-                        initArray(attacksSide, e2.key.ordinal)
-                        initArray(closeAttacksSide, e2.key.ordinal)
-                        attacksSide[e2.key.ordinal] += pieceTypeValues[e1.key.pieceType]!! *
-                                bitCount(piece and attackedSquares).toFloat()
-                        closeAttacksSide[e2.key.ordinal] += pieceTypeValues[e1.key.pieceType]!! *
-                                bitCount(surround(piece) and attackedSquares).toFloat()
-                    } else {
-                        initArray(attacksOther, e2.key.ordinal)
-                        initArray(closeAttacksOther, e2.key.ordinal)
-                        attacksOther[e2.key.ordinal] += pieceTypeValues[e1.key.pieceType]!! *
-                                bitCount(piece and attackedSquares).toFloat()
-                        closeAttacksOther[e2.key.ordinal] += pieceTypeValues[e1.key.pieceType]!! *
-                                bitCount(surround(piece) and attackedSquares).toFloat()
-                    }
+                    initArray(attacks, e2.key.pieceSide.ordinal)
+                    initArray(closeAttacks, e2.key.pieceSide.ordinal)
+
+                    attacks[e2.key.pieceSide.ordinal] += (pieceTypeValues[e1.key.pieceType] ?: error("")) *
+                            bitCount(piece and attackedSquares).toFloat()
+                    closeAttacks[e2.key.pieceSide.ordinal] += (pieceTypeValues[e1.key.pieceType] ?: error("")) *
+                            bitCount(surround(piece) and attackedSquares).toFloat()
                 }
             }
+
         }
 
-        val boardState = FloatArray(3)
+        val boardState = FloatArray(5)
         boardState[0] = board.sideToMove.ordinal + 1.0f
         boardState[1] = board.moveCounter.toFloat()
         boardState[2] = board.halfMoveCounter.toFloat()
+        boardState[3] = board.getCastleRight(Side.WHITE).ordinal + 1.0f
+        boardState[4] = board.getCastleRight(Side.BLACK).ordinal + 1.0f
 /*
                 pieceCount.toTypedArray() +
                 boardState
@@ -201,17 +197,14 @@ class StatEval {
                 blackPawnRank.toTypedArray()
 
  */
-        return pieceCount +
-                boardState +
+        return boardState +
+//                distanceSide +
+//                distanceOther +
                 moves +
-                //distanceSide +
-                //distanceOther +
-                attacksSide +
-                attacksOther +
-                closeAttacksSide +
-                closeAttacksOther +
-                whitePawnRank +
-                blackPawnRank
+                attacks +
+                closeAttacks
+//                whitePawnRank +
+//                blackPawnRank
 
 
     }
