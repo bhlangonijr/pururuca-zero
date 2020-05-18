@@ -1,9 +1,8 @@
-package com.github.bhlangonijr.chesslib.ml
+package com.github.bhlangonijr.pururucazero.ml
 
 import com.github.bhlangonijr.chesslib.Board
-import com.github.bhlangonijr.chesslib.eval.StatEval
+import com.github.bhlangonijr.pururucazero.eval.StatEval
 import com.github.bhlangonijr.chesslib.pgn.PgnHolder
-import java.util.*
 
 data class DataSet(val features: FloatArray, val labels: FloatArray,
                    val rowHeaders: LongArray, val colIndex: IntArray) {
@@ -13,19 +12,19 @@ data class DataSet(val features: FloatArray, val labels: FloatArray,
 
         other as DataSet
 
-        if (!Arrays.equals(features, other.features)) return false
-        if (!Arrays.equals(labels, other.labels)) return false
-        if (!Arrays.equals(rowHeaders, other.rowHeaders)) return false
-        if (!Arrays.equals(colIndex, other.colIndex)) return false
+        if (!features.contentEquals(other.features)) return false
+        if (!labels.contentEquals(other.labels)) return false
+        if (!rowHeaders.contentEquals(other.rowHeaders)) return false
+        if (!colIndex.contentEquals(other.colIndex)) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = Arrays.hashCode(features)
-        result = 31 * result + Arrays.hashCode(labels)
-        result = 31 * result + Arrays.hashCode(rowHeaders)
-        result = 31 * result + Arrays.hashCode(colIndex)
+        var result = features.contentHashCode()
+        result = 31 * result + labels.contentHashCode()
+        result = 31 * result + rowHeaders.contentHashCode()
+        result = 31 * result + colIndex.contentHashCode()
         return result
     }
 }
@@ -58,7 +57,7 @@ fun pgnToDataSet(name: String): DataSet {
                 labels.add(result)
                 lines++
                 for ((idx, feature) in features.withIndex()) {
-                    if (!feature.isNaN()) {
+                    if (!feature.isNaN() && feature != 0.0f) {
                         rowHeader++
                         colIndex.add(idx)
                         data.add(feature)

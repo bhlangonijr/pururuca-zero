@@ -1,4 +1,4 @@
-package com.github.bhlangonijr.chesslib.eval
+package com.github.bhlangonijr.pururucazero.eval
 
 import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.chesslib.Square

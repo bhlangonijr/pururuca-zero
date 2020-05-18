@@ -1,9 +1,6 @@
-package com.github.bhlangonijr.chesslib.ml
+package com.github.bhlangonijr.pururucazero.ml
 
-import kotlin.math.exp
-import kotlin.math.max
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.*
 
 class NaiveBayes {
 
@@ -91,7 +88,7 @@ class NaiveBayes {
                         val result = posterior(value, s.featureMean(featureId), s.featureVariance(featureId))
                         if (!result.isNaN()) {
                             prediction.featureLikelihood[featureId] = result
-                            logSum += Math.log(result.toDouble())
+                            logSum += ln(result.toDouble())
                         } else {
                             println("NaN returned: $featureId: ${s.featureMean(featureId)} - ${s.featureVariance(featureId)}")
                         }

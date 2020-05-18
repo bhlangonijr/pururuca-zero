@@ -1,5 +1,6 @@
-package com.github.bhlangonijr.chesslib
+package com.github.bhlangonijr.pururucazero
 
+import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.chesslib.move.MoveList
 import java.util.concurrent.Executors
 

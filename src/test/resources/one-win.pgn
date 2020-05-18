@@ -1,0 +1,62 @@
+[Event "CSVN PT 54"]
+[Site "Leiden"]
+[Date "2018.12.01"]
+[Round "1"]
+[White "Jonny"]
+[Black "AdaChess"]
+[Result "1-0"]
+[ECO "E04"]
+[EventDate "2018.12.01"]
+
+1.d4 d5 2.Nf3 Nf6 3.c4 e6 4.g3 c5 5.Bg2 dxc4 6.O-O Nc6 7.dxc5 Qxd1 8.Rxd1
+Bxc5 9.Nbd2 Ng4 10.Ne4 Be7 11.Nd6+ Bxd6 12.Rxd6 Bd7 13.Nd2 Na5 14.b4 cxb3
+15.axb3 Nc6 16.Nc4 Rg8 17.Rd1 e5 18.Ba3 Nd4 19.h3 Nxe2+ 20.Kf1 Nc3 21.Nd6+
+Ke7 22.Nxb7+ Ke8 23.Nd6+ Ke7 24.Ne4+ Ke8 25.Nxc3 Rb8 26.hxg4 Rxb3 27.Ne4 a6
+28.Bc5 Bb5+ 29.Kg1 Rd3 30.Nd6+ Rxd6 31.Rxd6 f6 32.Bd5 g6 33.Raxa6 Bxa6
+34.Bc6+ Ke7 35.Rd7+ Ke8 36.Ra7+ Kd8 37.Bb6+ Kc8 38.Ra8# 1-0
+
+[Event "CSVN PT 54"]
+[Site "Leiden"]
+[Date "2018.12.01"]
+[Round "1"]
+[White "Redqueen"]
+[Black "The Baron"]
+[Result "0-1"]
+[ECO "A08"]
+[EventDate "2018.12.01"]
+
+1.g3 d5 2.Nf3 c5 3.d4 cxd4 4.c3 dxc3 5.Nxc3 Nf6 6.e4 e6 7.Bb5+ Nc6 8.O-O a6
+9.Bxc6+ bxc6 10.Qa4 Bd7 11.e5 c5 12.Qc2 Ng8 13.h4 Rc8 14.Re1 Ne7 15.Bf4 Nf5
+16.Qd2 h6 17.Rab1 Be7 18.b3 O-O 19.h5 Bc6 20.Rbc1 Qb6 21.g4 Nh4 22.Nxh4 Bxh4
+23.Ne2 d4 24.Ng3 Bxg3 25.fxg3 Bf3 26.g5 hxg5 27.Bxg5 Bxh5 28.Be7 Rfe8 29.Bd6
+Bg6 30.Rc4 Rc6 31.Qe2 Rec8 32.Rd1 Qd8 33.Qf3 Qg5 34.Qf4 Qh5 35.g4 Qh4 36.Rdc1
+Bd3 37.Ra4 c4 38.bxc4 Bxc4 39.Be7 Qxe7 40.g5 Bd5 41.Rxc6 Rxc6 42.Kh2 Rc2+
+43.Kh3 Qc5 44.g6 fxg6 45.Rxa6 Rg2 46.Kh4 Qc2 47.Qf7+ 0-1
+
+[Event "CSVN PT 54"]
+[Site "Leiden"]
+[Date "2018.12.01"]
+[Round "1"]
+[White "Deus X"]
+[Black "Shredder"]
+[Result "1/2-1/2"]
+[ECO "D43"]
+[EventDate "2018.12.01"]
+
+1.d4 d5 2.Nf3 Nf6 3.c4 c6 4.Nc3 e6 5.Bg5 h6 6.Bxf6 Qxf6 7.e3 Nd7 8.Be2 Bd6
+9.O-O Qe7 10.e4 dxe4 11.Nxe4 Bc7 12.Re1 O-O 13.Bd3 Rd8 14.Qe2 c5 15.d5 exd5
+16.cxd5 Bd6 17.Nxd6 Qxd6 18.Rad1 Nf6 19.h3 a6 20.a4 Bd7 21.b3 Nxd5 22.Qe4 Nf6
+23.Qxb7 Bc6 24.Qb6 Bd5 25.Qa5 Qf8 26.Qc3 Bxf3 27.gxf3 Rd4 28.Bc4 Rad8 29.Rxd4
+cxd4 30.Qa5 Rd6 31.Qf5 Qd8 32.Re2 a5 33.Kf1 h5 34.Ke1 Qc7 35.Re5 Rd8 36.Kd1
+Rf8 37.Rxa5 Qh2 38.Rc5 Re8 39.Rc8 Qg1+ 40.Kd2 Qxf2+ 41.Kc1 Qe1+ 42.Kc2 Qf2+
+43.Kd1 Qe1+ 44.Kc2 Qf2+ 45.Kb1 Qe1+ 46.Kb2 Qd2+ 47.Ka1 Qe1+ 48.Ka2 Qd2+
+49.Kb1 Qe1+ 50.Kb2 Qd2+ 51.Ka3 Qc1+ 52.Kb4 Qe1+ 53.Ka3 Qa1+ 54.Kb4 Qe1+
+55.Kb5 Qe7 56.Ka6 Qd6+ 57.Kb7 Qb4+ 58.Qb5 Qf8 59.Qc6 Rxc8 60.Qxc8 Ne8 61.Ka6
+Qd6+ 62.Kb7 Qe7+ 63.Kc6 Qd6+ 64.Kb5 Qe5+ 65.Kb4 Qe1+ 66.Ka3 Qc1+ 67.Ka2 Qd2+
+68.Kb1 Qe1+ 69.Kb2 Qd2+ 70.Kb1 Qe1+ 71.Kb2 Qc3+ 72.Ka2 Qd2+ 73.Ka3 Qc1+
+74.Kb4 Qe1+ 75.Kb5 Qe5+ 76.Ka6 Qd6+ 77.Ka7 Qe7+ 78.Kb6 Qd6+ 79.Kb7 Qe7+
+80.Kb6 Qd6+ 81.Qc6 Qb4+ 82.Qb5 Qd6+ 83.Qc6 Qb4+ 84.Bb5 Nd6 85.Qa8+ Kh7 86.Qd5
+Nxb5 87.axb5 h4 88.Qe4+ Kg8 89.Qd5 Qc3 90.Ka6 Qc8+ 91.Kb6 Qe6+ 92.Qxe6 fxe6
+93.Ka7 d3 94.b6 d2 95.b7 d1=Q 96.b8=Q+ Kh7 97.Qb4 Qxf3 98.Qxh4+ Kg6 99.b4 Qd5
+100.Qg4+ Kh7 101.Ka6 Qc6+ 102.Ka5 Qd5+ 103.b5 e5 104.Qh5+ Kg8 105.Qf5
+1/2-1/2

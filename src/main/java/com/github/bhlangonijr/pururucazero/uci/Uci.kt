@@ -1,6 +1,6 @@
-package com.github.bhlangonijr.chesslib.uci
+package com.github.bhlangonijr.pururucazero.uci
 
-import com.github.bhlangonijr.chesslib.*
+import com.github.bhlangonijr.pururucazero.*
 
 class Uci constructor(private val search: Search) {
 

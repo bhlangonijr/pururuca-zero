@@ -1,21 +1,22 @@
-package com.github.bhlangonijr.chesslib.eval
+package com.github.bhlangonijr.pururucazero.eval
 
 import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.chesslib.Square
-import com.github.bhlangonijr.chesslib.abts.Abts
-import com.github.bhlangonijr.chesslib.mcts.Mcts
-import com.github.bhlangonijr.chesslib.ml.NaiveBayes
-import com.github.bhlangonijr.chesslib.ml.pgnToDataSet
+import com.github.bhlangonijr.pururucazero.abts.Abts
+import com.github.bhlangonijr.pururucazero.mcts.Mcts
+import com.github.bhlangonijr.pururucazero.ml.NaiveBayes
+import com.github.bhlangonijr.pururucazero.ml.pgnToDataSet
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveList
-import com.github.bhlangonijr.chesslib.play
-import com.github.bhlangonijr.chesslib.printResult
+import com.github.bhlangonijr.pururucazero.play
+import com.github.bhlangonijr.pururucazero.printResult
 import junit.framework.TestCase.assertEquals
 import ml.dmlc.xgboost4j.java.DMatrix
 import ml.dmlc.xgboost4j.java.XGBoost
+import org.junit.Ignore
 import org.junit.Test
-import java.util.*
 
+@Ignore
 class StatsEvalTest {
 
     @Test
@@ -66,7 +67,7 @@ class StatsEvalTest {
     @Test
     fun `Match Mcts engine with statistical assisted playing`() {
 
-        val data = pgnToDataSet("src/test/resources/pt54.pgn")
+        val data = pgnToDataSet("src/test/resources/one-win.pgn")
 
         val nb = NaiveBayes()
         val stats = nb.train(data)
@@ -74,7 +75,7 @@ class StatsEvalTest {
         val board = Board()
         board.loadFromFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq -")
 
-        val mcts1 = Mcts(1.4, stats)
+        val mcts1 = Mcts(1.3, stats)
         val mcts2 = Abts()
 
         val moves = MoveList(board.fen)
@@ -125,6 +126,7 @@ class StatsEvalTest {
             }
         }
     }
+
 }
 
 

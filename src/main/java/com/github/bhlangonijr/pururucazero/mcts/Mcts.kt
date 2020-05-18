@@ -1,11 +1,15 @@
-package com.github.bhlangonijr.chesslib.mcts
+package com.github.bhlangonijr.pururucazero.mcts
 
-import com.github.bhlangonijr.chesslib.*
-import com.github.bhlangonijr.chesslib.eval.StatEval.Companion.predict
-import com.github.bhlangonijr.chesslib.ml.ClassStats
+import com.github.bhlangonijr.chesslib.Board
+import com.github.bhlangonijr.chesslib.Side
+import com.github.bhlangonijr.chesslib.Square
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import com.github.bhlangonijr.chesslib.move.MoveList
+import com.github.bhlangonijr.pururucazero.SearchEngine
+import com.github.bhlangonijr.pururucazero.SearchState
+import com.github.bhlangonijr.pururucazero.eval.StatEval.Companion.predict
+import com.github.bhlangonijr.pururucazero.ml.ClassStats
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicLong
@@ -46,7 +50,7 @@ class Mcts(private var epsilon: Double = DEFAULT_EPSILON, private var stats: Map
             }
         }
 
-        node.children!!.forEach { println(it) }
+        node.children.forEach { println(it) }
         println("bestmove ${node.pickBest().move}")
         println("info string total time ${System.currentTimeMillis() - state.params.initialTime}")
         println("info string total nodes [${state.nodes.get()}], simulations[${simulations.get()}]")

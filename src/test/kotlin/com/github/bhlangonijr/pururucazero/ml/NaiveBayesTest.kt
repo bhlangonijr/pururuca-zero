@@ -1,4 +1,4 @@
-package com.github.bhlangonijr.chesslib.ml
+package com.github.bhlangonijr.pururucazero.ml
 
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue

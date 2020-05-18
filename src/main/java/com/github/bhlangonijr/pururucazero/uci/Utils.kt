@@ -1,4 +1,4 @@
-package com.github.bhlangonijr.chesslib.uci
+package com.github.bhlangonijr.pururucazero.uci
 
 fun mergeTokens(tokens: List<String>, startToken: String, separator: String): String {
 

@@ -1,14 +1,14 @@
-package com.github.bhlangonijr.chesslib.abts
+package com.github.bhlangonijr.pururucazero.abts
 
 import com.github.bhlangonijr.chesslib.Board
-import com.github.bhlangonijr.chesslib.SearchEngine
-import com.github.bhlangonijr.chesslib.SearchState
-import com.github.bhlangonijr.chesslib.eval.MATE_VALUE
-import com.github.bhlangonijr.chesslib.eval.MAX_VALUE
-import com.github.bhlangonijr.chesslib.eval.scoreMaterial
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import com.github.bhlangonijr.chesslib.move.MoveList
+import com.github.bhlangonijr.pururucazero.SearchEngine
+import com.github.bhlangonijr.pururucazero.SearchState
+import com.github.bhlangonijr.pururucazero.eval.MATE_VALUE
+import com.github.bhlangonijr.pururucazero.eval.MAX_VALUE
+import com.github.bhlangonijr.pururucazero.eval.scoreMaterial
 import kotlin.math.min
 
 const val MAX_DEPTH = 100

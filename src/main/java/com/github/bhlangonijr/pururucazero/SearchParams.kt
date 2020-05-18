@@ -1,4 +1,4 @@
-package com.github.bhlangonijr.chesslib
+package com.github.bhlangonijr.pururucazero
 
 class SearchParams(var whiteTime: Long = 60000000,
                    var blackTime: Long = 60000000,

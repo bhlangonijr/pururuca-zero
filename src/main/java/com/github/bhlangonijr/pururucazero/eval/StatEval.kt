@@ -1,10 +1,11 @@
-package com.github.bhlangonijr.chesslib.eval
+package com.github.bhlangonijr.pururucazero.eval
 
 import com.github.bhlangonijr.chesslib.*
-import com.github.bhlangonijr.chesslib.ml.ClassStats
-import com.github.bhlangonijr.chesslib.ml.NaiveBayes
+import com.github.bhlangonijr.pururucazero.ml.ClassStats
+import com.github.bhlangonijr.pururucazero.ml.NaiveBayes
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
+import com.github.bhlangonijr.pururucazero.SearchState
 import kotlin.math.abs
 import kotlin.math.max
 

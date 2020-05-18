@@ -1,4 +1,4 @@
-package com.github.bhlangonijr.chesslib.mcts
+package com.github.bhlangonijr.pururucazero.mcts
 
 import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.chesslib.Side
@@ -34,11 +34,15 @@ class Node(val move: Move, val side: Side) {
 
     fun expand(moves: MoveList, side: Side): List<Node>? {
 
-        synchronized(this as Any) {
-            children = moves
-                    .stream()
-                    .map { Node(it, side) }
-                    .collect(Collectors.toList())
+        if (children.isEmpty()) {
+            synchronized(this as Any) {
+                if (children.isEmpty()) {
+                    children = moves
+                            .stream()
+                            .map { Node(it, side) }
+                            .collect(Collectors.toList())
+                }
+            }
         }
 
         return children
