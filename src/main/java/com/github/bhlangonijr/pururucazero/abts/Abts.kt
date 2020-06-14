@@ -6,14 +6,15 @@ import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import com.github.bhlangonijr.chesslib.move.MoveList
 import com.github.bhlangonijr.pururucazero.SearchEngine
 import com.github.bhlangonijr.pururucazero.SearchState
+import com.github.bhlangonijr.pururucazero.eval.Evaluator
 import com.github.bhlangonijr.pururucazero.eval.MATE_VALUE
 import com.github.bhlangonijr.pururucazero.eval.MAX_VALUE
-import com.github.bhlangonijr.pururucazero.eval.scoreMaterial
+import com.github.bhlangonijr.pururucazero.eval.MaterialEval
 import kotlin.math.min
 
 const val MAX_DEPTH = 100
 
-class Abts : SearchEngine {
+class Abts constructor(var evaluator: Evaluator = MaterialEval()) : SearchEngine {
 
     override fun rooSearch(state: SearchState): Move {
         val fen = state.board.fen
@@ -32,13 +33,13 @@ class Abts : SearchEngine {
         return state.pv[0]
     }
 
-    private fun search(board: Board, alpha: Int, beta: Int, depth: Int, ply: Int, state: SearchState): Int {
+    private fun search(board: Board, alpha: Long, beta: Long, depth: Int, ply: Int, state: SearchState): Long {
 
         if (depth <= 0 || state.shouldStop()) {
-            return scoreMaterial(board)
+            return evaluator.evaluate(state, board)
         }
 
-        var bestScore = -MAX_VALUE
+        var bestScore = -Long.MAX_VALUE
         var newAlpha = alpha
         val moves =
                 if (ply == 0) orderMoves(state, MoveGenerator.generatePseudoLegalMoves(board))
@@ -68,8 +69,8 @@ class Abts : SearchEngine {
             }
         }
 
-        if (bestScore == -MAX_VALUE) {
-            return if (board.isKingAttacked) -MATE_VALUE + ply else 0
+        if (bestScore == -Long.MAX_VALUE) {
+            return if (board.isKingAttacked) -MATE_VALUE + ply else 0L
         }
         return bestScore
     }
@@ -78,10 +79,10 @@ class Abts : SearchEngine {
 
         if (state.moveScore.size == 0) return moves
         val sorted = MoveList()
-        sorted.addAll(moves.sortedWith(Comparator { o1, o2 -> moveScore(o1, state) - moveScore(o2, state) }).reversed())
+        sorted.addAll(moves.sortedWith(Comparator { o1, o2 -> (moveScore(o1, state) - moveScore(o2, state)).toInt() }).reversed())
         return sorted
     }
 
-    private fun moveScore(move: Move, state: SearchState) = state.moveScore[move] ?: 0
+    private fun moveScore(move: Move, state: SearchState) = state.moveScore[move] ?: 0L
 
 }

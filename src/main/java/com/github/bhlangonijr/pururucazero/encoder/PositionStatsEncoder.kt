@@ -1,15 +1,10 @@
-package com.github.bhlangonijr.pururucazero.eval
+package com.github.bhlangonijr.pururucazero.encoder
 
 import com.github.bhlangonijr.chesslib.*
-import com.github.bhlangonijr.pururucazero.ml.ClassStats
-import com.github.bhlangonijr.pururucazero.ml.NaiveBayes
-import com.github.bhlangonijr.chesslib.move.Move
-import com.github.bhlangonijr.chesslib.move.MoveGenerator
-import com.github.bhlangonijr.pururucazero.SearchState
 import kotlin.math.abs
 import kotlin.math.max
 
-class StatEval {
+class PositionStatsEncoder : BoardEncoder {
 
     private val pieceList = Piece.values().filter { it != Piece.NONE }
     private val allBb = 0L.inv()
@@ -22,58 +17,7 @@ class StatEval {
             PieceType.QUEEN to 530.0f,
             PieceType.KING to 1.0f)
 
-    companion object {
-
-        private val nb = NaiveBayes()
-        private val eval = StatEval()
-
-        fun predict(state: SearchState, board: Board, ply: Int, lastMove: Move, stats: Map<Float, ClassStats>): Long {
-
-            return try {
-                val moves = MoveGenerator.generateLegalMoves(board)
-                val isKingAttacked = board.isKingAttacked
-                when {
-                    moves.size == 0 && isKingAttacked -> -1L
-                    moves.size == 0 && !isKingAttacked -> 0L
-                    board.isDraw -> 0
-                    else -> {
-                        state.nodes.incrementAndGet()
-                        val features = eval.extractFeatureSet(board)
-                        val prediction = nb.classify(features.first, features.second, stats).predict()
-                        return when {
-                            prediction == 1.0f && board.sideToMove == Side.WHITE -> 1L
-                            prediction == 1.0f && board.sideToMove == Side.BLACK -> -1L
-                            prediction == 2.0f && board.sideToMove == Side.BLACK -> 1L
-                            prediction == 2.0f && board.sideToMove == Side.WHITE -> -1L
-                            else -> 0L
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                println("Last move: ${e.message} - $lastMove")
-                println("FEN error pos: ${board.fen}")
-                println(board)
-                e.printStackTrace()
-                0L
-            }
-        }
-    }
-
-    fun extractFeatureSet(board: Board): Pair<FloatArray, IntArray> {
-
-        val colIndex = arrayListOf<Int>()
-        val data = mutableListOf<Float>()
-        val features = eval.extractFeatures(board)
-        for ((idx, feature) in features.withIndex()) {
-            if (!feature.isNaN()) {
-                colIndex.add(idx)
-                data.add(feature)
-            }
-        }
-        return Pair(data.toFloatArray(), colIndex.toIntArray())
-    }
-
-    fun extractFeatures(board: Board): FloatArray {
+    override fun encode(board: Board): FloatArray {
 
         // histogram of chebyshev distances between pieces of same color weighted by piece type
         val distanceSide = FloatArray(pieceList.size * pieceList.size) { Float.NaN }
@@ -166,9 +110,9 @@ class StatEval {
                     initArray(attacks, e2.key.pieceSide.ordinal)
                     initArray(closeAttacks, e2.key.pieceSide.ordinal)
 
-                    attacks[e2.key.pieceSide.ordinal] += (pieceTypeValues[e1.key.pieceType] ?: error("")) *
+                    attacks[e2.key.pieceSide.ordinal] += (pieceTypeValues[e1.key.pieceType]!!) *
                             bitCount(piece and attackedSquares).toFloat()
-                    closeAttacks[e2.key.pieceSide.ordinal] += (pieceTypeValues[e1.key.pieceType] ?: error("")) *
+                    closeAttacks[e2.key.pieceSide.ordinal] += (pieceTypeValues[e1.key.pieceType]!!) *
                             bitCount(surround(piece) and attackedSquares).toFloat()
                 }
             }
@@ -206,8 +150,6 @@ class StatEval {
                 closeAttacks
 //                whitePawnRank +
 //                blackPawnRank
-
-
     }
 
     private fun initArray(array: FloatArray, idx: Int) {

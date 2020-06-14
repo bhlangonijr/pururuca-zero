@@ -8,17 +8,17 @@ import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import com.github.bhlangonijr.chesslib.move.MoveList
 import com.github.bhlangonijr.pururucazero.SearchEngine
 import com.github.bhlangonijr.pururucazero.SearchState
-import com.github.bhlangonijr.pururucazero.eval.StatEval.Companion.predict
-import com.github.bhlangonijr.pururucazero.ml.ClassStats
+import com.github.bhlangonijr.pururucazero.eval.Evaluator
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicLong
 import java.util.stream.Collectors
 
-val random = Random()
 const val DEFAULT_EPSILON = 1.47
 
-class Mcts(private var epsilon: Double = DEFAULT_EPSILON, private var stats: Map<Float, ClassStats>? = null) : SearchEngine {
+class Mcts(private var epsilon: Double = DEFAULT_EPSILON, private val evaluator: Evaluator? = null) : SearchEngine {
+
+    private val random = Random()
 
     override fun rooSearch(state: SearchState): Move {
 
@@ -88,10 +88,10 @@ class Mcts(private var epsilon: Double = DEFAULT_EPSILON, private var stats: Map
                 }
                 val childNode = node.select(epsilon, board, player)
                 board.doMove(childNode.move)
-                val score = if (stats == null)
+                val score = if (evaluator == null)
                     -playOut(state, board, ply + 1, player, childNode.move)
                 else
-                    -predict(state, board, ply + 1, childNode.move, stats!!)
+                    -evaluator.evaluate(state, board)
                 childNode.updateStats(score)
                 board.undoMove()
                 score
@@ -106,42 +106,42 @@ class Mcts(private var epsilon: Double = DEFAULT_EPSILON, private var stats: Map
             }
         }
     }
-}
 
-// play out a sequence of random moves until the end of the game
-fun playOut(state: SearchState, board: Board, ply: Int, player: Side, lastMove: Move): Long {
+    // play out a sequence of random moves until the end of the game
+    fun playOut(state: SearchState, board: Board, ply: Int, player: Side, lastMove: Move): Long {
 
-    var m: Move? = null
-    return try {
+        var m: Move? = null
+        return try {
 
-        val moves = MoveGenerator.generateLegalMoves(board)
-        val isKingAttacked = board.isKingAttacked
-        when {
-            moves.size == 0 && isKingAttacked -> -1L
-            moves.size == 0 && !isKingAttacked -> 0L
-            board.isDraw -> 0L
-            else -> {
-                val move = moves[random.nextInt(moves.size)]
-                val kq = board.getKingSquare(board.sideToMove.flip())
-                if (kq == move.to) {
-                    println("FEN: ${board.fen}")
-                    println("move: $move")
-                    println("last lastMove: $lastMove")
+            val moves = MoveGenerator.generateLegalMoves(board)
+            val isKingAttacked = board.isKingAttacked
+            when {
+                moves.size == 0 && isKingAttacked -> -1L
+                moves.size == 0 && !isKingAttacked -> 0L
+                board.isDraw -> 0L
+                else -> {
+                    val move = moves[random.nextInt(moves.size)]
+                    val kq = board.getKingSquare(board.sideToMove.flip())
+                    if (kq == move.to) {
+                        println("FEN: ${board.fen}")
+                        println("move: $move")
+                        println("last lastMove: $lastMove")
+                    }
+                    m = move
+                    board.doMove(move)
+                    state.nodes.incrementAndGet()
+                    val playOutScore = -playOut(state, board, ply + 1, player, move)
+                    board.undoMove()
+                    return playOutScore
                 }
-                m = move
-                board.doMove(move)
-                state.nodes.incrementAndGet()
-                val playOutScore = -playOut(state, board, ply + 1, player, move)
-                board.undoMove()
-                return playOutScore
             }
+        } catch (e: Exception) {
+            println("Error: ${e.message} - $m")
+            println("FEN error pos: ${board.fen}")
+            println(board)
+            e.printStackTrace()
+            0L
         }
-    } catch (e: Exception) {
-        println("Error: ${e.message} - $m")
-        println("FEN error pos: ${board.fen}")
-        println(board)
-        e.printStackTrace()
-        0L
-    }
 
+    }
 }

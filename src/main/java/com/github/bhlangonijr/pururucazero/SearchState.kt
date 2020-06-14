@@ -3,9 +3,9 @@ package com.github.bhlangonijr.pururucazero
 import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.chesslib.Side
 import com.github.bhlangonijr.chesslib.Square
-import com.github.bhlangonijr.pururucazero.abts.MAX_DEPTH
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveList
+import com.github.bhlangonijr.pururucazero.abts.MAX_DEPTH
 import java.util.concurrent.atomic.AtomicLong
 
 class SearchState(val params: SearchParams, val board: Board) {
@@ -17,9 +17,9 @@ class SearchState(val params: SearchParams, val board: Board) {
     var stopped = false
     val nodes = AtomicLong()
     var pvPly = 0
-    var moveScore = HashMap<Move, Int>()
+    var moveScore = HashMap<Move, Long>()
 
-    val pv = Array(MAX_DEPTH, { noMove })
+    val pv = Array(MAX_DEPTH) { noMove }
 
     fun shouldStop(): Boolean {
 
