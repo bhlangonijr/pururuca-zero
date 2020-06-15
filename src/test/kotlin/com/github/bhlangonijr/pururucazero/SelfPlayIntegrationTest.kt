@@ -58,7 +58,7 @@ class SelfPlayIntegrationTest {
     @Test
     fun `Match Mcts engine with statistical assisted playing`() {
 
-        val data = pgnToDataSet("src/test/resources/one-win.pgn")
+        val data = pgnToDataSet("src/test/resources/Stockfish_DD_64-bit_4CPU.pgn")
 
         val nb = NaiveBayes()
         val stats = nb.train(data)
