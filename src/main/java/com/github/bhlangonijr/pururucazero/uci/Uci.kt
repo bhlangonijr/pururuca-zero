@@ -1,6 +1,12 @@
 package com.github.bhlangonijr.pururucazero.uci
 
+import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.pururucazero.*
+import com.github.bhlangonijr.pururucazero.abts.Abts
+import com.github.bhlangonijr.pururucazero.mcts.Mcts
+
+const val ALGO_MCTS_OPTION = "MonteCarlo"
+const val ALGO_ABTS_OPTION = "AlphaBeta"
 
 class Uci constructor(private var search: Search) {
 
@@ -26,6 +32,8 @@ class Uci constructor(private var search: Search) {
         println("id name $NAME $VERSION")
         println("id author $AUTHOR")
         println("option name Threads type spin default 1 min 1 max 128")
+        println("option name SearchAlgorithm type combo default $ALGO_MCTS_OPTION " +
+                "var $ALGO_ABTS_OPTION var $ALGO_MCTS_OPTION")
         println("uciok")
         return true
     }
@@ -94,11 +102,15 @@ class Uci constructor(private var search: Search) {
         val value = tokens[4]
 
         when (option) {
-            "Threads" -> {
-                search.threads = value.toInt()
+            "Threads" -> search.threads = value.toInt()
+            "SearchAlgorithm" -> {
+                search = if (value == ALGO_ABTS_OPTION) {
+                    Search(Board(), Abts())
+                } else {
+                    Search(Board(), Mcts())
+                }
             }
             else -> println("info string ignoring unsupported uci option")
-
         }
 
         return true
