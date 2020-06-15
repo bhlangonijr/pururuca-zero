@@ -2,7 +2,7 @@ package com.github.bhlangonijr.pururucazero.uci
 
 import com.github.bhlangonijr.pururucazero.*
 
-class Uci constructor(private val search: Search) {
+class Uci constructor(private var search: Search) {
 
     fun exec(cmd: String): Boolean {
 
@@ -23,8 +23,9 @@ class Uci constructor(private val search: Search) {
 
     private fun handleUci(): Boolean {
 
-        println("classId name $NAME $VERSION")
-        println("classId author $AUTHOR")
+        println("id name $NAME $VERSION")
+        println("id author $AUTHOR")
+        println("option name Threads type spin default 1 min 1 max 128")
         println("uciok")
         return true
     }
@@ -93,7 +94,7 @@ class Uci constructor(private val search: Search) {
         val value = tokens[4]
 
         when (option) {
-            "fen" -> {
+            "Threads" -> {
                 search.threads = value.toInt()
             }
             else -> println("info string ignoring unsupported uci option")
