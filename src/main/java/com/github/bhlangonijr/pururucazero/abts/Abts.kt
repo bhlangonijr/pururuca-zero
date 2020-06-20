@@ -1,6 +1,7 @@
 package com.github.bhlangonijr.pururucazero.abts
 
 import com.github.bhlangonijr.chesslib.Board
+import com.github.bhlangonijr.chesslib.Piece
 import com.github.bhlangonijr.chesslib.Square
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
@@ -45,14 +46,14 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval()) : Sear
         }
         state.nodes.incrementAndGet()
         if (depth <= 0) {
-            return evaluator.evaluate(state, board)
+            return quiesce(board, alpha, beta, depth, ply, state)
         }
 
         var bestScore = -Long.MAX_VALUE
         var newAlpha = alpha
         val moves =
                 if (ply == 0) orderRootMoves(state, MoveGenerator.generatePseudoLegalMoves(board))
-                else MoveGenerator.generatePseudoLegalMoves(board)
+                else orderMoves(state, MoveGenerator.generatePseudoLegalMoves(board))
 
         val isKingAttacked = board.isKingAttacked
         for (move in moves) {
@@ -84,12 +85,78 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval()) : Sear
         return bestScore
     }
 
-    private fun orderRootMoves(state: SearchState, moves: MoveList): List<Move> {
+    private fun quiesce(board: Board, alpha: Long, beta: Long, depth: Int, ply: Int, state: SearchState): Long {
+
+        if (state.shouldStop()) {
+            return 0
+        }
+        state.nodes.incrementAndGet()
+        val standPat = evaluator.evaluate(state, board)
+
+        if (standPat >= beta) {
+            return beta
+        }
+
+        var bestScore = -Long.MAX_VALUE
+        var newAlpha = alpha
+
+        if( alpha < standPat )
+            newAlpha = standPat
+
+        val moves = orderMoves(state, MoveGenerator.generatePseudoLegalMoves(board))
+
+        val isKingAttacked = board.isKingAttacked
+        for (move in moves) {
+
+            val newDepth = if (isKingAttacked) depth else depth - 1
+            if (!board.doMove(move, true) || board.getPiece(move.to) == Piece.NONE) {
+                continue
+            }
+            val score = -search(board, -beta, -newAlpha, newDepth, ply + 1, state)
+            board.undoMove()
+
+            if (score >= beta) {
+                return score
+            }
+            if (score > bestScore) {
+                bestScore = score
+                if (score > newAlpha) {
+                    newAlpha = score
+                    state.updatePv(move, ply)
+                }
+            }
+        }
+
+        if (bestScore == -Long.MAX_VALUE) {
+            return if (board.isKingAttacked) -MATE_VALUE + ply else 0L
+        }
+        return bestScore
+    }
+
+    private fun orderMoves(state: SearchState, moves: MoveList): List<Move> {
 
         if (state.moveScore.size == 0) return moves
         return moves.sortedWith(Comparator { o1, o2 -> (moveScore(o1, state) - moveScore(o2, state)).toInt() }).reversed()
     }
 
-    private fun moveScore(move: Move, state: SearchState) = state.moveScore[move.toString()] ?: -Long.MAX_VALUE
+    private fun orderRootMoves(state: SearchState, moves: MoveList): List<Move> {
+
+        if (state.moveScore.size == 0) return moves
+        return moves.sortedWith(Comparator { o1, o2 -> (rootMoveScore(o1, state) - rootMoveScore(o2, state)).toInt() }).reversed()
+    }
+
+    private fun rootMoveScore(move: Move, state: SearchState) = state.moveScore[move.toString()] ?: -Long.MAX_VALUE
+
+    //mvv-lva
+    private fun moveScore(move: Move, state: SearchState) : Long {
+
+        val attackedPiece = state.board.getPiece(move.to)
+        val attackingPiece = state.board.getPiece(move.from)
+
+        return  if (attackedPiece != Piece.NONE)
+            evaluator.pieceStaticValue(attackedPiece) - evaluator.pieceStaticValue(attackingPiece)
+        else
+            0L
+    }
 
 }

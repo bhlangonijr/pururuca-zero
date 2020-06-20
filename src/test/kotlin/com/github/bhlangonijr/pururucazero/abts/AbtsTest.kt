@@ -16,7 +16,7 @@ class AbtsTest {
         val board = Board()
         board.loadFromFen("r1b1kb1r/ppp2ppp/8/4n3/4n3/PPP1P3/6PP/RNBK1BNR w kq - 0 19")
 
-        val params = SearchParams(depth = 6)
+        val params = SearchParams(depth = 5)
         val state = SearchState(params, board)
 
         val bestMove = Abts().rooSearch(state)
@@ -29,7 +29,7 @@ class AbtsTest {
         val board = Board()
         board.loadFromFen("r1b1kb1r/ppp2ppp/8/4n3/4n3/PPP1P1P1/7P/RNBK1BNR b kq - 0 20")
 
-        val params = SearchParams(depth = 6)
+        val params = SearchParams(depth = 5)
         val state = SearchState(params, board)
 
         val bestMove = Abts().rooSearch(state)
@@ -42,7 +42,7 @@ class AbtsTest {
         val board = Board()
         board.loadFromFen("r1b1kb1r/ppp2ppp/8/4n3/8/PPP1P1P1/5n1P/RNBK1BNR w kq - 1 21")
 
-        val params = SearchParams(depth = 5)
+        val params = SearchParams(depth = 4)
         val state = SearchState(params, board)
 
         val bestMove = Abts().rooSearch(state)
@@ -55,7 +55,7 @@ class AbtsTest {
         val board = Board()
         board.loadFromFen("r1b1kb1r/ppp2ppp/8/4n3/8/PPP1P1P1/5n1P/RNB1KBNR b kq - 2 22")
 
-        val params = SearchParams(depth = 5)
+        val params = SearchParams(depth = 4)
         val state = SearchState(params, board)
 
         val bestMove = Abts().rooSearch(state)

@@ -1,6 +1,7 @@
 package com.github.bhlangonijr.pururucazero.eval
 
 import com.github.bhlangonijr.chesslib.Board
+import com.github.bhlangonijr.chesslib.Piece
 import com.github.bhlangonijr.chesslib.Side
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import com.github.bhlangonijr.pururucazero.SearchState
@@ -43,6 +44,10 @@ class StatsEval constructor(var stats: Map<Float, ClassStats>) : Evaluator {
             e.printStackTrace()
             0L
         }
+    }
+
+    override fun pieceStaticValue(piece: Piece): Long {
+        return 0L
     }
 
 }

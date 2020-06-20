@@ -21,6 +21,19 @@ class MaterialEval : Evaluator {
         return scoreMaterial(board)
     }
 
+    override fun pieceStaticValue(piece: Piece): Long {
+
+        return when (piece.pieceType) {
+            PieceType.PAWN -> PAWN_VALUE
+            PieceType.BISHOP -> BISHOP_VALUE
+            PieceType.KNIGHT -> KNIGHT_VALUE
+            PieceType.ROOK -> ROOK_VALUE
+            PieceType.QUEEN -> QUEEN_VALUE
+            PieceType.KING -> MATE_VALUE
+            else -> 0L
+        }
+    }
+
     private fun scoreMaterial(board: Board) = scoreMaterial(board, board.sideToMove)
 
     private fun scoreMaterial(board: Board, player: Side): Long {
