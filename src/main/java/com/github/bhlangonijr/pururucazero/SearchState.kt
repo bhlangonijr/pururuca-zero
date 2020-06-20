@@ -15,9 +15,10 @@ class SearchState(val params: SearchParams, val board: Board) {
 
     @Volatile
     var stopped = false
-    val nodes = AtomicLong()
     var pvPly = 0
-    var moveScore = HashMap<Move, Long>()
+    val timeout = params.initialTime + timeToThink(params)
+    val nodes = AtomicLong()
+    val moveScore = HashMap<String, Long>()
 
     val pv = Array(MAX_DEPTH) { noMove }
 
@@ -26,16 +27,7 @@ class SearchState(val params: SearchParams, val board: Board) {
         if (stopped || nodes.get() >= params.nodes) {
             return true
         }
-        val elapsed = System.currentTimeMillis() - params.initialTime
-        return elapsed >= timeLeft(params)
-    }
-
-    private fun timeLeft(params: SearchParams): Long {
-
-        return when (board.sideToMove) {
-            Side.WHITE -> params.whiteTime / 40 + params.whiteIncrement
-            else -> params.blackTime / 40 + params.blackIncrement
-        }
+        return System.currentTimeMillis() >= timeout
     }
 
     fun updatePv(move: Move, ply: Int) {
@@ -52,4 +44,11 @@ class SearchState(val params: SearchParams, val board: Board) {
         return moves
     }
 
+    private fun timeToThink(params: SearchParams): Long {
+
+        return when (board.sideToMove) {
+            Side.WHITE -> params.whiteTime / 40L + params.whiteIncrement
+            else -> params.blackTime / 40L + params.blackIncrement
+        }
+    }
 }
