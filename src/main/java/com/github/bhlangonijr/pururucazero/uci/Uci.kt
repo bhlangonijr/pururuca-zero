@@ -81,15 +81,15 @@ class Uci constructor(private var search: Search) {
         val params = SearchParams(
                 whiteTime = getLong(tokens, "wtime", "6000000"),
                 blackTime = getLong(tokens, "btime", "6000000"),
-                whiteIncrement = getLong(tokens, "winc", "1000"),
-                blackIncrement = getLong(tokens, "binc", "1000"),
+                whiteIncrement = getLong(tokens, "winc", "0"),
+                blackIncrement = getLong(tokens, "binc", "0"),
                 moveTime = getLong(tokens, "movetime", "0"),
-                movesToGo = getInt(tokens, "movestogo", "1"),
+                movesToGo = getInt(tokens, "movestogo", "0"),
                 depth = getInt(tokens, "depth", "100"),
-                nodes = getLong(tokens, "nodes", "50000000"),
+                nodes = getLong(tokens, "nodes", "5000000000"),
                 infinite = getBoolean(tokens, "infinite", "false"),
                 ponder = getBoolean(tokens, "ponder", "false"),
-                searchMoves = getString(tokens, "movestogo", ""),
+                searchMoves = getString(tokens, "searchmoves", ""),
                 threads = search.threads
         )
 
