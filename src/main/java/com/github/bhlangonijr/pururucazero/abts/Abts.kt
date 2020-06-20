@@ -29,7 +29,6 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval()) : Sear
             val nodes = state.nodes.get()
             val time = System.currentTimeMillis() - state.params.initialTime
             println("info depth $i score cp $score time $time nodes $nodes pv ${state.pvLine()}")
-            println("xxxxinfo depth $i score cp $score time $time nodes $nodes pv ${state.pvLine()} - ${state.shouldStop()}")
         }
         println("bestmove $bestMove")
         if (state.board.fen != fen) {
@@ -46,7 +45,7 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval()) : Sear
         }
         state.nodes.incrementAndGet()
         if (depth <= 0) {
-            return  evaluator.evaluate(state, board)
+            return evaluator.evaluate(state, board)
         }
 
         var bestScore = -Long.MAX_VALUE
