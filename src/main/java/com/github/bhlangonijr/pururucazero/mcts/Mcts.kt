@@ -9,6 +9,7 @@ import com.github.bhlangonijr.chesslib.move.MoveList
 import com.github.bhlangonijr.pururucazero.SearchEngine
 import com.github.bhlangonijr.pururucazero.SearchState
 import com.github.bhlangonijr.pururucazero.eval.Evaluator
+import com.github.bhlangonijr.pururucazero.eval.MAX_VALUE
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicLong
@@ -40,11 +41,18 @@ class Mcts(private var epsilon: Double = DEFAULT_EPSILON, private val evaluator:
         }
 
         var timestamp = System.currentTimeMillis()
+        var bestScore = -MAX_VALUE
         while (!state.shouldStop()) {
             val score = searchMove(node, state, boards[0], boards[0].sideToMove, 0)
             node.updateStats(score)
             simulations.incrementAndGet()
             if ((System.currentTimeMillis() - timestamp) > 5000L) {
+                val nodes = state.nodes
+                val time = System.currentTimeMillis() - state.params.initialTime
+                if (score > bestScore) {
+                    bestScore = score
+                }
+                println("info depth 1 score cp $score time $time nodes $nodes pv ${node.pickBest().move}")
                 println("info string total nodes ${state.nodes.get()}")
                 timestamp = System.currentTimeMillis()
             }

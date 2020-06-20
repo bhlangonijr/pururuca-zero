@@ -11,7 +11,8 @@ import kotlin.math.exp
 import kotlin.math.ln
 import kotlin.math.sqrt
 
-class Node(val move: Move, val side: Side) {
+class Node(val move: Move,
+           val side: Side) {
 
     val hits = AtomicLong(0)
     val wins = AtomicLong(0)
