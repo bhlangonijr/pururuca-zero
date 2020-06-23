@@ -11,6 +11,7 @@ const val AUTHOR = "bhlangonijr"
 
 class Main
 
+@ExperimentalStdlibApi
 fun main() {
 
     val search = Search(Board(), Mcts())

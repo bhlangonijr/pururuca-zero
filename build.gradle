@@ -33,7 +33,7 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile "ml.dmlc:xgboost4j:0.81"
-    compile "com.github.bhlangonijr:chesslib:1.1.14"
+    compile "com.github.bhlangonijr:chesslib:1.1.15"
 
     testCompile "junit:junit:4.12"
 }

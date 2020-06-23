@@ -3,11 +3,13 @@ package com.github.bhlangonijr.pururucazero.uci
 import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.pururucazero.*
 import com.github.bhlangonijr.pururucazero.abts.Abts
+import com.github.bhlangonijr.pururucazero.abts.TranspositionTable
 import com.github.bhlangonijr.pururucazero.mcts.Mcts
 
 const val ALGO_MCTS_OPTION = "MonteCarlo"
 const val ALGO_ABTS_OPTION = "AlphaBeta"
 
+@ExperimentalStdlibApi
 class Uci constructor(private var search: Search) {
 
     fun exec(cmd: String): Boolean {
@@ -31,6 +33,7 @@ class Uci constructor(private var search: Search) {
 
         println("id name $NAME $VERSION")
         println("id author $AUTHOR")
+        println("option name Hash type spin default 128 min 1 max 16384")
         println("option name Threads type spin default 1 min 1 max 128")
         println("option name SearchAlgorithm type combo default $ALGO_MCTS_OPTION " +
                 "var $ALGO_ABTS_OPTION var $ALGO_MCTS_OPTION")
@@ -96,12 +99,14 @@ class Uci constructor(private var search: Search) {
         return search.start(params)
     }
 
+    @ExperimentalStdlibApi
     private fun handleSetoption(tokens: List<String>): Boolean {
 
         val option = tokens[2]
         val value = tokens[4]
 
         when (option) {
+            "Hash" -> search = Search(Board(), Abts(transpositionTable = TranspositionTable(value.toInt())))
             "Threads" -> search.threads = value.toInt()
             "SearchAlgorithm" -> {
                 search = if (value == ALGO_ABTS_OPTION) {

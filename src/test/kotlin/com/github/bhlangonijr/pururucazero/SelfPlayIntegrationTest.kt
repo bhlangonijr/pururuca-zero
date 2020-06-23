@@ -12,6 +12,7 @@ import com.github.bhlangonijr.pururucazero.ml.NaiveBayes
 import com.github.bhlangonijr.pururucazero.ml.PgnConverter.Companion.pgnToDataSet
 import org.junit.Test
 
+@ExperimentalStdlibApi
 class SelfPlayIntegrationTest {
 
     @Test
