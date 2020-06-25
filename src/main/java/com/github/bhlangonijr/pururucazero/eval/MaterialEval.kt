@@ -1,18 +1,92 @@
 package com.github.bhlangonijr.pururucazero.eval
 
-import com.github.bhlangonijr.chesslib.Board
-import com.github.bhlangonijr.chesslib.Piece
-import com.github.bhlangonijr.chesslib.PieceType
-import com.github.bhlangonijr.chesslib.Side
+import com.github.bhlangonijr.chesslib.*
 import com.github.bhlangonijr.pururucazero.SearchState
+import kotlin.math.min
 
 const val PAWN_VALUE = 100L
-const val BISHOP_VALUE = 300L
-const val KNIGHT_VALUE = 300L
+const val BISHOP_VALUE = 320L
+const val KNIGHT_VALUE = 330L
 const val ROOK_VALUE = 500L
-const val QUEEN_VALUE = 950L
+const val QUEEN_VALUE = 900L
 const val MAX_VALUE = 40000L
 const val MATE_VALUE = 39000L
+
+val PAWN_PST = longArrayOf(
+        0,  0,  0,  0,  0,  0,  0,  0,
+        50, 50, 50, 50, 50, 50, 50, 50,
+        10, 10, 20, 30, 30, 20, 10, 10,
+        5,  5, 10, 25, 25, 10,  5,  5,
+        0,  0,  0, 20, 20,  0,  0,  0,
+        5, -5,-10,  0,  0,-10, -5,  5,
+        5, 10, 10,-20,-20, 10, 10,  5,
+        0,  0,  0,  0,  0,  0,  0,  0)
+
+val KNIGHT_PST = longArrayOf(
+        -50,-40,-30,-30,-30,-30,-40,-50,
+        -40,-20,  0,  0,  0,  0,-20,-40,
+        -30,  0, 10, 15, 15, 10,  0,-30,
+        -30,  5, 15, 20, 20, 15,  5,-30,
+        -30,  0, 15, 20, 20, 15,  0,-30,
+        -30,  5, 10, 15, 15, 10,  5,-30,
+        -40,-20,  0,  5,  5,  0,-20,-40,
+        -50,-40,-30,-30,-30,-30,-40,-50
+)
+
+val BISHOP_PST = longArrayOf(
+        -20,-10,-10,-10,-10,-10,-10,-20,
+        -10,  0,  0,  0,  0,  0,  0,-10,
+        -10,  0,  5, 10, 10,  5,  0,-10,
+        -10,  5,  5, 10, 10,  5,  5,-10,
+        -10,  0, 10, 10, 10, 10,  0,-10,
+        -10, 10, 10, 10, 10, 10, 10,-10,
+        -10,  5,  0,  0,  0,  0,  5,-10,
+        -20,-10,-10,-10,-10,-10,-10,-20
+)
+
+val ROOK_PST = longArrayOf(
+        0,  0,  0,  0,  0,  0,  0,  0,
+        5, 10, 10, 10, 10, 10, 10,  5,
+        -5,  0,  0,  0,  0,  0,  0, -5,
+        -5,  0,  0,  0,  0,  0,  0, -5,
+        -5,  0,  0,  0,  0,  0,  0, -5,
+        -5,  0,  0,  0,  0,  0,  0, -5,
+        -5,  0,  0,  0,  0,  0,  0, -5,
+        0,  0,  0,  5,  5,  0,  0,  0
+)
+
+val QUEEN_PST = longArrayOf(
+        -20,-10,-10, -5, -5,-10,-10,-20,
+        -10,  0,  0,  0,  0,  0,  0,-10,
+        -10,  0,  5,  5,  5,  5,  0,-10,
+        -5,  0,  5,  5,  5,  5,  0, -5,
+        0,  0,  5,  5,  5,  5,  0, -5,
+        -10,  5,  5,  5,  5,  5,  0,-10,
+        -10,  0,  5,  0,  0,  0,  0,-10,
+        -20,-10,-10, -5, -5,-10,-10,-20
+)
+
+val KING_OPENING_PST = longArrayOf(
+        -30,-40,-40,-50,-50,-40,-40,-30,
+        -30,-40,-40,-50,-50,-40,-40,-30,
+        -30,-40,-40,-50,-50,-40,-40,-30,
+        -30,-40,-40,-50,-50,-40,-40,-30,
+        -20,-30,-30,-40,-40,-30,-30,-20,
+        -10,-20,-20,-20,-20,-20,-20,-10,
+        20, 20,  0,  0,  0,  0, 20, 20,
+        20, 30, 10,  0,  0, 10, 30, 20
+)
+
+val KING_END_PST = longArrayOf(
+        -50,-40,-30,-20,-20,-30,-40,-50,
+        -30,-20,-10,  0,  0,-10,-20,-30,
+        -30,-10, 20, 30, 30, 20,-10,-30,
+        -30,-10, 30, 40, 40, 30,-10,-30,
+        -30,-10, 30, 40, 40, 30,-10,-30,
+        -30,-10, 20, 30, 30, 20,-10,-30,
+        -30,-30,  0,  0,  0,  0,-30,-30,
+        -50,-30,-30,-30,-30,-30,-30,-50
+)
 
 class MaterialEval : Evaluator {
 
@@ -34,12 +108,51 @@ class MaterialEval : Evaluator {
         }
     }
 
-    private fun scoreMaterial(board: Board) = scoreMaterial(board, board.sideToMove)
+    fun scoreMaterial(board: Board) = scoreMaterial(board, board.sideToMove)
 
-    private fun scoreMaterial(board: Board, player: Side): Long {
+    fun scoreMaterial(board: Board, player: Side): Long {
 
         return countMaterial(board, player) - countMaterial(board, player.flip())
     }
+
+    fun scorePieceSquare(board: Board) = scorePieceSquare(board, board.sideToMove)
+
+    fun scorePieceSquare(board: Board, player: Side): Long {
+
+        return calculatePieceSquare(board, player) - calculatePieceSquare(board, player.flip())
+    }
+
+    private fun calculatePieceSquare(board: Board, player: Side): Long {
+
+        val maxMoves = 40
+        val phase = min(maxMoves, board.moveCounter)
+        var sum = 0L
+
+        board.getPieceLocation(Piece.make(player, PieceType.PAWN)).forEach {
+            sum += PAWN_PST[getIndex(player, it)]
+        }
+        board.getPieceLocation(Piece.make(player, PieceType.KNIGHT)).forEach {
+            sum += KNIGHT_PST[getIndex(player, it)]
+        }
+        board.getPieceLocation(Piece.make(player, PieceType.BISHOP)).forEach {
+            sum += BISHOP_PST[getIndex(player, it)]
+        }
+        board.getPieceLocation(Piece.make(player, PieceType.ROOK)).forEach {
+            sum += ROOK_PST[getIndex(player, it)]
+        }
+        board.getPieceLocation(Piece.make(player, PieceType.QUEEN)).forEach {
+            sum += QUEEN_PST[getIndex(player, it)]
+        }
+        board.getPieceLocation(Piece.make(player, PieceType.KING)).forEach {
+            sum += (maxMoves - phase) * KING_OPENING_PST[getIndex(player, it)] / maxMoves +
+                    phase * KING_END_PST[getIndex(player, it)] / maxMoves
+        }
+
+        return sum
+    }
+
+    private fun getIndex(side: Side, sq: Square) =
+            if (side == Side.BLACK) sq.ordinal  else 63 - sq.ordinal
 
     private fun countMaterial(board: Board, side: Side) =
             bitCount(board.getBitboard(Piece.make(side, PieceType.PAWN))) * PAWN_VALUE +

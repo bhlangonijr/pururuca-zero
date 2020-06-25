@@ -50,8 +50,10 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
         if (state.shouldStop()) {
             return 0
         }
+        if (ply >= MAX_DEPTH) {
+            return 0
+        }
         state.nodes.incrementAndGet()
-
         if (depth <= 0) {
             return quiesce(board, alpha, beta, depth, ply, state)
         }
@@ -123,77 +125,52 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
         return bestScore
     }
 
+    private val emptyMove = Move(Square.NONE, Square.NONE)
+
     private fun quiesce(board: Board, alpha: Long, beta: Long, depth: Int, ply: Int, state: SearchState): Long {
 
         if (state.shouldStop()) {
             return 0
         }
+        if (ply >= MAX_DEPTH) {
+            return 0
+        }
+
         state.nodes.incrementAndGet()
 
         var bestScore = -Long.MAX_VALUE
         var newAlpha = alpha
-        var newBeta = beta
-        var bestMove = Move(Square.NONE, Square.NONE)
-        var hashMove = Move(Square.NONE, Square.NONE)
 
-        val entry = transpositionTable.get(board.hashCode())
-        if (entry != null && entry.depth >= depth) {
-            hashMove = entry.move
-            when (entry.nodeType) {
-                TranspositionTable.NodeType.EXACT -> {
-                    return entry.value
-                }
-                TranspositionTable.NodeType.LOWERBOUND -> {
-                    newAlpha = max(alpha, entry.value)
-                }
-                TranspositionTable.NodeType.UPPERBOUND -> {
-                    newBeta = min(beta, entry.value)
-                }
-            }
-        }
         val standPat = evaluator.evaluate(state, board)
-
-        if (standPat >= newBeta) {
-            return newBeta
+        if (standPat >= beta) {
+            return beta
+        }
+        if (alpha < standPat) {
+            newAlpha = standPat
         }
 
-        if( alpha < standPat )
-            newAlpha = standPat
-
-        val moves = orderMoves(state, hashMove, MoveGenerator.generatePseudoLegalMoves(board))
-
+        val moves = orderMoves(state, emptyMove, MoveGenerator.generatePseudoLegalMoves(board))
         val isKingAttacked = board.isKingAttacked
         for (move in moves) {
 
-            val newDepth = if (isKingAttacked) depth else depth - 1
-            if (board.getPiece(move.to) == Piece.NONE || !board.doMove(move, true)) {
+            if (!board.doMove(move) || (!isKingAttacked && board.getPiece(move.to) == Piece.NONE)) {
                 continue
             }
-            val score = -quiesce(board, -newBeta, -newAlpha, newDepth, ply + 1, state)
+            val score = -quiesce(board, -beta, -newAlpha, depth - 1, ply + 1, state)
             board.undoMove()
 
-            if (score >= newBeta) {
+            if (score >= beta) {
                 bestScore = score
-                bestMove = move
                 break
             }
             if (score > bestScore) {
                 bestScore = score
                 if (score > newAlpha) {
                     newAlpha = score
-                    bestMove = move
                     state.updatePv(move, ply)
                 }
             }
         }
-
-        val nodeType = when {
-            bestScore <= alpha -> TranspositionTable.NodeType.UPPERBOUND
-            bestScore >= beta -> TranspositionTable.NodeType.LOWERBOUND
-            else -> TranspositionTable.NodeType.EXACT
-        }
-
-        transpositionTable.put(board.hashCode(), bestScore, depth, bestMove, nodeType)
 
         if (bestScore == -Long.MAX_VALUE) {
             return if (board.isKingAttacked) -MATE_VALUE + ply else 0L

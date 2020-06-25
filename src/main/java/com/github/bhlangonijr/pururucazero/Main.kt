@@ -5,7 +5,7 @@ import com.github.bhlangonijr.pururucazero.mcts.Mcts
 import com.github.bhlangonijr.pururucazero.uci.Uci
 import kotlin.system.exitProcess
 
-const val VERSION = "0.1.0"
+const val VERSION = "0.1.1"
 const val NAME = "pururuca-zero"
 const val AUTHOR = "bhlangonijr"
 
