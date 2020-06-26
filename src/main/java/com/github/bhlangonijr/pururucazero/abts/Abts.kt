@@ -152,8 +152,10 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
         val moves = orderMoves(state, emptyMove, MoveGenerator.generatePseudoLegalMoves(board))
         val isKingAttacked = board.isKingAttacked
         for (move in moves) {
-
-            if (!board.doMove(move) || (!isKingAttacked && board.getPiece(move.to) == Piece.NONE)) {
+            if (!isKingAttacked && move.to.bitboard.and(board.bitboard) == 0L) {
+                continue
+            }
+            if (!board.doMove(move)) {
                 continue
             }
             val score = -quiesce(board, -beta, -newAlpha, depth - 1, ply + 1, state)
