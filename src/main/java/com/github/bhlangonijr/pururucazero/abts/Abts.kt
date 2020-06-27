@@ -1,8 +1,6 @@
 package com.github.bhlangonijr.pururucazero.abts
 
-import com.github.bhlangonijr.chesslib.Board
-import com.github.bhlangonijr.chesslib.Piece
-import com.github.bhlangonijr.chesslib.Square
+import com.github.bhlangonijr.chesslib.*
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import com.github.bhlangonijr.chesslib.move.MoveList
@@ -12,9 +10,9 @@ import com.github.bhlangonijr.pururucazero.eval.Evaluator
 import com.github.bhlangonijr.pururucazero.eval.MATE_VALUE
 import com.github.bhlangonijr.pururucazero.eval.MAX_VALUE
 import com.github.bhlangonijr.pururucazero.eval.MaterialEval
-import kotlin.Comparator
 import kotlin.math.max
 import kotlin.math.min
+
 
 const val MAX_DEPTH = 100
 
@@ -60,8 +58,8 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
         var bestScore = -Long.MAX_VALUE
         var newAlpha = alpha
         var newBeta = beta
-        var bestMove = Move(Square.NONE, Square.NONE)
-        var hashMove = Move(Square.NONE, Square.NONE)
+        var bestMove = emptyMove
+        var hashMove = emptyMove
 
         val entry = transpositionTable.get(board.hashCode())
         if (entry != null && entry.depth >= depth) {
@@ -79,11 +77,27 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
             }
         }
 
+        val isKingAttacked = board.isKingAttacked
+
+        if (depth > 1 && beta <= evaluator.evaluate(state, board) && !isKingAttacked &&
+                Bitboard.getRankbb(Rank.RANK_7).and(board.getBitboard(Piece.WHITE_PAWN)) == 0L &&
+                Bitboard.getRankbb(Rank.RANK_2).and(board.getBitboard(Piece.BLACK_PAWN)) == 0L) {
+
+            board.doNullMove()
+            val score = -search(board, -newBeta, -newBeta + 1, depth - 3, ply + 1, state)
+            board.undoMove()
+            if (score >= newBeta) {
+                transpositionTable.put(board.hashCode(), score, depth, bestMove,
+                        TranspositionTable.NodeType.LOWERBOUND)
+                return score
+            }
+        }
+
         val moves =
                 if (ply == 0) orderRootMoves(state, MoveGenerator.generatePseudoLegalMoves(board))
                 else orderMoves(state, hashMove, MoveGenerator.generatePseudoLegalMoves(board))
 
-        val isKingAttacked = board.isKingAttacked
+
         for (move in moves) {
 
             if (!board.doMove(move)) {
