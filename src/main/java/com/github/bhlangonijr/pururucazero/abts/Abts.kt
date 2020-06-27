@@ -151,19 +151,18 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
 
         state.nodes.incrementAndGet()
 
-        var bestScore = -Long.MAX_VALUE
         var newAlpha = alpha
 
-        val standPat = evaluator.evaluate(state, board)
-        if (standPat >= beta) {
+        var bestScore = evaluator.evaluate(state, board)
+        if (bestScore >= beta) {
             return beta
         }
-        if (alpha < standPat) {
-            newAlpha = standPat
+        if (alpha < bestScore) {
+            newAlpha = bestScore
         }
 
         if (state.shouldStop()) {
-            return newAlpha
+            return 0
         }
 
         val moves = orderMoves(state, emptyMove, MoveGenerator.generatePseudoLegalMoves(board))
