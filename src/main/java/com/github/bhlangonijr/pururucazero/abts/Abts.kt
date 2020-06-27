@@ -22,15 +22,17 @@ const val MAX_DEPTH = 100
 class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
                        private var transpositionTable: TranspositionTable = TranspositionTable()) : SearchEngine {
 
-    override fun rooSearch(state: SearchState): Move {
-        val fen = state.board.fen
+    private val emptyMove = Move(Square.NONE, Square.NONE)
 
+    override fun rooSearch(state: SearchState): Move {
+
+        val fen = state.board.fen
         transpositionTable.generation++
         state.moveScore.clear()
-        var bestMove = Move(Square.NONE, Square.NONE)
+        var bestMove = emptyMove
         for (i in 1..min(MAX_DEPTH, state.params.depth)) {
             val score = search(state.board, -MAX_VALUE, MAX_VALUE, i, 0, state)
-            if (state.shouldStop()) break
+            if (state.shouldStop() && bestMove != emptyMove) break
             bestMove = state.pv[0]
             val nodes = state.nodes.get()
             val time = System.currentTimeMillis() - state.params.initialTime
@@ -47,15 +49,12 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
 
     private fun search(board: Board, alpha: Long, beta: Long, depth: Int, ply: Int, state: SearchState): Long {
 
-        if (state.shouldStop()) {
-            return 0
-        }
-        if (ply >= MAX_DEPTH) {
-            return 0
+        if (depth <= 0 || ply >= MAX_DEPTH) {
+            return quiesce(board, alpha, beta, depth, ply, state)
         }
         state.nodes.incrementAndGet()
-        if (depth <= 0) {
-            return quiesce(board, alpha, beta, depth, ply, state)
+        if (state.shouldStop()) {
+            return 0L
         }
 
         var bestScore = -Long.MAX_VALUE
@@ -87,19 +86,19 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
         val isKingAttacked = board.isKingAttacked
         for (move in moves) {
 
-            val newDepth = if (isKingAttacked) depth else depth - 1
-            if (!board.doMove(move, true)) {
+            if (!board.doMove(move)) {
                 continue
             }
+            val newDepth = if (isKingAttacked) depth else depth - 1
             val score = -search(board, -newBeta, -newAlpha, newDepth, ply + 1, state)
             board.undoMove()
             if (ply == 0) {
                 state.moveScore[move.toString()] = score
             }
             if (score >= newBeta) {
-                bestMove = move
-                bestScore = score
-                break
+                transpositionTable.put(board.hashCode(), score, depth, move,
+                        TranspositionTable.NodeType.LOWERBOUND)
+                return score
             }
             if (score > bestScore) {
                 bestScore = score
@@ -113,28 +112,17 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
 
         val nodeType = when {
             bestScore <= alpha -> TranspositionTable.NodeType.UPPERBOUND
-            bestScore >= beta -> TranspositionTable.NodeType.LOWERBOUND
             else -> TranspositionTable.NodeType.EXACT
         }
-
         transpositionTable.put(board.hashCode(), bestScore, depth, bestMove, nodeType)
 
         if (bestScore == -Long.MAX_VALUE) {
-            return if (board.isKingAttacked) -MATE_VALUE + ply else 0L
+            return if (isKingAttacked) -MATE_VALUE + ply else 0L
         }
         return bestScore
     }
 
-    private val emptyMove = Move(Square.NONE, Square.NONE)
-
-    private fun quiesce(board: Board, alpha: Long, beta: Long, depth: Int, ply: Int, state: SearchState): Long {
-
-        if (state.shouldStop()) {
-            return 0
-        }
-        if (ply >= MAX_DEPTH) {
-            return 0
-        }
+    fun quiesce(board: Board, alpha: Long, beta: Long, depth: Int, ply: Int, state: SearchState): Long {
 
         state.nodes.incrementAndGet()
 
@@ -149,10 +137,14 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
             newAlpha = standPat
         }
 
+        if (state.shouldStop()) {
+            return newAlpha
+        }
+
         val moves = orderMoves(state, emptyMove, MoveGenerator.generatePseudoLegalMoves(board))
         val isKingAttacked = board.isKingAttacked
         for (move in moves) {
-            if (!isKingAttacked && move.to.bitboard.and(board.bitboard) == 0L) {
+            if (!isKingAttacked && board.getBitboard(board.sideToMove.flip()).and(move.to.bitboard) == 0L) {
                 continue
             }
             if (!board.doMove(move)) {
@@ -160,10 +152,8 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
             }
             val score = -quiesce(board, -beta, -newAlpha, depth - 1, ply + 1, state)
             board.undoMove()
-
             if (score >= beta) {
-                bestScore = score
-                break
+                return score
             }
             if (score > bestScore) {
                 bestScore = score
@@ -174,10 +164,10 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
             }
         }
 
-        if (bestScore == -Long.MAX_VALUE) {
-            return if (board.isKingAttacked) -MATE_VALUE + ply else 0L
+        if (bestScore == -Long.MAX_VALUE && isKingAttacked) {
+            return -MATE_VALUE
         }
-        return bestScore
+        return newAlpha
     }
 
     private fun orderMoves(state: SearchState, hashMove: Move, moves: MoveList): List<Move> {

@@ -23,7 +23,7 @@ class TranspositionTable constructor(private val size: Int = 128, var generation
         if (entry == null ||
                 generation > entry.generation ||
                 key != entry.key ||
-                (generation == entry.generation && depth > entry.depth && nodeType != NodeType.EXACT)) {
+                (generation == entry.generation && depth > entry.depth && entry.nodeType != NodeType.EXACT)) {
                 data[key.and(mask)] = Entry(key, value, depth, generation, move, nodeType)
             return true
         }
