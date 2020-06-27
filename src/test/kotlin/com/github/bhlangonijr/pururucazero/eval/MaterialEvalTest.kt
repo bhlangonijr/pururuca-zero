@@ -9,6 +9,7 @@ import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import com.github.bhlangonijr.pururucazero.SearchParams
 import com.github.bhlangonijr.pururucazero.SearchState
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class MaterialEvalTest {
@@ -65,6 +66,23 @@ class MaterialEvalTest {
         board.loadFromFen("3k4/8/8/8/4n3/8/8/3K4 w - - 0 1")
 
         assertEquals(20, eval.scorePieceSquare(board, Side.BLACK))
+
+        board.loadFromFen("rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1")
+
+        assertEquals(40 , eval.scorePieceSquare(board, Side.WHITE))
+
+        board.loadFromFen("rnbqkb1r/pppppppp/7n/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 1")
+
+        assertEquals(-30, eval.scorePieceSquare(board, Side.BLACK))
+
+        board.loadFromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+
+        assertEquals(0, eval.scorePieceSquare(board, Side.BLACK))
+
+        board.loadFromFen("8/8/8/3pp3/8/8/3PP3/8 w - - 0 1")
+
+        assertEquals(-80, eval.scorePieceSquare(board, Side.WHITE))
+
     }
 
     @Test
@@ -74,11 +92,28 @@ class MaterialEvalTest {
         val board = Board()
         val state = SearchState(SearchParams(), board)
         board.loadFromFen("rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 1")
-        println(eval.evaluate(state, board))
-        println(startStandardFENPosition)
+
+        assertTrue(eval.evaluate(state, board) == 0L)
 
         board.loadFromFen("rnbqkb1r/pppppppp/7n/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 1")
-        println(eval.evaluate(state, board))
+        assertTrue(eval.evaluate(state, board) > 0L)
+
+        board.loadFromFen("r1bqkbr1/pppppppp/2n2n2/8/2PPP3/2N5/PP3PPP/R1BQKBNR b KQq e3 0 4")
+        assertTrue(eval.evaluate(state, board) < 0L)
+
+        board.loadFromFen("r1bqkbr1/pppppppp/2n5/8/2PPn3/2N5/PP3PPP/R1BQKBNR w KQq e3 0 4")
+        assertTrue(eval.evaluate(state, board) < 0L)
+
+        board.loadFromFen("r1bqkbr1/pppppppp/2n5/8/2PPN3/8/PP3PPP/R1BQKBNR b KQq e3 0 4")
+        assertTrue(eval.evaluate(state, board) < 0L)
+
+        board.loadFromFen("r1bqkbr1/pppppppp/8/8/2PnN3/8/PP3PPP/R1BQKBNR w KQq e3 0 4")
+        assertTrue(eval.evaluate(state, board) > 0L)
+
+        board.loadFromFen("r1bqkbr1/pppppppp/8/8/2PQN3/8/PP3PPP/R1B1KBNR b KQq e3 0 4")
+        assertTrue(eval.evaluate(state, board) < -KNIGHT_VALUE)
+
+
 
 
     }
