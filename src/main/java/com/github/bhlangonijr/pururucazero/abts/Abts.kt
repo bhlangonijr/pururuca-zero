@@ -104,7 +104,18 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
                 continue
             }
             val newDepth = if (isKingAttacked) depth else depth - 1
-            val score = -search(board, -newBeta, -newAlpha, newDepth, ply + 1, state)
+
+            var score: Long
+
+            if (bestScore == -Long.MAX_VALUE) {
+                score = -search(board, -newBeta, -newAlpha, newDepth, ply + 1, state)
+            } else {
+                score = -search(board, -newAlpha - 1, -newAlpha, newDepth, ply + 1, state)
+                if (score > newAlpha && score < newBeta) {
+                    score = -search(board, -newBeta, -newAlpha, newDepth, ply + 1, state)
+                }
+            }
+
             board.undoMove()
             if (ply == 0) {
                 state.moveScore[move.toString()] = score
