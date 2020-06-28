@@ -1,6 +1,8 @@
 package com.github.bhlangonijr.pururucazero.abts
 
 import com.github.bhlangonijr.chesslib.Board
+import com.github.bhlangonijr.chesslib.Piece
+import com.github.bhlangonijr.chesslib.Rank
 import com.github.bhlangonijr.chesslib.Square
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.pururucazero.SearchParams
@@ -126,6 +128,22 @@ class AbtsTest {
 
     }
 
+    @Test
+    fun `Search mate KQ vs K`() {
+
+        val board = Board()
+        board.loadFromFen("5k2/7Q/8/8/8/8/8/1K6 w - - 22 12 - ")
+
+        val params = SearchParams(depth = 7)
+        val state = SearchState(params, board)
+
+        val search = Abts()
+        val bestMove = search.rooSearch(state)
+        val whiteKingSquare = board.getPieceLocation(Piece.WHITE_KING)
+        //get white king closer to black king
+        assertTrue(bestMove.from == whiteKingSquare[0] && bestMove.to.rank == Rank.RANK_2)
+
+    }
 
     @Test
     fun `Quiesce search find exchanges`() {

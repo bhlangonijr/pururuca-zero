@@ -10,6 +10,7 @@ import com.github.bhlangonijr.pururucazero.eval.Evaluator
 import com.github.bhlangonijr.pururucazero.eval.MATE_VALUE
 import com.github.bhlangonijr.pururucazero.eval.MAX_VALUE
 import com.github.bhlangonijr.pururucazero.eval.MaterialEval
+import com.sun.org.apache.xpath.internal.operations.Bool
 import kotlin.math.max
 import kotlin.math.min
 
@@ -65,7 +66,7 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
         var hashMove = emptyMove
 
         val entry = transpositionTable.get(board.hashCode())
-        if (entry != null && entry.depth >= depth) {
+        if (entry != null && entry.depth >= depth && ply > 0) {
             hashMove = entry.move
             when (entry.nodeType) {
                 TranspositionTable.NodeType.EXACT -> {
@@ -82,9 +83,8 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
 
         val isKingAttacked = board.isKingAttacked
 
-        if (depth > 1 && beta <= evaluator.evaluate(state, board) && !isKingAttacked &&
-                Bitboard.getRankbb(Rank.RANK_7).and(board.getBitboard(Piece.WHITE_PAWN)) == 0L &&
-                Bitboard.getRankbb(Rank.RANK_2).and(board.getBitboard(Piece.BLACK_PAWN)) == 0L) {
+        if (ply > 0 && depth > 1 && beta <= evaluator.evaluate(state, board) &&
+                !isKingAttacked && isNullMoveAllowed(board)) {
 
             board.doNullMove()
             val score = -search(board, -newBeta, -newBeta + 1, depth - 3, ply + 1, state)
@@ -194,9 +194,9 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
         }
 
         if (bestScore == -Long.MAX_VALUE && isKingAttacked) {
-            return -MATE_VALUE
+            return -MATE_VALUE + ply
         }
-        return newAlpha
+        return bestScore
     }
 
     private fun orderMoves(state: SearchState, hashMove: Move, moves: MoveList): List<Move> {
@@ -232,7 +232,14 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
         }
     }
 
+    private fun isNullMoveAllowed(board: Board): Boolean =
+            board.getBitboard(Side.WHITE).xor(board.getBitboard(Piece.WHITE_PAWN)
+                    .or(board.getBitboard(Piece.WHITE_KING)))  == 0L ||
+                    board.getBitboard(Side.BLACK).xor(board.getBitboard(Piece.BLACK_PAWN)
+                            .or(board.getBitboard(Piece.BLACK_KING)))  == 0L
+
     private fun isRepetition(board: Board): Boolean {
+
         val i: Int = min(board.history.size - 1, board.halfMoveCounter)
         var rept = 0
         if (board.history.size >= 4) {
