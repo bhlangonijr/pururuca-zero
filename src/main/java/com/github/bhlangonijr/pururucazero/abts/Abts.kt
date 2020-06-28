@@ -54,6 +54,9 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
         if (state.shouldStop()) {
             return 0L
         }
+        if (isRepetition(board)) {
+            return 0L
+        }
 
         var bestScore = -Long.MAX_VALUE
         var newAlpha = alpha
@@ -151,6 +154,12 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
 
         state.nodes.incrementAndGet()
 
+        if (state.shouldStop()) {
+            return 0
+        }
+        if (isRepetition(board)) {
+            return 0L
+        }
         var newAlpha = alpha
 
         var bestScore = evaluator.evaluate(state, board)
@@ -159,10 +168,6 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
         }
         if (alpha < bestScore) {
             newAlpha = bestScore
-        }
-
-        if (state.shouldStop()) {
-            return 0
         }
 
         val moves = orderMoves(state, emptyMove, MoveGenerator.generatePseudoLegalMoves(board))
@@ -221,6 +226,26 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
             attackedPiece != Piece.NONE -> evaluator.pieceStaticValue(attackedPiece) - evaluator.pieceStaticValue(attackingPiece)
             else -> 0L
         }
+    }
+
+    private inline fun isRepetition(board: Board): Boolean {
+        val i: Int = min(board.history.size - 1, board.halfMoveCounter)
+        var rept = 0
+        if (board.history.size >= 4) {
+            val lastKey: Int = board.history[board.history.size - 1]
+            var x = 2
+            while (x <= i) {
+                val k: Int = board.history[board.history.size - x - 1]
+                if (k == lastKey) {
+                    rept++
+                    if (rept >= 2) {
+                        return true
+                    }
+                }
+                x += 2
+            }
+        }
+        return false
     }
 
 }
