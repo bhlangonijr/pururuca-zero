@@ -10,7 +10,7 @@ class TranspositionTable constructor(private val size: Int = 128, var generation
         EXACT, LOWERBOUND, UPPERBOUND
     }
 
-    private val hashSize = 1.shl(size.countTrailingZeroBits() + 20)/(4 + 8 + 4 + 4 + 8 + 8 + 8)
+    private val hashSize = 1.shl(size.countTrailingZeroBits() + 20) / (4 + 8 + 4 + 4 + 8 + 8 + 8)
     private val data = arrayOfNulls<Entry>(hashSize)
     private val mask = hashSize.takeHighestOneBit() - 1
 
@@ -24,7 +24,7 @@ class TranspositionTable constructor(private val size: Int = 128, var generation
                 generation > entry.generation ||
                 key != entry.key ||
                 (generation == entry.generation && depth > entry.depth && entry.nodeType != NodeType.EXACT)) {
-                data[key.and(mask)] = Entry(key, value, depth, generation, move, nodeType)
+            data[key.and(mask)] = Entry(key, value, depth, generation, move, nodeType)
             return true
         }
         return false

@@ -5,7 +5,6 @@ import com.github.bhlangonijr.chesslib.Constants.startStandardFENPosition
 import com.github.bhlangonijr.chesslib.Side
 import com.github.bhlangonijr.chesslib.Square
 import com.github.bhlangonijr.chesslib.move.Move
-import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import com.github.bhlangonijr.pururucazero.SearchParams
 import com.github.bhlangonijr.pururucazero.SearchState
 import org.junit.Assert.assertEquals
@@ -112,9 +111,6 @@ class MaterialEvalTest {
 
         board.loadFromFen("r1bqkbr1/pppppppp/8/8/2PQN3/8/PP3PPP/R1B1KBNR b KQq e3 0 4")
         assertTrue(eval.evaluate(state, board) < -KNIGHT_VALUE)
-
-
-
 
     }
 }

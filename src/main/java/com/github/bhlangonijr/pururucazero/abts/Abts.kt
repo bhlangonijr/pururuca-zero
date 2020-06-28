@@ -202,21 +202,25 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
     private fun orderMoves(state: SearchState, hashMove: Move, moves: MoveList): List<Move> {
 
         if (state.moveScore.size == 0) return moves
-        return moves.sortedWith(Comparator { o1, o2 -> (moveScore(o1, hashMove, state) -
-                moveScore(o2, hashMove, state)).toInt() }).reversed()
+        return moves.sortedWith(Comparator { o1, o2 ->
+            (moveScore(o1, hashMove, state) -
+                    moveScore(o2, hashMove, state)).toInt()
+        }).reversed()
     }
 
     private fun orderRootMoves(state: SearchState, moves: MoveList): List<Move> {
 
         if (state.moveScore.size == 0) return moves
-        return moves.sortedWith(Comparator { o1, o2 -> (rootMoveScore(o1, state) -
-                rootMoveScore(o2, state)).toInt() }).reversed()
+        return moves.sortedWith(Comparator { o1, o2 ->
+            (rootMoveScore(o1, state) -
+                    rootMoveScore(o2, state)).toInt()
+        }).reversed()
     }
 
     private fun rootMoveScore(move: Move, state: SearchState) = state.moveScore[move.toString()] ?: -Long.MAX_VALUE
 
     //mvv-lva
-    private fun moveScore(move: Move, hashMove: Move, state: SearchState) : Long {
+    private fun moveScore(move: Move, hashMove: Move, state: SearchState): Long {
 
         val attackedPiece = state.board.getPiece(move.to)
         val attackingPiece = state.board.getPiece(move.from)
@@ -228,7 +232,7 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
         }
     }
 
-    private inline fun isRepetition(board: Board): Boolean {
+    private fun isRepetition(board: Board): Boolean {
         val i: Int = min(board.history.size - 1, board.halfMoveCounter)
         var rept = 0
         if (board.history.size >= 4) {
