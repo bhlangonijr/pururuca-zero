@@ -1,8 +1,11 @@
 package com.github.bhlangonijr.pururucazero.abts
 
-import com.github.bhlangonijr.chesslib.*
+import com.github.bhlangonijr.chesslib.Board
+import com.github.bhlangonijr.chesslib.Piece
+import com.github.bhlangonijr.chesslib.Side
+import com.github.bhlangonijr.chesslib.Square
 import com.github.bhlangonijr.chesslib.move.Move
-import com.github.bhlangonijr.chesslib.move.MoveGenerator
+import com.github.bhlangonijr.chesslib.move.MoveGenerator.generatePseudoLegalMoves
 import com.github.bhlangonijr.chesslib.move.MoveList
 import com.github.bhlangonijr.pururucazero.SearchEngine
 import com.github.bhlangonijr.pururucazero.SearchState
@@ -10,7 +13,7 @@ import com.github.bhlangonijr.pururucazero.eval.Evaluator
 import com.github.bhlangonijr.pururucazero.eval.MATE_VALUE
 import com.github.bhlangonijr.pururucazero.eval.MAX_VALUE
 import com.github.bhlangonijr.pururucazero.eval.MaterialEval
-import com.sun.org.apache.xpath.internal.operations.Bool
+import kotlin.Comparator
 import kotlin.math.max
 import kotlin.math.min
 
@@ -96,11 +99,7 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
             }
         }
 
-        val moves =
-                if (ply == 0) orderRootMoves(state, MoveGenerator.generatePseudoLegalMoves(board))
-                else orderMoves(state, hashMove, MoveGenerator.generatePseudoLegalMoves(board))
-
-
+        val moves = generateMoves(state, ply, hashMove, false)
         for (move in moves) {
 
             if (!board.doMove(move)) {
@@ -170,7 +169,7 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
             newAlpha = bestScore
         }
 
-        val moves = orderMoves(state, emptyMove, MoveGenerator.generatePseudoLegalMoves(board))
+        val moves = generateMoves(state, ply, emptyMove, true)
         val isKingAttacked = board.isKingAttacked
         for (move in moves) {
             if (!isKingAttacked && board.getBitboard(board.sideToMove.flip()).and(move.to.bitboard) == 0L) {
@@ -199,12 +198,17 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
         return bestScore
     }
 
+    private fun generateMoves(state: SearchState, ply: Int, hashMove: Move, quiesce: Boolean): List<Move> {
+
+        return if (ply == 0 && !quiesce) orderRootMoves(state, generatePseudoLegalMoves(state.board))
+        else orderMoves(state, hashMove, generatePseudoLegalMoves(state.board))
+    }
+
     private fun orderMoves(state: SearchState, hashMove: Move, moves: MoveList): List<Move> {
 
         if (state.moveScore.size == 0) return moves
         return moves.sortedWith(Comparator { o1, o2 ->
-            (moveScore(o1, hashMove, state) -
-                    moveScore(o2, hashMove, state)).toInt()
+            (moveScore(o1, hashMove, state) - moveScore(o2, hashMove, state)).toInt()
         }).reversed()
     }
 
@@ -212,8 +216,7 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
 
         if (state.moveScore.size == 0) return moves
         return moves.sortedWith(Comparator { o1, o2 ->
-            (rootMoveScore(o1, state) -
-                    rootMoveScore(o2, state)).toInt()
+            (rootMoveScore(o1, state) - rootMoveScore(o2, state)).toInt()
         }).reversed()
     }
 
@@ -241,15 +244,15 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
     private fun isRepetition(board: Board): Boolean {
 
         val i: Int = min(board.history.size - 1, board.halfMoveCounter)
-        var rept = 0
+        var rep = 0
         if (board.history.size >= 4) {
             val lastKey: Int = board.history[board.history.size - 1]
             var x = 2
             while (x <= i) {
                 val k: Int = board.history[board.history.size - x - 1]
                 if (k == lastKey) {
-                    rept++
-                    if (rept >= 2) {
+                    rep++
+                    if (rep >= 2) {
                         return true
                     }
                 }
