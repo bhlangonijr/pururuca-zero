@@ -5,6 +5,7 @@ import com.github.bhlangonijr.chesslib.Piece
 import com.github.bhlangonijr.chesslib.Side
 import com.github.bhlangonijr.chesslib.Square
 import com.github.bhlangonijr.chesslib.move.Move
+import com.github.bhlangonijr.chesslib.move.MoveGenerator.generatePseudoLegalCaptures
 import com.github.bhlangonijr.chesslib.move.MoveGenerator.generatePseudoLegalMoves
 import com.github.bhlangonijr.chesslib.move.MoveList
 import com.github.bhlangonijr.pururucazero.SearchEngine
@@ -86,7 +87,7 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
 
         val isKingAttacked = board.isKingAttacked
 
-        if (ply > 0 && depth > 1 && beta <= evaluator.evaluate(state, board) &&
+        if (depth > 1 && beta <= evaluator.evaluate(state, board) &&
                 !isKingAttacked && isNullMoveAllowed(board)) {
 
             board.doNullMove()
@@ -109,7 +110,7 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
 
             var score: Long
 
-            if (bestScore == -Long.MAX_VALUE) {
+            if (bestScore == -Long.MAX_VALUE || move == hashMove) {
                 score = -search(board, -newBeta, -newAlpha, newDepth, ply + 1, state)
             } else {
                 score = -search(board, -newAlpha - 1, -newAlpha, newDepth, ply + 1, state)
@@ -138,8 +139,8 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
         }
 
         val nodeType = when {
-            bestScore <= alpha -> TranspositionTable.NodeType.UPPERBOUND
-            else -> TranspositionTable.NodeType.EXACT
+            bestScore > alpha -> TranspositionTable.NodeType.EXACT
+            else -> TranspositionTable.NodeType.UPPERBOUND
         }
         transpositionTable.put(board.hashCode(), bestScore, depth, bestMove, nodeType)
 
@@ -170,11 +171,7 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
         }
 
         val moves = generateMoves(state, ply, emptyMove, true)
-        val isKingAttacked = board.isKingAttacked
         for (move in moves) {
-            if (!isKingAttacked && board.getBitboard(board.sideToMove.flip()).and(move.to.bitboard) == 0L) {
-                continue
-            }
             if (!board.doMove(move)) {
                 continue
             }
@@ -192,7 +189,7 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
             }
         }
 
-        if (bestScore == -Long.MAX_VALUE && isKingAttacked) {
+        if (bestScore == -Long.MAX_VALUE && board.isKingAttacked) {
             return -MATE_VALUE + ply
         }
         return bestScore
@@ -200,8 +197,11 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
 
     private fun generateMoves(state: SearchState, ply: Int, hashMove: Move, quiesce: Boolean): List<Move> {
 
-        return if (ply == 0 && !quiesce) orderRootMoves(state, generatePseudoLegalMoves(state.board))
-        else orderMoves(state, hashMove, generatePseudoLegalMoves(state.board))
+        return when {
+            quiesce -> orderMoves(state, hashMove, generatePseudoLegalCaptures(state.board))
+            ply == 0 -> orderRootMoves(state, generatePseudoLegalMoves(state.board))
+            else -> orderMoves(state, hashMove, generatePseudoLegalMoves(state.board))
+        }
     }
 
     private fun orderMoves(state: SearchState, hashMove: Move, moves: MoveList): List<Move> {
@@ -230,8 +230,11 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
 
         return when {
             move == hashMove -> MATE_VALUE
-            attackedPiece != Piece.NONE -> evaluator.pieceStaticValue(attackedPiece) - evaluator.pieceStaticValue(attackingPiece)
-            else -> 0L
+            attackedPiece != Piece.NONE -> (evaluator.pieceStaticValue(attackedPiece) -
+                    evaluator.pieceStaticValue(attackingPiece)) + 10000
+            move.promotion != null -> evaluator.pieceStaticValue(move.promotion) * 10
+            else -> (evaluator.pieceSquareStaticValue(attackingPiece, move.to) -
+                    evaluator.pieceSquareStaticValue(attackingPiece, move.from))
         }
     }
 

@@ -3,6 +3,7 @@ package com.github.bhlangonijr.pururucazero.eval
 import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.chesslib.Piece
 import com.github.bhlangonijr.chesslib.Side
+import com.github.bhlangonijr.chesslib.Square
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import com.github.bhlangonijr.pururucazero.SearchState
 import com.github.bhlangonijr.pururucazero.encoder.Matrix.Companion.arrayToCsr
@@ -50,4 +51,7 @@ class StatsEval constructor(var stats: Map<Float, ClassStats>) : Evaluator {
         return 0L
     }
 
+    override fun pieceSquareStaticValue(piece: Piece, square: Square): Long {
+        return 0L
+    }
 }

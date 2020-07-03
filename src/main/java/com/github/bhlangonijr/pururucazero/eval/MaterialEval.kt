@@ -108,6 +108,19 @@ class MaterialEval : Evaluator {
         }
     }
 
+    override fun pieceSquareStaticValue(piece: Piece, square: Square): Long {
+
+        return when (piece.pieceType) {
+            PieceType.PAWN -> PAWN_PST[getIndex(piece.pieceSide, square)]
+            PieceType.KNIGHT -> KNIGHT_PST[getIndex(piece.pieceSide, square)]
+            PieceType.BISHOP -> BISHOP_PST[getIndex(piece.pieceSide, square)]
+            PieceType.ROOK -> ROOK_PST[getIndex(piece.pieceSide, square)]
+            PieceType.QUEEN -> QUEEN_PST[getIndex(piece.pieceSide, square)]
+            PieceType.KING -> KING_END_PST[getIndex(piece.pieceSide, square)]
+            else -> 0L
+        }
+    }
+
     fun scoreMaterial(board: Board) = scoreMaterial(board, board.sideToMove)
 
     fun scoreMaterial(board: Board, player: Side): Long {
@@ -128,21 +141,15 @@ class MaterialEval : Evaluator {
         val phase = min(maxMoves, board.moveCounter)
         var sum = 0L
 
-        board.getPieceLocation(Piece.make(side, PieceType.PAWN)).forEach {
-            sum += PAWN_PST[getIndex(side, it)]
+        var pieces = board.getBitboard(side)
+                .and(board.getBitboard(Piece.make(side, PieceType.KING)).inv())
+        while (pieces != 0L) {
+            val index = Bitboard.bitScanForward(pieces)
+            pieces = Bitboard.extractLsb(pieces)
+            val sq = Square.squareAt(index)
+            sum += pieceSquareStaticValue(board.getPiece(sq), sq)
         }
-        board.getPieceLocation(Piece.make(side, PieceType.KNIGHT)).forEach {
-            sum += KNIGHT_PST[getIndex(side, it)]
-        }
-        board.getPieceLocation(Piece.make(side, PieceType.BISHOP)).forEach {
-            sum += BISHOP_PST[getIndex(side, it)]
-        }
-        board.getPieceLocation(Piece.make(side, PieceType.ROOK)).forEach {
-            sum += ROOK_PST[getIndex(side, it)]
-        }
-        board.getPieceLocation(Piece.make(side, PieceType.QUEEN)).forEach {
-            sum += QUEEN_PST[getIndex(side, it)]
-        }
+
         board.getPieceLocation(Piece.make(side, PieceType.KING)).forEach {
             sum += (maxMoves - phase) * KING_OPENING_PST[getIndex(side, it)] / maxMoves +
                     phase * KING_END_PST[getIndex(side, it)] / maxMoves
