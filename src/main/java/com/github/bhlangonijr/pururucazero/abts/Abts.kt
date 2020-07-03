@@ -14,6 +14,7 @@ import com.github.bhlangonijr.pururucazero.eval.Evaluator
 import com.github.bhlangonijr.pururucazero.eval.MATE_VALUE
 import com.github.bhlangonijr.pururucazero.eval.MAX_VALUE
 import com.github.bhlangonijr.pururucazero.eval.MaterialEval
+import com.github.bhlangonijr.pururucazero.uci.isRepetition
 import kotlin.Comparator
 import kotlin.math.max
 import kotlin.math.min
@@ -243,26 +244,5 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
                     .or(board.getBitboard(Piece.WHITE_KING)))  == 0L ||
                     board.getBitboard(Side.BLACK).xor(board.getBitboard(Piece.BLACK_PAWN)
                             .or(board.getBitboard(Piece.BLACK_KING)))  == 0L
-
-    private fun isRepetition(board: Board): Boolean {
-
-        val i: Int = min(board.history.size - 1, board.halfMoveCounter)
-        var rep = 0
-        if (board.history.size >= 4) {
-            val lastKey: Int = board.history[board.history.size - 1]
-            var x = 2
-            while (x <= i) {
-                val k: Int = board.history[board.history.size - x - 1]
-                if (k == lastKey) {
-                    rep++
-                    if (rep >= 2) {
-                        return true
-                    }
-                }
-                x += 2
-            }
-        }
-        return false
-    }
 
 }
