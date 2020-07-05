@@ -14,7 +14,6 @@ import com.github.bhlangonijr.pururucazero.eval.Evaluator
 import com.github.bhlangonijr.pururucazero.eval.MATE_VALUE
 import com.github.bhlangonijr.pururucazero.eval.MAX_VALUE
 import com.github.bhlangonijr.pururucazero.eval.MaterialEval
-import com.github.bhlangonijr.pururucazero.uci.isRepetition
 import kotlin.Comparator
 import kotlin.math.max
 import kotlin.math.min
@@ -60,7 +59,7 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
         if (state.shouldStop()) {
             return 0L
         }
-        if (isRepetition(board)) {
+        if (board.isRepetition || board.isInsufficientMaterial) {
             return 0L
         }
 
@@ -158,7 +157,7 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
         if (state.shouldStop()) {
             return 0
         }
-        if (isRepetition(board)) {
+        if (board.isRepetition || board.isInsufficientMaterial) {
             return 0L
         }
         var newAlpha = alpha

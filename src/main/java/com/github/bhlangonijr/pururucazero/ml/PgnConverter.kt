@@ -9,10 +9,10 @@ class PgnConverter {
     companion object {
 
         private val statsEncoder = PositionStatsEncoder()
+        private val mapResult = mapOf("1-0" to 1.0f, "0-1" to 2.0f, "1/2-1/2" to 0.0f)
 
         fun pgnToDataSet(name: String): DataSet {
 
-            val mapResult = mapOf("1-0" to 1.0f, "0-1" to 2.0f, "1/2-1/2" to 0.0f)
             val pgn = PgnHolder(name)
             pgn.loadPgn()
 

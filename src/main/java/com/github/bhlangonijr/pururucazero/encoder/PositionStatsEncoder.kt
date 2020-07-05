@@ -77,7 +77,8 @@ class PositionStatsEncoder : BoardEncoder {
             }
         }
 
-        val allAttacks = pieceAttacks.entries.associateBy({ it.key }, { it.value.map { it.second }.fold(0L) { l1, l2 -> l1 or l2 } })
+        val allAttacks = pieceAttacks.entries.associateBy({ it.key },
+                { it.value.map { it.second }.fold(0L) { l1, l2 -> l1 or l2 } })
 
         val whiteAttacks = allAttacks.filter { it.key.pieceSide == Side.WHITE }.values.fold(0L) { l1, l2 -> l1 or l2 }
         val blackAttacks = allAttacks.filter { it.key.pieceSide == Side.BLACK }.values.fold(0L) { l1, l2 -> l1 or l2 }
@@ -172,7 +173,7 @@ class PositionStatsEncoder : BoardEncoder {
                 PieceType.KNIGHT -> Bitboard.getKnightAttacks(sq, allBb)
                 PieceType.BISHOP -> Bitboard.getBishopAttacks(board.bitboard, sq)
                 PieceType.ROOK -> Bitboard.getRookAttacks(board.bitboard, sq)
-                PieceType.QUEEN -> Bitboard.getRookAttacks(board.bitboard, sq)
+                PieceType.QUEEN -> Bitboard.getQueenAttacks(board.bitboard, sq)
                 PieceType.KING -> Bitboard.getKingAttacks(sq, allBb)
                 else -> 0
             }

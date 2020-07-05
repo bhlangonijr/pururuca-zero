@@ -24,7 +24,7 @@ class StatsEval constructor(var stats: Map<Float, ClassStats>) : Evaluator {
             when {
                 moves.size == 0 && isKingAttacked -> -1L
                 moves.size == 0 && !isKingAttacked -> 0L
-                board.isDraw -> 0
+                board.isRepetition || board.isInsufficientMaterial -> 0L
                 else -> {
                     state.nodes.incrementAndGet()
                     val encoded = statsEncoder.encode(board)
@@ -40,6 +40,7 @@ class StatsEval constructor(var stats: Map<Float, ClassStats>) : Evaluator {
                 }
             }
         } catch (e: Exception) {
+            println("Error in position ${e.message}")
             println("FEN error pos: ${board.fen}")
             println(board)
             e.printStackTrace()

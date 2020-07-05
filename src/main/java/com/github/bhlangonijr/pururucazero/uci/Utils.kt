@@ -57,24 +57,3 @@ fun getBoolean(tokens: List<String>, startToken: String, defaultValue: String): 
     return getString(tokens, startToken, defaultValue).toBoolean()
 }
 
-fun isRepetition(board: Board): Boolean {
-
-    val i: Int = min(board.history.size - 1, board.halfMoveCounter)
-    var rep = 0
-    if (board.history.size >= 4) {
-        val lastKey: Int = board.history[board.history.size - 1]
-        var x = 2
-        while (x <= i) {
-            val k: Int = board.history[board.history.size - x - 1]
-            if (k == lastKey) {
-                rep++
-                if (rep >= 2) {
-                    return true
-                }
-            }
-            x += 2
-        }
-    }
-    return false
-}
-
