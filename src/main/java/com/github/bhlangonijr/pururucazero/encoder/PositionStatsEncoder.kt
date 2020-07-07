@@ -7,6 +7,7 @@ import kotlin.math.max
 class PositionStatsEncoder : BoardEncoder {
 
     private val pieceList = Piece.values().filter { it != Piece.NONE }
+    private val sideList = Side.values()
     private val allBb = 0L.inv()
     private val pieceTypeValues = mapOf(
             PieceType.NONE to 0.0f,
@@ -24,13 +25,13 @@ class PositionStatsEncoder : BoardEncoder {
         // histogram of chebyshev distances between pieces of different color weighted by piece type
         val distanceOther = FloatArray(pieceList.size * pieceList.size) { Float.NaN }
         // pieces supported by other pieces of same color
-        val attacks = FloatArray(Side.values().size) { Float.NaN }
+        val attacks = FloatArray(sideList.size) { Float.NaN }
         // piece attacked by pieces of other color
         //val attacksOther = FloatArray(Side.values().size) { Float.NaN }
         // how many squares a piece type can move
-        val moves = FloatArray(Side.values().size) { Float.NaN }
+        val moves = FloatArray(sideList.size) { Float.NaN }
         // squares surrounding piece supported by other pieces of same color
-        val closeAttacks = FloatArray(Side.values().size) { Float.NaN }
+        val closeAttacks = FloatArray(sideList.size) { Float.NaN }
         // squares surrounding piece attacked by pieces of other color
         //val closeAttacksOther = FloatArray(Side.values().size) { Float.NaN }
         // number of white pawns occupying a given rank

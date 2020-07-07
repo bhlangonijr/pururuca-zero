@@ -1,7 +1,6 @@
 package com.github.bhlangonijr.pururucazero.mcts
 
 import com.github.bhlangonijr.chesslib.Board
-import com.github.bhlangonijr.chesslib.Side
 import com.github.bhlangonijr.chesslib.Square
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
@@ -14,10 +13,11 @@ import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicLong
 import java.util.stream.Collectors
+import kotlin.math.max
 
-const val DEFAULT_EPSILON = 1.47
+const val DEFAULT_TEMPERATURE = 1.47
 
-class Mcts(private var epsilon: Double = DEFAULT_EPSILON, private val evaluator: Evaluator? = null) : SearchEngine {
+class Mcts(private var temperature: Double = DEFAULT_TEMPERATURE, private val evaluator: Evaluator? = null) : SearchEngine {
 
     private val random = Random()
 
@@ -32,7 +32,7 @@ class Mcts(private var epsilon: Double = DEFAULT_EPSILON, private val evaluator:
             for (i in 1 until state.params.threads) {
                 executor[i].submit {
                     while (!state.shouldStop()) {
-                        val score = searchMove(node, state, boards[i], boards[i].sideToMove, 0)
+                        val score = searchMove(node, state, boards[i], 0)
                         node.updateStats(score)
                         simulations.incrementAndGet()
                     }
@@ -43,16 +43,17 @@ class Mcts(private var epsilon: Double = DEFAULT_EPSILON, private val evaluator:
         var timestamp = System.currentTimeMillis()
         var bestScore = -MAX_VALUE
         while (!state.shouldStop()) {
-            val score = searchMove(node, state, boards[0], boards[0].sideToMove, 0)
+            val score = searchMove(node, state, boards[0], 0)
             node.updateStats(score)
             simulations.incrementAndGet()
-            if ((System.currentTimeMillis() - timestamp) > 5000L) {
-                val nodes = state.nodes
+            if ((System.currentTimeMillis() - timestamp) > 3000L) {
+                val nodes = state.nodes.get()
                 val time = System.currentTimeMillis() - state.params.initialTime
                 if (score > bestScore) {
                     bestScore = score
                 }
-                println("info depth 1 score cp $score time $time nodes $nodes pv ${node.pickBest().move}")
+                val nps = nodes / (max(time / 1000L, 1L))
+                println("info depth 1 score cp $score time $time nps $nps nodes $nodes pv ${node.pickBest().move}")
                 println("info string total nodes ${state.nodes.get()}")
                 timestamp = System.currentTimeMillis()
             }
@@ -65,23 +66,23 @@ class Mcts(private var epsilon: Double = DEFAULT_EPSILON, private val evaluator:
         return node.pickBest().move
     }
 
-    private fun searchMove(node: Node, state: SearchState, board: Board, player: Side, ply: Int): Long {
+    private fun searchMove(node: Node, state: SearchState, board: Board, ply: Int): Long {
 
+        state.nodes.incrementAndGet()
         if (node.terminal.get()) {
             return node.result.get()
         }
 
-        state.nodes.incrementAndGet()
         val moves = MoveGenerator.generateLegalMoves(board)
         val isKingAttacked = board.isKingAttacked
         return when {
             moves.size == 0 && isKingAttacked -> {
                 node.terminate(-1)
-                -1
+                -1L
             }
             moves.size == 0 && !isKingAttacked -> {
                 node.terminate(0)
-                0
+                0L
             }
             node.isLeaf() -> {
                 if (ply == 0 && state.params.searchMoves.isNotBlank()) {
@@ -94,10 +95,10 @@ class Mcts(private var epsilon: Double = DEFAULT_EPSILON, private val evaluator:
                 } else {
                     node.expand(moves, board.sideToMove)
                 }
-                val childNode = node.select(epsilon, board, player)
+                val childNode = node.select(temperature)
                 board.doMove(childNode.move)
                 val score = if (evaluator == null)
-                    -playOut(state, board, ply + 1, player, childNode.move)
+                    -playOut(state, board, ply + 1, childNode.move)
                 else
                     -evaluator.evaluate(state, board)
                 childNode.updateStats(score)
@@ -105,9 +106,9 @@ class Mcts(private var epsilon: Double = DEFAULT_EPSILON, private val evaluator:
                 score
             }
             else -> {
-                val childNode = node.select(epsilon, board, player)
+                val childNode = node.select(temperature)
                 board.doMove(childNode.move)
-                val score = -searchMove(childNode, state, board, player, ply + 1)
+                val score = -searchMove(childNode, state, board, ply + 1)
                 childNode.updateStats(score)
                 board.undoMove()
                 score
@@ -116,8 +117,9 @@ class Mcts(private var epsilon: Double = DEFAULT_EPSILON, private val evaluator:
     }
 
     // play out a sequence of random moves until the end of the game
-    fun playOut(state: SearchState, board: Board, ply: Int, player: Side, lastMove: Move): Long {
+    private fun playOut(state: SearchState, board: Board, ply: Int, lastMove: Move): Long {
 
+        state.nodes.incrementAndGet()
         var m: Move? = null
         return try {
 
@@ -126,7 +128,7 @@ class Mcts(private var epsilon: Double = DEFAULT_EPSILON, private val evaluator:
             when {
                 moves.size == 0 && isKingAttacked -> -1L
                 moves.size == 0 && !isKingAttacked -> 0L
-                board.isDraw -> 0L
+                board.isRepetition || board.isInsufficientMaterial -> 0L
                 else -> {
                     val move = moves[random.nextInt(moves.size)]
                     val kq = board.getKingSquare(board.sideToMove.flip())
@@ -137,8 +139,7 @@ class Mcts(private var epsilon: Double = DEFAULT_EPSILON, private val evaluator:
                     }
                     m = move
                     board.doMove(move)
-                    state.nodes.incrementAndGet()
-                    val playOutScore = -playOut(state, board, ply + 1, player, move)
+                    val playOutScore = -playOut(state, board, ply + 1, move)
                     board.undoMove()
                     return playOutScore
                 }
@@ -147,6 +148,7 @@ class Mcts(private var epsilon: Double = DEFAULT_EPSILON, private val evaluator:
             println("Error: ${e.message} - $m")
             println("FEN error pos: ${board.fen}")
             println(board)
+            println("error: ${e.message}")
             e.printStackTrace()
             0L
         }

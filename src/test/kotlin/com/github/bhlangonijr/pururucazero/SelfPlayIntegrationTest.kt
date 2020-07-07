@@ -43,7 +43,7 @@ class SelfPlayIntegrationTest {
 
         val abts = Abts()
         val moves = MoveList(board.fen)
-        val state = SearchState( SearchParams(depth = 4), board)
+        val state = SearchState(SearchParams(depth = 4), board)
         while (!board.isDraw && !board.isMated) {
             println("Search: ${board.fen} - \n$board")
             val move = abts.rooSearch(state)
