@@ -68,7 +68,7 @@ class MaterialEvalTest {
 
         board.loadFromFen("rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1")
 
-        assertEquals(40 , eval.scorePieceSquare(board, Side.WHITE))
+        assertEquals(40, eval.scorePieceSquare(board, Side.WHITE))
 
         board.loadFromFen("rnbqkb1r/pppppppp/7n/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 1")
 

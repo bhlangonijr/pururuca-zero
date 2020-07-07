@@ -104,7 +104,7 @@ class AbtsTest {
         val board = Board()
         board.loadFromFen("r4rk1/1pp1nppp/p1q5/2bp4/5P2/1B3QPP/PP1B4/1K1RR3 b - - 7 21")
 
-        val params = SearchParams(blackTime= 180804, whiteTime= 184380)
+        val params = SearchParams(blackTime = 180804, whiteTime = 184380)
         val state = SearchState(params, board)
 
         val search = Abts()
@@ -119,7 +119,7 @@ class AbtsTest {
         val board = Board()
         board.loadFromFen("r1bqk1nr/ppp2ppp/2n1p3/3pP3/1b1P3P/2P5/PP3PP1/RNBQKBNR b KQkq - 0 5")
 
-        val params = SearchParams(blackTime=271076, whiteTime=278894)
+        val params = SearchParams(blackTime = 271076, whiteTime = 278894)
         val state = SearchState(params, board)
 
         val search = Abts()

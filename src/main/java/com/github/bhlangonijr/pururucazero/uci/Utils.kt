@@ -1,8 +1,5 @@
 package com.github.bhlangonijr.pururucazero.uci
 
-import com.github.bhlangonijr.chesslib.Board
-import kotlin.math.min
-
 fun mergeTokens(tokens: List<String>, startToken: String, separator: String): String {
 
     val start = tokens.indexOf(startToken)

@@ -14,7 +14,6 @@ import com.github.bhlangonijr.pururucazero.eval.Evaluator
 import com.github.bhlangonijr.pururucazero.eval.MATE_VALUE
 import com.github.bhlangonijr.pururucazero.eval.MAX_VALUE
 import com.github.bhlangonijr.pururucazero.eval.MaterialEval
-import kotlin.Comparator
 import kotlin.math.max
 import kotlin.math.min
 
@@ -240,8 +239,8 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
 
     private fun isNullMoveAllowed(board: Board): Boolean =
             board.getBitboard(Side.WHITE).xor(board.getBitboard(Piece.WHITE_PAWN)
-                    .or(board.getBitboard(Piece.WHITE_KING)))  == 0L ||
+                    .or(board.getBitboard(Piece.WHITE_KING))) == 0L ||
                     board.getBitboard(Side.BLACK).xor(board.getBitboard(Piece.BLACK_PAWN)
-                            .or(board.getBitboard(Piece.BLACK_KING)))  == 0L
+                            .or(board.getBitboard(Piece.BLACK_KING))) == 0L
 
 }
