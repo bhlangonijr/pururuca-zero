@@ -22,6 +22,7 @@ class XgBoostIntegrationTest {
         params["max_depth"] = 3
         params["nthread"] = 5
         params["num_class"] = 3
+        params["verbosity"] = 3
 
         //params["eval_metric"] = "mlogloss"
         params["objective"] = "multi:softprob"
@@ -31,7 +32,7 @@ class XgBoostIntegrationTest {
         watches["test"] = test
 
         val round = 50
-
+        println("Training")
         val booster = XGBoost.train(data, params, round, watches, null, null)
 
         val predicts = booster.predict(test)

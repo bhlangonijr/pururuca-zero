@@ -113,7 +113,7 @@ class Abts constructor(private var evaluator: Evaluator = MaterialEval(),
                 score = -search(board, -newBeta, -newAlpha, newDepth, ply + 1, state)
             } else {
                 score = -search(board, -newAlpha - 1, -newAlpha, newDepth, ply + 1, state)
-                if (score > newAlpha && score < newBeta) {
+                if (score in (newAlpha + 1) until newBeta) {
                     score = -search(board, -newBeta, -newAlpha, newDepth, ply + 1, state)
                 }
             }
