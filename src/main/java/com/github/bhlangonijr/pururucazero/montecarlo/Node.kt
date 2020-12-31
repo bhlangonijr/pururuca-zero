@@ -1,15 +1,16 @@
-package com.github.bhlangonijr.pururucazero.mcts
+package com.github.bhlangonijr.pururucazero.montecarlo
 
 import com.github.bhlangonijr.chesslib.Side
 import com.github.bhlangonijr.chesslib.move.Move
-import com.github.bhlangonijr.chesslib.move.MoveList
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.math.ln
 import kotlin.math.sqrt
 
-class Node(val move: Move,
-           val side: Side) {
+class Node(
+    val move: Move,
+    val side: Side
+) {
 
     val hits = AtomicLong(0)
     val wins = AtomicLong(0)
@@ -29,7 +30,7 @@ class Node(val move: Move,
         return selected
     }
 
-    fun expand(moves: MoveList, side: Side): List<Node>? {
+    fun expand(moves: List<Move>, side: Side): List<Node>? {
 
         if (children.isEmpty()) {
             synchronized(this as Any) {
@@ -42,6 +43,7 @@ class Node(val move: Move,
         return children
     }
 
+    // UCT
     fun select(temperature: Double): Node {
 
         var selected: Node = children[0]

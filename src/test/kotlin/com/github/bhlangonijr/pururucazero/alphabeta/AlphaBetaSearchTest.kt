@@ -1,4 +1,4 @@
-package com.github.bhlangonijr.pururucazero.abts
+package com.github.bhlangonijr.pururucazero.alphabeta
 
 import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.chesslib.Piece
@@ -14,7 +14,7 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Test
 
 @ExperimentalStdlibApi
-class AbtsTest {
+class AlphaBetaSearchTest {
 
     @Test
     fun `Search best move avoiding lose rook`() {
@@ -25,7 +25,7 @@ class AbtsTest {
         val params = SearchParams(depth = 4)
         val state = SearchState(params, board)
 
-        val bestMove = Abts().rooSearch(state)
+        val bestMove = AlphaBetaSearch().rooSearch(state)
         assertTrue(Move(Square.D1, Square.E1) == bestMove || Move(Square.D1, Square.E2) == bestMove)
     }
 
@@ -38,7 +38,7 @@ class AbtsTest {
         val params = SearchParams(depth = 4)
         val state = SearchState(params, board)
 
-        val bestMove = Abts().rooSearch(state)
+        val bestMove = AlphaBetaSearch().rooSearch(state)
         assertEquals(Move(Square.E4, Square.F2), bestMove)
     }
 
@@ -51,7 +51,7 @@ class AbtsTest {
         val params = SearchParams(depth = 4)
         val state = SearchState(params, board)
 
-        val bestMove = Abts().rooSearch(state)
+        val bestMove = AlphaBetaSearch().rooSearch(state)
         assertEquals(Move(Square.D1, Square.E2), bestMove)
     }
 
@@ -64,7 +64,7 @@ class AbtsTest {
         val params = SearchParams(depth = 4)
         val state = SearchState(params, board)
 
-        val bestMove = Abts().rooSearch(state)
+        val bestMove = AlphaBetaSearch().rooSearch(state)
         assertEquals(Move(Square.F2, Square.H1), bestMove)
     }
 
@@ -78,7 +78,7 @@ class AbtsTest {
         val state = SearchState(params, board)
 
         val tt = TranspositionTable()
-        val search = Abts(transpositionTable = tt)
+        val search = AlphaBetaSearch(transpositionTable = tt)
         val bestMove = search.rooSearch(state)
         assertEquals(Move(Square.G8, Square.F6), bestMove)
     }
@@ -92,7 +92,7 @@ class AbtsTest {
         val params = SearchParams(depth = 4)
         val state = SearchState(params, board)
 
-        val search = Abts()
+        val search = AlphaBetaSearch()
         val bestMove = search.rooSearch(state)
         assertNotEquals(Move(Square.F6, Square.E4), bestMove)
 
@@ -107,7 +107,7 @@ class AbtsTest {
         val params = SearchParams(blackTime = 180804, whiteTime = 184380)
         val state = SearchState(params, board)
 
-        val search = Abts()
+        val search = AlphaBetaSearch()
         val bestMove = search.rooSearch(state)
         assertNotEquals(Move(Square.NONE, Square.NONE), bestMove)
 
@@ -122,7 +122,7 @@ class AbtsTest {
         val params = SearchParams(blackTime = 271076, whiteTime = 278894)
         val state = SearchState(params, board)
 
-        val search = Abts()
+        val search = AlphaBetaSearch()
         val bestMove = search.rooSearch(state)
         assertNotEquals(Move(Square.NONE, Square.NONE), bestMove)
 
@@ -132,16 +132,16 @@ class AbtsTest {
     fun `Search mate KQ vs K`() {
 
         val board = Board()
-        board.loadFromFen("5k2/7Q/8/8/8/8/8/1K6 w - - 22 12 - ")
+        board.loadFromFen("5k2/7Q/8/3K4/8/8/8/8 w - - 22 12")
 
         val params = SearchParams(depth = 7)
         val state = SearchState(params, board)
 
-        val search = Abts()
+        val search = AlphaBetaSearch()
         val bestMove = search.rooSearch(state)
         val whiteKingSquare = board.getPieceLocation(Piece.WHITE_KING)
         //get white king closer to black king
-        assertTrue(bestMove.from == whiteKingSquare[0] && bestMove.to.rank == Rank.RANK_2)
+        assertTrue(bestMove.from == whiteKingSquare[0] && bestMove.to.rank == Rank.RANK_6)
 
     }
 
@@ -154,8 +154,8 @@ class AbtsTest {
         val params = SearchParams(depth = 4)
         val state = SearchState(params, board)
 
-        val search = Abts()
-        val score = search.quiesce(board, -MAX_VALUE, MAX_VALUE, 0, 1, state)
+        val search = AlphaBetaSearch()
+        val score = search.quiesce(board, -MAX_VALUE, MAX_VALUE, 1, state)
         println("score = $score")
 
     }
@@ -169,8 +169,8 @@ class AbtsTest {
         val params = SearchParams(depth = 4)
         val state = SearchState(params, board)
 
-        val search = Abts()
-        val score = search.quiesce(board, -MAX_VALUE, MAX_VALUE, 0, 1, state)
+        val search = AlphaBetaSearch()
+        val score = search.quiesce(board, -MAX_VALUE, MAX_VALUE, 1, state)
         println("score = $score")
 
     }

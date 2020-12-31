@@ -48,8 +48,10 @@ class XgBoostIntegrationTest {
 fun pgnToDMatrix(name: String): DMatrix {
 
     val data = pgnToDataSet(name)
-    val matrix = DMatrix(data.rowHeaders, data.colIndex,
-            data.features, DMatrix.SparseType.CSR, data.labels.size)
+    val matrix = DMatrix(
+        data.rowHeaders, data.colIndex,
+        data.features, DMatrix.SparseType.CSR, data.labels.size
+    )
     matrix.label = data.labels
     return matrix
 }

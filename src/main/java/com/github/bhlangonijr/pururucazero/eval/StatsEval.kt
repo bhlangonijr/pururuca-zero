@@ -8,10 +8,10 @@ import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import com.github.bhlangonijr.pururucazero.SearchState
 import com.github.bhlangonijr.pururucazero.encoder.Matrix.Companion.arrayToCsr
 import com.github.bhlangonijr.pururucazero.encoder.PositionStatsEncoder
-import com.github.bhlangonijr.pururucazero.ml.ClassStats
+import com.github.bhlangonijr.pururucazero.ml.DataStats
 import com.github.bhlangonijr.pururucazero.ml.NaiveBayes
 
-class StatsEval constructor(var stats: Map<Float, ClassStats>) : Evaluator {
+class StatsEval constructor(var stats: DataStats) : Evaluator {
 
     private val nb = NaiveBayes()
     private val statsEncoder = PositionStatsEncoder()
@@ -33,8 +33,8 @@ class StatsEval constructor(var stats: Map<Float, ClassStats>) : Evaluator {
                     return when {
                         prediction == 1.0f && board.sideToMove == Side.WHITE -> 1L
                         prediction == 1.0f && board.sideToMove == Side.BLACK -> -1L
-                        prediction == 2.0f && board.sideToMove == Side.BLACK -> 1L
-                        prediction == 2.0f && board.sideToMove == Side.WHITE -> -1L
+                        prediction == -1.0f && board.sideToMove == Side.BLACK -> 1L
+                        prediction == -1.0f && board.sideToMove == Side.WHITE -> -1L
                         else -> 0L
                     }
                 }

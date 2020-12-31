@@ -5,7 +5,7 @@ import com.github.bhlangonijr.chesslib.Side
 import com.github.bhlangonijr.chesslib.Square
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveList
-import com.github.bhlangonijr.pururucazero.abts.MAX_DEPTH
+import com.github.bhlangonijr.pururucazero.alphabeta.MAX_DEPTH
 import java.util.concurrent.atomic.AtomicLong
 
 class SearchState(val params: SearchParams, val board: Board) {

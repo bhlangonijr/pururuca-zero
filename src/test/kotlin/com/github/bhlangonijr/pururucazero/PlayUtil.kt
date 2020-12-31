@@ -18,16 +18,22 @@ fun printResult(moves: MoveList, board: Board) {
     println("final fen: ${board.fen}")
 }
 
-fun play(board: Board,
-         player1: SearchEngine,
-         player2: SearchEngine,
-         time: Long = 180000,
-         increment: Long = 0): Move {
+fun play(
+    board: Board,
+    player1: SearchEngine,
+    player2: SearchEngine,
+    time: Long = 180000,
+    increment: Long = 0
+): Move {
 
-    val params1 = SearchParams(whiteTime = time, whiteIncrement = increment,
-            blackTime = time, blackIncrement = increment)
-    val params2 = SearchParams(whiteTime = time, whiteIncrement = increment,
-            blackTime = time, blackIncrement = increment)
+    val params1 = SearchParams(
+        whiteTime = time, whiteIncrement = increment,
+        blackTime = time, blackIncrement = increment
+    )
+    val params2 = SearchParams(
+        whiteTime = time, whiteIncrement = increment,
+        blackTime = time, blackIncrement = increment
+    )
 
     return if (board.sideToMove == Side.WHITE) {
         player1.rooSearch(SearchState(params1, board))

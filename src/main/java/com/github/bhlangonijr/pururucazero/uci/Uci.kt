@@ -2,9 +2,9 @@ package com.github.bhlangonijr.pururucazero.uci
 
 import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.pururucazero.*
-import com.github.bhlangonijr.pururucazero.abts.Abts
-import com.github.bhlangonijr.pururucazero.abts.TranspositionTable
-import com.github.bhlangonijr.pururucazero.mcts.Mcts
+import com.github.bhlangonijr.pururucazero.alphabeta.AlphaBetaSearch
+import com.github.bhlangonijr.pururucazero.alphabeta.TranspositionTable
+import com.github.bhlangonijr.pururucazero.montecarlo.MonteCarloSearch
 
 const val ALGO_MCTS_OPTION = "MonteCarlo"
 const val ALGO_ABTS_OPTION = "AlphaBeta"
@@ -35,8 +35,10 @@ class Uci constructor(private var search: Search) {
         println("id author $AUTHOR")
         println("option name Hash type spin default 128 min 1 max 16384")
         println("option name Threads type spin default 1 min 1 max 128")
-        println("option name SearchAlgorithm type combo default $ALGO_MCTS_OPTION " +
-                "var $ALGO_ABTS_OPTION var $ALGO_MCTS_OPTION")
+        println(
+            "option name SearchAlgorithm type combo default $ALGO_MCTS_OPTION " +
+                    "var $ALGO_ABTS_OPTION var $ALGO_MCTS_OPTION"
+        )
         println("uciok")
         return true
     }
@@ -82,18 +84,18 @@ class Uci constructor(private var search: Search) {
     private fun handleGo(tokens: List<String>): Boolean {
 
         val params = SearchParams(
-                whiteTime = getLong(tokens, "wtime", "6000000"),
-                blackTime = getLong(tokens, "btime", "6000000"),
-                whiteIncrement = getLong(tokens, "winc", "0"),
-                blackIncrement = getLong(tokens, "binc", "0"),
-                moveTime = getLong(tokens, "movetime", "0"),
-                movesToGo = getInt(tokens, "movestogo", "0"),
-                depth = getInt(tokens, "depth", "100"),
-                nodes = getLong(tokens, "nodes", "5000000000"),
-                infinite = getBoolean(tokens, "infinite", "false"),
-                ponder = getBoolean(tokens, "ponder", "false"),
-                searchMoves = getString(tokens, "searchmoves", ""),
-                threads = search.threads
+            whiteTime = getLong(tokens, "wtime", "6000000"),
+            blackTime = getLong(tokens, "btime", "6000000"),
+            whiteIncrement = getLong(tokens, "winc", "0"),
+            blackIncrement = getLong(tokens, "binc", "0"),
+            moveTime = getLong(tokens, "movetime", "0"),
+            movesToGo = getInt(tokens, "movestogo", "0"),
+            depth = getInt(tokens, "depth", "100"),
+            nodes = getLong(tokens, "nodes", "5000000000"),
+            infinite = getBoolean(tokens, "infinite", "false"),
+            ponder = getBoolean(tokens, "ponder", "false"),
+            searchMoves = getString(tokens, "searchmoves", ""),
+            threads = search.threads
         )
 
         return search.start(params)
@@ -106,13 +108,13 @@ class Uci constructor(private var search: Search) {
         val value = tokens[4]
 
         when (option) {
-            "Hash" -> search = Search(Board(), Abts(transpositionTable = TranspositionTable(value.toInt())))
+            "Hash" -> search = Search(Board(), AlphaBetaSearch(transpositionTable = TranspositionTable(value.toInt())))
             "Threads" -> search.threads = value.toInt()
             "SearchAlgorithm" -> {
                 search = if (value == ALGO_ABTS_OPTION) {
-                    Search(Board(), Abts())
+                    Search(Board(), AlphaBetaSearch())
                 } else {
-                    Search(Board(), Mcts())
+                    Search(Board(), MonteCarloSearch())
                 }
             }
             else -> println("info string ignoring unsupported uci option")

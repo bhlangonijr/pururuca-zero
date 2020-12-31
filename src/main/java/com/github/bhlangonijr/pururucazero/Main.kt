@@ -1,7 +1,7 @@
 package com.github.bhlangonijr.pururucazero
 
 import com.github.bhlangonijr.chesslib.Board
-import com.github.bhlangonijr.pururucazero.mcts.Mcts
+import com.github.bhlangonijr.pururucazero.montecarlo.MonteCarloSearch
 import com.github.bhlangonijr.pururucazero.uci.Uci
 import kotlin.system.exitProcess
 
@@ -14,7 +14,7 @@ class Main
 @ExperimentalStdlibApi
 fun main() {
 
-    val search = Search(Board(), Mcts())
+    val search = Search(Board(), MonteCarloSearch())
     val uci = Uci(search)
     while (uci.exec(readLine()!!)) {
     }

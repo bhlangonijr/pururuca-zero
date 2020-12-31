@@ -1,7 +1,9 @@
 package com.github.bhlangonijr.pururucazero.ml
 
-data class DataSet(val features: FloatArray, val labels: FloatArray,
-                   val rowHeaders: LongArray, val colIndex: IntArray) {
+data class DataSet(
+    val features: FloatArray, val labels: FloatArray,
+    val rowHeaders: LongArray, val colIndex: IntArray
+) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

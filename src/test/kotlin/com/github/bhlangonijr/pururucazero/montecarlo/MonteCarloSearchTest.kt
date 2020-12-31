@@ -1,4 +1,4 @@
-package com.github.bhlangonijr.pururucazero.mcts
+package com.github.bhlangonijr.pururucazero.montecarlo
 
 import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.chesslib.Piece
@@ -10,7 +10,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 
-class MctsTest {
+class MonteCarloSearchTest {
 
     @Test
     fun `Search mate in 1 with rook`() {
@@ -20,7 +20,7 @@ class MctsTest {
         val params = SearchParams(nodes = 5000)
         val state = SearchState(params, board)
 
-        val bestMove = Mcts().rooSearch(state)
+        val bestMove = MonteCarloSearch().rooSearch(state)
 
         assertEquals(Move(Square.C5, Square.C8), bestMove)
     }
@@ -33,7 +33,7 @@ class MctsTest {
         val params = SearchParams(nodes = 5000)
         val state = SearchState(params, board)
 
-        val bestMove = Mcts().rooSearch(state)
+        val bestMove = MonteCarloSearch().rooSearch(state)
 
         assertEquals(Move(Square.C4, Square.D5), bestMove)
     }
@@ -46,7 +46,7 @@ class MctsTest {
         val params = SearchParams(nodes = 10000)
         val state = SearchState(params, board)
 
-        val bestMove = Mcts().rooSearch(state)
+        val bestMove = MonteCarloSearch().rooSearch(state)
 
         assertEquals(Move(Square.C1, Square.C8), bestMove)
     }
@@ -59,7 +59,7 @@ class MctsTest {
         val params = SearchParams(nodes = 10000)
         val state = SearchState(params, board)
 
-        val bestMove = Mcts().rooSearch(state)
+        val bestMove = MonteCarloSearch().rooSearch(state)
 
         assertEquals(Move(Square.F7, Square.F8, Piece.WHITE_QUEEN), bestMove)
     }

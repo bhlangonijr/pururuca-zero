@@ -1,10 +1,9 @@
-package com.github.bhlangonijr.pururucazero.mcts
+package com.github.bhlangonijr.pururucazero.montecarlo
 
 import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.chesslib.Square
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
-import com.github.bhlangonijr.chesslib.move.MoveList
 import com.github.bhlangonijr.pururucazero.SearchEngine
 import com.github.bhlangonijr.pururucazero.SearchState
 import com.github.bhlangonijr.pururucazero.eval.Evaluator
@@ -15,9 +14,13 @@ import java.util.concurrent.atomic.AtomicLong
 import java.util.stream.Collectors
 import kotlin.math.max
 
-const val DEFAULT_TEMPERATURE = 1.47
+const val DEFAULT_TEMPERATURE = 1.5
 
-class Mcts(private var temperature: Double = DEFAULT_TEMPERATURE, private val evaluator: Evaluator? = null) : SearchEngine {
+class MonteCarloSearch(
+    private var temperature: Double = DEFAULT_TEMPERATURE,
+    private val evaluator: Evaluator? = null
+) :
+    SearchEngine {
 
     private val random = Random()
 
@@ -86,11 +89,11 @@ class Mcts(private var temperature: Double = DEFAULT_TEMPERATURE, private val ev
             }
             node.isLeaf() -> {
                 if (ply == 0 && state.params.searchMoves.isNotBlank()) {
-                    val searchMoves = MoveList()
+                    val searchMoves = arrayListOf<Move>()
                     searchMoves.addAll(moves
-                            .stream()
-                            .filter { state.params.searchMoves.contains(it.toString()) }
-                            .collect(Collectors.toList()))
+                        .stream()
+                        .filter { state.params.searchMoves.contains(it.toString()) }
+                        .collect(Collectors.toList()))
                     node.expand(searchMoves, board.sideToMove)
                 } else {
                     node.expand(moves, board.sideToMove)
@@ -123,7 +126,7 @@ class Mcts(private var temperature: Double = DEFAULT_TEMPERATURE, private val ev
         var m: Move? = null
         return try {
 
-            val moves = MoveGenerator.generateLegalMoves(board)
+            val moves = board.legalMoves()
             val isKingAttacked = board.isKingAttacked
             when {
                 moves.size == 0 && isKingAttacked -> -1L
@@ -152,6 +155,5 @@ class Mcts(private var temperature: Double = DEFAULT_TEMPERATURE, private val ev
             e.printStackTrace()
             0L
         }
-
     }
 }
