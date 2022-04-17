@@ -24,7 +24,7 @@ class XgBoostIntegrationTest {
         params["num_class"] = 3
         params["verbosity"] = 3
 
-        //params["eval_metric"] = "mlogloss"
+        params["eval_metric"] = "mlogloss"
         params["objective"] = "multi:softprob"
 
         val watches = HashMap<String, DMatrix>()
@@ -36,7 +36,7 @@ class XgBoostIntegrationTest {
         val booster = XGBoost.train(data, params, round, watches, null, null)
 
         val predicts = booster.predict(test)
-
+        println("predicts: $predicts")
         predicts.forEachIndexed { i1, floats ->
             floats.forEachIndexed { i2, m ->
                 println("$i1,$i2 = $m [" + test.label[i1] + "]")
@@ -49,8 +49,11 @@ fun pgnToDMatrix(name: String): DMatrix {
 
     val data = pgnToDataSet(name)
     val matrix = DMatrix(
-        data.rowHeaders, data.colIndex,
-        data.features, DMatrix.SparseType.CSR, data.labels.size
+        data.rowHeaders,
+        data.colIndex,
+        data.features,
+        DMatrix.SparseType.CSR,
+        data.labels.size
     )
     matrix.label = data.labels
     return matrix

@@ -83,8 +83,35 @@ class SelfPlayIntegrationTest {
         val data = pgnToDataSet("src/test/resources/Stockfish_DD_64-bit_4CPU.pgn")
         val nb = NaiveBayes()
         val stats = nb.train(data)
+        println(stats)  
+
+    }
+
+    @Test
+    fun `Match Alpha beta engine with statistical assisted playing`() {
+
+        //val data = pgnToDataSet("/Users/bhlangonijr/Downloads/CCRL-4040.[1162348].pgn")
+        val data = pgnToDataSet("src/test/resources/Stockfish_DD_64-bit_4CPU.pgn")
+        val nb = NaiveBayes()
+        val stats = nb.train(data)
         println(stats)
 
+        val board = Board()
+        board.loadFromFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq -")
+
+        val mcts1 = MonteCarloSearch(1.5, StatsEval(stats))
+        val mcts2 = AlphaBetaSearch()
+
+        val moves = MoveList(board.fen)
+        while (!board.isDraw && !board.isMated) {
+            val move = play(board, mcts1, mcts2, 60000)
+            if (move != Move(Square.NONE, Square.NONE) && board.doMove(move)) {
+                moves += move
+                println("Played: $move = ${board.fen}")
+            }
+        }
+
+        printResult(moves, board)
     }
 
     @Test
@@ -100,7 +127,7 @@ class SelfPlayIntegrationTest {
         board.loadFromFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq -")
 
         val mcts1 = MonteCarloSearch(1.5, StatsEval(stats))
-        val mcts2 = AlphaBetaSearch()
+        val mcts2 = MonteCarloSearch()
 
         val moves = MoveList(board.fen)
         while (!board.isDraw && !board.isMated) {

@@ -100,10 +100,8 @@ class MonteCarloSearch(
                 }
                 val childNode = node.select(temperature)
                 board.doMove(childNode.move)
-                val score = if (evaluator == null)
-                    -playOut(state, board, ply + 1, childNode.move)
-                else
-                    -evaluator.evaluate(state, board)
+                val score = evaluator?.let { -it.evaluate(state, board) }
+                    ?: -playOut(state, board, ply + 1, childNode.move)
                 childNode.updateStats(score)
                 board.undoMove()
                 score
