@@ -54,7 +54,13 @@ class PgnConverter {
                         "Labels.size [${labels.size}] features.size [${data.size}]"
             )
 
-            return DataSet(data.toFloatArray(), labels.toFloatArray(), rowHeaders.toLongArray(), colIndex.toIntArray())
+            return DataSet(
+                data.toFloatArray(),
+                labels.toFloatArray(),
+                rowHeaders.toLongArray(),
+                colIndex.toIntArray(),
+                mapOf(1.0f to "1-0", 2.0f to "0-1", 0.0f to "1/2-1/2")
+            )
         }
     }
 }

@@ -1,15 +1,13 @@
 package com.github.bhlangonijr.pururucazero.ml
 
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertTrue
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class NaiveBayesTest {
 
     @Test
     fun testNaiveBayesCsr() {
-
-        println("Naive Bayes Training")
 
         val data = arrayListOf(
             6.0f, 180.0f, 12.0f,
@@ -22,6 +20,7 @@ class NaiveBayesTest {
             5.75f, 150.0f, 9.0f
         ).toFloatArray()
 
+        val labelDescriptions = mapOf(Pair(0.0f, "male"), Pair(1.0f, "female"))
         val test = arrayListOf(6.0f, 130.0f, 8.0f).toFloatArray()
         val testColIndex = intArrayOf(0, 1, 2)
 
@@ -31,20 +30,17 @@ class NaiveBayesTest {
 
         val nb = NaiveBayes()
 
-        val stats = nb.train(data, labels, rowIndex, colIndex)
-        println(stats)
+        val stats = nb.train(data, labels, rowIndex, colIndex, labelDescriptions)
         val classification = nb.classify(test, testColIndex, stats)
 
         println(classification.predictions.values.sortedBy { it.probability }.reversed())
-
-        assertTrue(classification.predictions.values.sortedBy { it.probability }.reversed()[0].probability > 0.99)
+        assertTrue(classification.predictions.values.sortedBy { it.probability }.reversed()[0].probability > 0.70)
         assertEquals(1.0f, classification.predict())
     }
 
     @Test
     fun testBatchNaiveBayesCsr() {
 
-        println("Batch Naive Bayes Training")
         val data1 = arrayListOf(
             6.0f, 180.0f, 12.0f,
             5.58f, 170.0f, 12.0f,
@@ -59,7 +55,7 @@ class NaiveBayesTest {
             5.75f, 150.0f, 9.0f
         ).toFloatArray()
 
-
+        val labelDescriptions = mapOf(Pair(0.0f, "male"), Pair(1.0f, "female"))
         val test = arrayListOf(6.0f, 130.0f, 8.0f).toFloatArray()
         val testColIndex = intArrayOf(0, 1, 2)
 
@@ -71,8 +67,8 @@ class NaiveBayesTest {
         val colIndex2 = intArrayOf(0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2)
         val rowIndex2 = longArrayOf(0, 3, 6, 9, 12)
 
-        val stats1 = DataStats()
-        val stats2 = DataStats()
+        val stats1 = DataStats(labels = labels1, labelDescriptions = labelDescriptions)
+        val stats2 = DataStats(labels = labels2, labelDescriptions = labelDescriptions)
         val nb = NaiveBayes()
 
         nb.train(stats1, data1, labels1, rowIndex1, colIndex1)
@@ -84,7 +80,7 @@ class NaiveBayesTest {
 
         println(classification.predictions.values.sortedBy { it.probability }.reversed())
 
-        assertTrue(classification.predictions.values.sortedBy { it.probability }.reversed()[0].probability > 0.99)
+        assertTrue(classification.predictions.values.sortedBy { it.probability }.reversed()[0].probability > 0.7)
         assertEquals(1.0f, classification.predict())
     }
 }

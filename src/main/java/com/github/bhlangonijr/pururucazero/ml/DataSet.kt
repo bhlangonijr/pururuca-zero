@@ -1,8 +1,11 @@
 package com.github.bhlangonijr.pururucazero.ml
 
 data class DataSet(
-    val features: FloatArray, val labels: FloatArray,
-    val rowHeaders: LongArray, val colIndex: IntArray
+    val features: FloatArray,
+    val labels: FloatArray,
+    val rowHeaders: LongArray,
+    val colIndex: IntArray,
+    val labelDescriptions: Map<Float, String>
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -14,6 +17,7 @@ data class DataSet(
         if (!labels.contentEquals(other.labels)) return false
         if (!rowHeaders.contentEquals(other.rowHeaders)) return false
         if (!colIndex.contentEquals(other.colIndex)) return false
+        if (labelDescriptions != other.labelDescriptions) return false
 
         return true
     }
@@ -23,6 +27,8 @@ data class DataSet(
         result = 31 * result + labels.contentHashCode()
         result = 31 * result + rowHeaders.contentHashCode()
         result = 31 * result + colIndex.contentHashCode()
+        result = 31 * result + labelDescriptions.hashCode()
         return result
     }
+
 }

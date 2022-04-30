@@ -2,13 +2,20 @@ package com.github.bhlangonijr.pururucazero.ml
 
 import kotlin.math.pow
 
-class DataStats {
-
-    var count = 0
-    private val classStatsMap = mutableMapOf<Float, ClassStats>()
+class DataStats constructor(
+    var count: Int = 0,
+    private val classStatsMap: MutableMap<Float, ClassStats> = mutableMapOf(),
+    private val labels: FloatArray,
+    private val labelDescriptions: Map<Float, String>
+) {
+    init {
+        for (label in labels) {
+            classStatsMap.computeIfAbsent(label) { ClassStats(label, labelDescriptions[label] ?: "") }
+        }
+    }
 
     fun getClassStats(classId: Float): ClassStats =
-        classStatsMap.computeIfAbsent(classId) { ClassStats(classId) }
+        classStatsMap[classId] ?: throw IllegalArgumentException("Invalid classId $classId")
 
     fun getFeatureStats(classId: Float, featureId: Int): FeatureStats =
         getClassStats(classId).getFeatureStats(featureId)
@@ -17,8 +24,11 @@ class DataStats {
 
     fun merge(dataStats: DataStats): DataStats {
 
-        val newStats = DataStats()
-        newStats.count = this.count + dataStats.count
+        val newStats = DataStats(
+            count = this.count + dataStats.count,
+            labels = labels,
+            labelDescriptions = labelDescriptions
+        )
         this.getValues().forEach { classStats ->
 
             val mergingClassStats = dataStats.getClassStats(classStats.classId)
@@ -61,12 +71,17 @@ class DataStats {
                 (size1 + size2)
 
     override fun toString(): String {
-        return "DataStats(count=$count, \nclassStatsMap=$classStatsMap)\n"
+        val mapStr = classStatsMap.map { "\"${it.key}\": ${it.value}\n" }.joinToString(",")
+        val descriptionsStr = labelDescriptions.map { "\"${it.key}\": \"${it.value}\"\n" }.joinToString(",")
+        return "{\n\"count\": $count, \n\"classStatsMap\": {$mapStr}" +
+                ", \n\"labels\": ${labels.contentToString()}, \n\"labelDescriptions\": {$descriptionsStr}}\n"
     }
-
 }
 
-class ClassStats(val classId: Float) {
+class ClassStats(
+    val classId: Float,
+    val name: String
+) {
 
     var count = 0
     var prior = 0.0f
@@ -80,7 +95,8 @@ class ClassStats(val classId: Float) {
     fun isAvailable(featureId: Int) = featureStatsMap[featureId] != null
 
     override fun toString(): String {
-        return "ClassStats(classId=$classId, count=$count, prior=$prior, \nfeatureStats=\n $featureStatsMap)\n"
+        val mapStr = featureStatsMap.map { "\"${it.key}\": ${it.value}\n" }.joinToString(",")
+        return "{\"classId\": \"$classId\", \"name\": \"$name\", \"count\": $count, \"prior\": $prior, \n\"featureStatsMap\": {$mapStr}}\n"
     }
 }
 
@@ -93,8 +109,8 @@ class FeatureStats(val featureId: Int) {
     var variance = 0.0f
 
     override fun toString(): String {
-        return "FeatureStats(featureId=$featureId, count=$count, sum=$sum, sumDeltas=$sumDeltas, " +
-                "mean=$mean, variance=$variance)\n"
+        return "{\"featureId\": \"$featureId\", \"count\": $count, \"sum\": $sum, \"sumDeltas\": $sumDeltas, " +
+                "\"mean\": $mean, \"variance\": $variance}"
     }
 
 }

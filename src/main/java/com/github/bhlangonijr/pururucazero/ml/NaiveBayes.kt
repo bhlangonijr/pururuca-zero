@@ -9,21 +9,27 @@ class NaiveBayes {
 
     fun train(dataSet: DataSet): DataStats {
 
-        val stats = DataStats()
+        val stats = DataStats(labels = dataSet.labels, labelDescriptions = dataSet.labelDescriptions)
         return train(stats, dataSet)
     }
 
-    fun train(stats: DataStats, dataSet: DataSet): DataStats {
+    fun train(
+        stats: DataStats,
+        dataSet: DataSet
+    ): DataStats {
 
         return train(stats, dataSet.features, dataSet.labels, dataSet.rowHeaders, dataSet.colIndex)
     }
 
     fun train(
-        features: FloatArray, labels: FloatArray, rowIndex: LongArray,
-        colIndex: IntArray
+        features: FloatArray,
+        labels: FloatArray,
+        rowIndex: LongArray,
+        colIndex: IntArray,
+        labelDescriptions: Map<Float, String>
     ): DataStats {
 
-        val stats = DataStats()
+        val stats = DataStats(labels = labels, labelDescriptions = labelDescriptions)
         return train(stats, features, labels, rowIndex, colIndex)
     }
 
@@ -37,42 +43,66 @@ class NaiveBayes {
         return stats
     }
 
+    fun classify(
+        dataSet: DataSet,
+        stats: DataStats,
+        completeClassification: Boolean
+    ): BatchClassification {
+
+        val features = mutableListOf<Float>()
+        val classifications = FloatArray(dataSet.labels.size)
+        val fullResult = mutableListOf<Classification>()
+        var rows = 0
+        for ((i, v) in dataSet.features.withIndex()) {
+            features.add(v)
+            if (i + 1 >= dataSet.rowHeaders[rows + 1]) {
+                val samples = features.toFloatArray()
+                val classification = classify(samples, dataSet.colIndex, stats)
+                classifications[rows] = classification.predict()
+                if (completeClassification) {
+                    fullResult.add(classification)
+                }
+                rows++
+                features.clear()
+            }
+        }
+        return BatchClassification(dataSet.labels, classifications, fullResult)
+    }
+
     fun classify(features: FloatArray, colIndex: IntArray, stats: DataStats): Classification {
 
         val classification = Classification()
-        var sum = 0.0
+        val logSum = mutableListOf<Double>()
         stats.getValues().forEach { s ->
             val prediction = Prediction(s.classId)
             prediction.classLikelihood = 0.0
-            var logSum = 0.0
-            features.withIndex()
+            val values = features.withIndex()
                 .filter { s.isAvailable(colIndex[it.index]) }
-                .forEach {
+                .map {
                     val value = it.value
                     val featureId = colIndex[it.index]
-                    val result = posterior(
+                    val result = logPosterior(
                         value, s.getFeatureStats(featureId).mean,
                         s.getFeatureStats(featureId).variance
                     )
-                    if (!result.isNaN()) {
-                        prediction.featureLikelihood[featureId] = result
-                        logSum += ln(result.toDouble())
-                    } else {
-                        println(
-                            "NaN returned[$value]: $featureId: ${s.getFeatureStats(featureId).mean} - " +
-                                    "${s.getFeatureStats(featureId).variance}"
-                        )
-                        throw IllegalArgumentException("NaN returned")
-                    }
+                    prediction.featureLikelihood[featureId] = exp(result)
+                    result
                 }
-            prediction.classLikelihood = s.prior.toDouble() * exp(logSum)
+
+            prediction.classLikelihood = ln(s.prior.toDouble()) + values.sum()
             classification.predictions[s.classId] = prediction
-            sum += prediction.classLikelihood
+            logSum.add(prediction.classLikelihood)
         }
         classification.predictions.values.forEach {
-            it.probability = it.classLikelihood / sum
+            it.probability = exp(it.classLikelihood - logSumExp(logSum))
         }
         return classification
+    }
+
+    private fun logSumExp(values: List<Double>): Double {
+
+        val maxValue = values.maxOrNull() ?: 0.0
+        return maxValue + ln(values.sumOf { exp(it - maxValue) })
     }
 
     private fun updateCounters(
@@ -115,39 +145,20 @@ class NaiveBayes {
             }
         }
 
-        stats.getValues().forEach { s ->
+        stats.getValues().forEachIndexed { _, s ->
             for (featureStats in s.getValues()) {
                 featureStats.mean = featureStats.sum / featureStats.count
                 featureStats.variance = featureStats.sumDeltas / (featureStats.count - 1)
             }
-            s.prior = s.count.toFloat() / stats.count
+            s.prior = (s.count.toFloat()) / (stats.count)
         }
         return stats
     }
 
-    private fun posterior(feature: Float, mean: Float, variance: Float): Float =
-        (1.0f / sqrt(2.0f * Math.PI.toFloat() * variance)) *
-                exp(-(feature - mean).pow(2.0f) / (2.0f * variance))
-}
+    private fun posterior(feature: Float, mean: Float, variance: Float): Double =
+        (1.0 / sqrt(2.0 * Math.PI * variance)) *
+                exp(-(feature - mean).pow(2.0f) / (2.0 * variance))
 
-class Classification {
-
-    val predictions = mutableMapOf<Float, Prediction>()
-    fun predict() =
-        predictions.values.sortedBy { it.probability }.reversed()[0].classId
-
-    override fun toString(): String {
-        return "Classification(predictions=$predictions)"
-    }
-}
-
-class Prediction(val classId: Float) {
-
-    val featureLikelihood = mutableMapOf<Int, Float>()
-    var classLikelihood: Double = 0.0
-    var probability: Double = 0.0
-    override fun toString(): String {
-        return "Prediction(classId=$classId, probability=$probability, " +
-                "classLikelihood=$classLikelihood, featureLikelihood=$featureLikelihood)\n"
-    }
+    private fun logPosterior(feature: Float, mean: Float, variance: Float): Double =
+        -0.5 * ln(2.0 * Math.PI * variance) - ((feature.toDouble() - mean).pow(2.0)) / (2.0 * variance)
 }
