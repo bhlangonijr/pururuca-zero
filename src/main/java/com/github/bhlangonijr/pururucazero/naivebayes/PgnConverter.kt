@@ -1,4 +1,4 @@
-package com.github.bhlangonijr.pururucazero.ml
+package com.github.bhlangonijr.pururucazero.naivebayes
 
 import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.chesslib.pgn.PgnIterator
@@ -44,6 +44,7 @@ class PgnConverter {
                         rowHeaders.add(rowHeader)
                     }
                     if (idx0 % 100 == 0) println("$name loaded more 100, total $idx0")
+                    if (idx0 > 10000) break
                 } catch (e: Exception) {
                     e.printStackTrace()
                     println(game.toString())

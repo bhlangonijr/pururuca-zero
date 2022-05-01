@@ -1,4 +1,4 @@
-package com.github.bhlangonijr.pururucazero.ml
+package com.github.bhlangonijr.pururucazero.naivebayes
 
 data class DataSet(
     val features: FloatArray,

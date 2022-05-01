@@ -1,4 +1,4 @@
-package com.github.bhlangonijr.pururucazero.ml
+package com.github.bhlangonijr.pururucazero.naivebayes
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

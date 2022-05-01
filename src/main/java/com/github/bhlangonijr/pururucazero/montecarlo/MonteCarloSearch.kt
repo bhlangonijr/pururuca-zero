@@ -19,8 +19,7 @@ const val DEFAULT_TEMPERATURE = 1.5
 class MonteCarloSearch(
     private var temperature: Double = DEFAULT_TEMPERATURE,
     private val evaluator: Evaluator? = null
-) :
-    SearchEngine {
+) : SearchEngine {
 
     private val random = Random()
 

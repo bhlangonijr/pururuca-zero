@@ -5,7 +5,7 @@ import com.github.bhlangonijr.pururucazero.eval.MaterialEval
 import kotlin.math.abs
 import kotlin.math.max
 
-class PositionStatsEncoder : BoardEncoder {
+class PositionStatsEncoder {
 
     private val pieceList = Piece.values().filter { it != Piece.NONE }
     private val sideList = Side.values()
@@ -22,7 +22,7 @@ class PositionStatsEncoder : BoardEncoder {
     private val materialEval = MaterialEval()
 
 
-    override fun encode(board: Board): FloatArray {
+    fun encode(board: Board): FloatArray {
 
         // piece attacked by pieces of other color
         val attacks = FloatArray(sideList.size) { Float.NaN }
@@ -67,7 +67,6 @@ class PositionStatsEncoder : BoardEncoder {
             }
         }
 
-
         //TODO Pinned pieces cannot move
         pieceAttacks.entries.forEach { entry ->
             if (entry.key.pieceType == PieceType.PAWN) {
@@ -90,22 +89,19 @@ class PositionStatsEncoder : BoardEncoder {
             }
         }
 
-        val boardState = FloatArray(6)
+        val boardState = FloatArray(4)
         val whiteAdvantage = materialEval.scoreMaterial(board, Side.WHITE).toFloat()
         boardState[0] =
             (if (whiteAdvantage > 0.0f) whiteAdvantage else 0.0f) + (if (board.sideToMove == Side.WHITE) 10.0f else 1.0f)
         boardState[1] =
             (if (whiteAdvantage < 0.0f) -whiteAdvantage else 0.0f) + (if (board.sideToMove == Side.BLACK) 10.0f else 1.0f)
-        //boardState[2] = board.sideToMove.ordinal + 1.0f
+//        boardState[2] = board.sideToMove.ordinal + 1.0f
 //        boardState[2] = board.moveCounter.toFloat()
 //        boardState[3] = board.halfMoveCounter.toFloat()
 //        boardState[4] = board.getCastleRight(Side.WHITE).ordinal + 1.0f
 //        boardState[5] = board.getCastleRight(Side.BLACK).ordinal + 1.0f
-//
-//        val eval = materialEval.scoreMaterial(board)
-//        boardState[5] = eval.toFloat()
-        //boardState[6] = if (eval > 0.0 && board.sideToMove == Side.BLACK) eval.toFloat() else 0.0f
-
+        boardState[2] = materialEval.scoreMaterial(board, Side.WHITE).toFloat()
+        boardState[3] = materialEval.scoreMaterial(board, Side.BLACK).toFloat()
 
         return boardState +
                 moves +

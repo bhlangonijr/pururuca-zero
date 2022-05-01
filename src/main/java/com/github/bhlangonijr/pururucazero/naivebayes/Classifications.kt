@@ -1,4 +1,4 @@
-package com.github.bhlangonijr.pururucazero.ml
+package com.github.bhlangonijr.pururucazero.naivebayes
 
 class BatchClassification(
     private val labels: FloatArray,

@@ -6,9 +6,9 @@ import com.github.bhlangonijr.chesslib.Square
 import com.github.bhlangonijr.chesslib.move.Move
 import com.github.bhlangonijr.chesslib.move.MoveList
 import com.github.bhlangonijr.pururucazero.alphabeta.AlphaBetaSearch
-import com.github.bhlangonijr.pururucazero.eval.StatsEval
-import com.github.bhlangonijr.pururucazero.ml.NaiveBayes
-import com.github.bhlangonijr.pururucazero.ml.PgnConverter.Companion.pgnToDataSet
+import com.github.bhlangonijr.pururucazero.naivebayes.NaiveBayesEval
+import com.github.bhlangonijr.pururucazero.naivebayes.NaiveBayes
+import com.github.bhlangonijr.pururucazero.naivebayes.PgnConverter.Companion.pgnToDataSet
 import com.github.bhlangonijr.pururucazero.montecarlo.MonteCarloSearch
 import org.junit.Test
 
@@ -72,7 +72,6 @@ class SelfPlayIntegrationTest {
                 println("Played: $move = ${board.fen}")
             }
         }
-
         printResult(moves, board)
     }
 
@@ -90,16 +89,20 @@ class SelfPlayIntegrationTest {
     @Test
     fun `Match Alpha beta engine with statistical assisted playing`() {
 
-        //val data = pgnToDataSet("/Users/bhlangonijr/Downloads/CCRL-4040.[1162348].pgn")
-        val data = pgnToDataSet("src/test/resources/Stockfish_DD_64-bit_4CPU.pgn")
+        val data = pgnToDataSet("/Users/bhlangonijr/Downloads/CCRL-4040.[1383000].pgn")
         val nb = NaiveBayes()
         val stats = nb.train(data)
         println(stats)
+        val result = nb.classify(data, stats, false)
+        println("Accuracy = ${result.accuracy()}")
+        println("Precision = ${result.precision()}")
+        println("Recall = ${result.recall()}")
+        println("F1Score = ${result.f1Score()}")
 
         val board = Board()
         board.loadFromFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq -")
 
-        val mcts1 = MonteCarloSearch(1.5, StatsEval(stats))
+        val mcts1 = MonteCarloSearch(1.5, NaiveBayesEval(stats))
         val mcts2 = AlphaBetaSearch()
 
         val moves = MoveList(board.fen)
@@ -117,16 +120,20 @@ class SelfPlayIntegrationTest {
     @Test
     fun `Match Mcts engine with statistical assisted playing`() {
 
-        //val data = pgnToDataSet("/Users/bhlangonijr/Downloads/CCRL-4040.[1162348].pgn")
         val data = pgnToDataSet("src/test/resources/Stockfish_DD_64-bit_4CPU.pgn")
         val nb = NaiveBayes()
         val stats = nb.train(data)
         println(stats)
+        val result = nb.classify(data, stats, false)
+        println("Accuracy = ${result.accuracy()}")
+        println("Precision = ${result.precision()}")
+        println("Recall = ${result.recall()}")
+        println("F1Score = ${result.f1Score()}")
 
         val board = Board()
         board.loadFromFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq -")
 
-        val mcts1 = MonteCarloSearch(1.5, StatsEval(stats))
+        val mcts1 = MonteCarloSearch(1.5, NaiveBayesEval(stats))
         val mcts2 = MonteCarloSearch()
 
         val moves = MoveList(board.fen)
