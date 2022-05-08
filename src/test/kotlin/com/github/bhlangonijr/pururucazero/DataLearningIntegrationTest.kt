@@ -1,8 +1,8 @@
 package com.github.bhlangonijr.pururucazero
 
 import com.github.bhlangonijr.chesslib.Board
-import com.github.bhlangonijr.pururucazero.encoder.Matrix.Companion.arrayToCsr
 import com.github.bhlangonijr.pururucazero.encoder.PositionStatsEncoder
+import com.github.bhlangonijr.pururucazero.encoder.Utils.arrayToCsr
 import com.github.bhlangonijr.pururucazero.naivebayes.NaiveBayes
 import com.github.bhlangonijr.pururucazero.naivebayes.PgnConverter.Companion.pgnToDataSet
 import org.junit.Ignore
