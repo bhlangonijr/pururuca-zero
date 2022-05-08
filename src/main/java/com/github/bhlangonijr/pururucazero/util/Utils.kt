@@ -1,4 +1,4 @@
-package com.github.bhlangonijr.pururucazero.encoder
+package com.github.bhlangonijr.pururucazero.util
 
 object Utils {
 

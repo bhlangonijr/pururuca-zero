@@ -1,9 +1,9 @@
-package com.github.bhlangonijr.pururucazero.encoder
+package com.github.bhlangonijr.pururucazero.util
 
 import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.chesslib.move.MoveList
-import com.github.bhlangonijr.pururucazero.encoder.Nd4jEncoder.encode
-import com.github.bhlangonijr.pururucazero.encoder.Nd4jEncoder.encodeToArray
+import com.github.bhlangonijr.pururucazero.cnn.Nd4jEncoder.encode
+import com.github.bhlangonijr.pururucazero.cnn.Nd4jEncoder.encodeToArray
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

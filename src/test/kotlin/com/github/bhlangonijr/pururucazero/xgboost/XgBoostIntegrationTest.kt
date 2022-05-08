@@ -1,6 +1,6 @@
 package com.github.bhlangonijr.pururucazero.xgboost
 
-import com.github.bhlangonijr.pururucazero.naivebayes.PgnConverter.Companion.pgnToDataSet
+import com.github.bhlangonijr.pururucazero.naivebayes.PgnToNaiveBayesInputConverter.Companion.pgnToDataSet
 import ml.dmlc.xgboost4j.java.DMatrix
 import ml.dmlc.xgboost4j.java.XGBoost
 import org.junit.Test

@@ -1,6 +1,6 @@
-package com.github.bhlangonijr.pururucazero.encoder
+package com.github.bhlangonijr.pururucazero.util
 
-import com.github.bhlangonijr.pururucazero.encoder.Utils.flipVertical
+import com.github.bhlangonijr.pururucazero.util.Utils.flipVertical
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

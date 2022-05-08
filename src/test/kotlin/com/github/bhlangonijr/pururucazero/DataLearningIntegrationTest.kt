@@ -1,17 +1,17 @@
 package com.github.bhlangonijr.pururucazero
 
 import com.github.bhlangonijr.chesslib.Board
-import com.github.bhlangonijr.pururucazero.encoder.PositionStatsEncoder
-import com.github.bhlangonijr.pururucazero.encoder.Utils.arrayToCsr
+import com.github.bhlangonijr.pururucazero.naivebayes.NaiveBayesEncoder
+import com.github.bhlangonijr.pururucazero.util.Utils.arrayToCsr
 import com.github.bhlangonijr.pururucazero.naivebayes.NaiveBayes
-import com.github.bhlangonijr.pururucazero.naivebayes.PgnConverter.Companion.pgnToDataSet
+import com.github.bhlangonijr.pururucazero.naivebayes.PgnToNaiveBayesInputConverter.Companion.pgnToDataSet
 import org.junit.Ignore
 import org.junit.Test
 
 @Ignore
 class DataLearningIntegrationTest {
 
-    private val statsEncoder = PositionStatsEncoder()
+    private val statsEncoder = NaiveBayesEncoder()
 
     @Test
     fun `Generate DataSet and validate`() {

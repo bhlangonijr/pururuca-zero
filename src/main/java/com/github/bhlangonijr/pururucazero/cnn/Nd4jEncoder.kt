@@ -1,8 +1,8 @@
-package com.github.bhlangonijr.pururucazero.encoder
+package com.github.bhlangonijr.pururucazero.cnn
 
 import com.github.bhlangonijr.chesslib.*
 import com.github.bhlangonijr.chesslib.move.Move
-import com.github.bhlangonijr.pururucazero.encoder.Utils.flipVertical
+import com.github.bhlangonijr.pururucazero.util.Utils.flipVertical
 import org.nd4j.linalg.api.ndarray.INDArray
 import org.nd4j.linalg.factory.Nd4j
 

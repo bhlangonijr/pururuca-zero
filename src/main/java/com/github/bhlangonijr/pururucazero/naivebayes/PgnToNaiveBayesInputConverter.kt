@@ -2,13 +2,12 @@ package com.github.bhlangonijr.pururucazero.naivebayes
 
 import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.chesslib.pgn.PgnIterator
-import com.github.bhlangonijr.pururucazero.encoder.PositionStatsEncoder
 
-class PgnConverter {
+class PgnToNaiveBayesInputConverter {
 
     companion object {
 
-        private val statsEncoder = PositionStatsEncoder()
+        private val statsEncoder = NaiveBayesEncoder()
         private val mapResult = mapOf("1-0" to 1.0f, "0-1" to 2.0f, "1/2-1/2" to 0.0f)
 
         fun pgnToDataSet(name: String): DataSet {

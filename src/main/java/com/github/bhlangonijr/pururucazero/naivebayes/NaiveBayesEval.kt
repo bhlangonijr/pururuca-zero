@@ -6,14 +6,13 @@ import com.github.bhlangonijr.chesslib.Side
 import com.github.bhlangonijr.chesslib.Square
 import com.github.bhlangonijr.chesslib.move.MoveGenerator
 import com.github.bhlangonijr.pururucazero.SearchState
-import com.github.bhlangonijr.pururucazero.encoder.PositionStatsEncoder
-import com.github.bhlangonijr.pururucazero.encoder.Utils.arrayToCsr
+import com.github.bhlangonijr.pururucazero.util.Utils.arrayToCsr
 import com.github.bhlangonijr.pururucazero.eval.Evaluator
 
 class NaiveBayesEval constructor(var stats: DataStats) : Evaluator {
 
     private val nb = NaiveBayes()
-    private val statsEncoder = PositionStatsEncoder()
+    private val statsEncoder = NaiveBayesEncoder()
 
     override fun evaluate(state: SearchState, board: Board): Long {
 

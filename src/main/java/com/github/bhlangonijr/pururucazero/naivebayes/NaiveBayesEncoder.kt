@@ -1,11 +1,11 @@
-package com.github.bhlangonijr.pururucazero.encoder
+package com.github.bhlangonijr.pururucazero.naivebayes
 
 import com.github.bhlangonijr.chesslib.*
 import com.github.bhlangonijr.pururucazero.eval.MaterialEval
 import kotlin.math.abs
 import kotlin.math.max
 
-class PositionStatsEncoder {
+class NaiveBayesEncoder {
 
     private val pieceList = Piece.values().filter { it != Piece.NONE }
     private val sideList = Side.values()

@@ -8,7 +8,7 @@ import com.github.bhlangonijr.chesslib.move.MoveList
 import com.github.bhlangonijr.pururucazero.alphabeta.AlphaBetaSearch
 import com.github.bhlangonijr.pururucazero.naivebayes.NaiveBayesEval
 import com.github.bhlangonijr.pururucazero.naivebayes.NaiveBayes
-import com.github.bhlangonijr.pururucazero.naivebayes.PgnConverter.Companion.pgnToDataSet
+import com.github.bhlangonijr.pururucazero.naivebayes.PgnToNaiveBayesInputConverter.Companion.pgnToDataSet
 import com.github.bhlangonijr.pururucazero.montecarlo.MonteCarloSearch
 import org.junit.Test
 
