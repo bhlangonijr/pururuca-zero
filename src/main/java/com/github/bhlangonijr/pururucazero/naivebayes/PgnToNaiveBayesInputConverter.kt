@@ -43,7 +43,6 @@ class PgnToNaiveBayesInputConverter {
                         rowHeaders.add(rowHeader)
                     }
                     if (idx0 % 100 == 0) println("$name loaded more 100, total $idx0")
-                    if (idx0 > 10000) break
                 } catch (e: Exception) {
                     e.printStackTrace()
                     println(game.toString())
@@ -53,7 +52,6 @@ class PgnToNaiveBayesInputConverter {
                 "Number of lines [$lines] Row header [$rowHeader] " +
                         "Labels.size [${labels.size}] features.size [${data.size}]"
             )
-
             return DataSet(
                 data.toFloatArray(),
                 labels.toFloatArray(),

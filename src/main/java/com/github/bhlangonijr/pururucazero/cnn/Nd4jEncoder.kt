@@ -8,9 +8,11 @@ import org.nd4j.linalg.factory.Nd4j
 
 object Nd4jEncoder {
 
-    private const val size = 8
-    private const val totalTimeSteps = 8
+    const val size = 8
+    const val totalTimeSteps = 8
+    val emptyPlanes = createEmptyPlanes()
     private val emptyBoardPlaneCache = emptyBoardPlane()
+    private const val extraFeaturesSize = 7
 
     fun encode(board: Board): INDArray {
 
@@ -19,7 +21,7 @@ object Nd4jEncoder {
         val undoMoveList = mutableListOf<Move>()
         var planes = encodeToArray(board, side)
 
-        for (i in 0 until totalTimeSteps) {
+        for (i in 1 until totalTimeSteps) {
             planes += if (board.history.size > 1) {
                 val move = board.undoMove()
                 undoMoveList.add(move)
@@ -68,12 +70,19 @@ object Nd4jEncoder {
                 repetitionToPlane(if (board.isRepetition(3)) 1 else 0)
     }
 
+    private fun createEmptyPlanes(): INDArray {
+
+        return Nd4j.create(Array(
+            size * 14 * totalTimeSteps +
+                    size * extraFeaturesSize) {
+            FloatArray(size) { 0f }
+        })
+    }
+
     private fun emptyBoardPlane(): Array<FloatArray> {
 
-        return emptyPlane().apply {
-            repeat(13) {
-                plus(emptyPlane())
-            }
+        return Array(size * 14) {
+            FloatArray(size) { 0f }
         }
     }
 
