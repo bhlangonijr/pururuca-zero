@@ -8,58 +8,53 @@ import org.nd4j.linalg.dataset.DataSet
 import org.nd4j.linalg.dataset.api.DataSetPreProcessor
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator
 import org.nd4j.linalg.factory.Nd4j
+import java.util.*
 
 
 class PgnDatasetIterator(
     val pgnFile: String,
     val batchSize: Int = 32,
     val labelNames: MutableList<String>
-) : DataSetIterator {
+) : DataSetIterator, AutoCloseable {
 
+    private var pgnIterator = PgnIterator(pgnFile)
+    private var currentIterator = pgnIterator.iterator()
     private var dataSetPreProcessor: DataSetPreProcessor? = null
     private var count: Int = 0
+    @Volatile
     private var eof = false
-    var curr = 0
+    private val datasetQueue = LinkedList<DataStack>()
 
     override fun remove() {
         TODO("Not yet implemented")
     }
 
-    override fun hasNext(): Boolean {
-
-        return !eof
-    }
+    override fun hasNext() = !eof
 
     override fun next(rows: Int): DataSet {
 
-        val inputs: INDArray = Nd4j.create(
-            rows, Nd4jEncoder.size * 14 * Nd4jEncoder.totalTimeSteps +
-                    Nd4jEncoder.size * 7, Nd4jEncoder.size
-        )
-        val outputs: INDArray = Nd4j.create(
-            rows, labelNames.size
-        )
-        var lines = 0
-        var internalCurr = 0
-        PgnIterator(pgnFile).use { pgn ->
-            for (game in pgn) {
+        if (!eof && datasetQueue.size == 0) {
+            datasetQueue.add(DataStack(rows, labelNames))
+        }
+        var endOfFile = true
+        if (datasetQueue.peekFirst().lines < rows) {
+            while (currentIterator.hasNext()) {
+                val game = currentIterator.next()
                 try {
                     val moves = game.halfMoves
                     val board = Board()
                     for (move in moves) {
                         board.doMove(move)
-                        if (internalCurr++ < curr) {
-                            continue
-                        }
                         val result = mapGameResult(game.result.description, board.sideToMove)
-                        addExample(inputs, outputs, result, board, lines)
-                        lines++
-                        curr++
-                        if (lines >= rows) {
-                            break
+                        val dataStack = datasetQueue.peekLast()
+                        dataStack.add(result, board)
+                        if (dataStack.lines >= rows) {
+                            datasetQueue.add(DataStack(rows, labelNames))
                         }
                     }
-                    if (lines >= rows) {
+                    val dataStack = datasetQueue.peekFirst()
+                    if (dataStack.lines >= rows) {
+                        endOfFile = false
                         break
                     }
                 } catch (e: Exception) {
@@ -67,15 +62,18 @@ class PgnDatasetIterator(
                     println(game.toString())
                 }
             }
+        } else {
+            endOfFile = false
         }
 
         count++
+        val dataStack = datasetQueue.pollFirst()
         val dataSet = DataSet(
-            inputs,
-            outputs
+            dataStack.inputs,
+            dataStack.outputs
         )
         dataSet.labelNames = labelNames
-        eof = lines == 0
+        eof = endOfFile
         return dataSet
     }
 
@@ -105,7 +103,12 @@ class PgnDatasetIterator(
 
     override fun reset() {
 
+        pgnIterator.close()
+        pgnIterator = PgnIterator(pgnFile)
+        currentIterator = pgnIterator.iterator()
         count = 0
+        eof = false
+        datasetQueue.clear()
     }
 
     override fun batch(): Int {
@@ -138,18 +141,38 @@ class PgnDatasetIterator(
         }
     }
 
-    private fun addExample(
-        inputs: INDArray,
-        outputs: INDArray,
-        label: Int,
-        board: Board,
-        idx: Int
+    data class DataStack(
+        val rows: Int,
+        val labelNames: MutableList<String>,
+        val inputs: INDArray = Nd4j.create(
+            rows, Nd4jEncoder.size * 14 * Nd4jEncoder.totalTimeSteps +
+                    Nd4jEncoder.size * 7, Nd4jEncoder.size
+        ),
+        val outputs: INDArray = Nd4j.create(
+            rows, labelNames.size
+        ),
+        var lines: Int = 0
     ) {
+        fun add(
+            label: Int,
+            board: Board
+        ) {
+            if (lines >= rows) {
+                throw IllegalArgumentException("INDArray is full. Size: $lines")
+            }
+            val vector = Nd4j.zeros(1, labelNames.size)
+            vector.putScalar(label.toLong(), 1)
+            outputs.putRow(lines.toLong(), vector)
+            val features = Nd4jEncoder.encode(board)
+            inputs.putRow(lines.toLong(), features)
+            lines++
+        }
+    }
 
-        val vector = Nd4j.zeros(1, labelNames.size)
-        vector.putScalar(label.toLong(), 1)
-        outputs.putRow(idx.toLong(), vector)
-        val features = Nd4jEncoder.encode(board)
-        inputs.putRow(idx.toLong(), features)
+    override fun close() {
+
+        pgnIterator.close()
+        datasetQueue.clear()
     }
 }
+
