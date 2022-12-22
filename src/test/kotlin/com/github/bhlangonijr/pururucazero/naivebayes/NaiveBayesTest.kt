@@ -83,4 +83,44 @@ class NaiveBayesTest {
         assertTrue(classification.predictions.values.sortedBy { it.probability }.reversed()[0].probability > 0.7)
         assertEquals(1.0f, classification.predict())
     }
+
+    @Test
+    fun testNaiveBayesFeiosoCsr() {
+
+        val data = arrayListOf(
+            8f,3f,2f,
+            2f,2f,2f,
+            2f,1f,2f,
+            1f,4f,2f,
+            8f,3f,1f,
+            4f,2f,1f,
+            2f,1f,1f,
+            1f,4f,1f,
+            6f,1f,2f,
+            2f,2f,2f,
+            1f,3f,2f
+        ).toFloatArray()
+
+        val labelDescriptions = mapOf(Pair(0.0f, "home"), Pair(1.0f, "work"), Pair(2.0f, "other"))
+
+        val test = arrayListOf(10f, 3f, 2f).toFloatArray()
+        val testColIndex = intArrayOf(0, 1, 2)
+
+        val labels = floatArrayOf(0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 2.0f, 2.0f)
+        val colIndex = intArrayOf(0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1,
+            2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2)
+        val rowIndex = longArrayOf(0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33)
+
+        val nb = NaiveBayes()
+
+        val stats = nb.train(data, labels, rowIndex, colIndex, labelDescriptions)
+
+        println(stats)
+        val classification = nb.classify(test, testColIndex, stats)
+
+        println(classification.predictions.values.sortedBy { it.probability }.reversed())
+        //assertTrue(classification.predictions.values.sortedBy { it.probability }.reversed()[0].probability > 0.70)
+        //assertEquals(1.0f, classification.predict())
+        println("${labelDescriptions[classification.predict()]}")
+    }
 }

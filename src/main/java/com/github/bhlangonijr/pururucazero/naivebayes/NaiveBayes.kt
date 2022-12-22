@@ -160,5 +160,7 @@ class NaiveBayes {
                 exp(-(feature - mean).pow(2.0f) / (2.0 * variance))
 
     private fun logPosterior(feature: Float, mean: Float, variance: Float): Double =
-        -0.5 * ln(2.0 * Math.PI * variance) - ((feature.toDouble() - mean).pow(2.0)) / (2.0 * variance)
+        -0.5 * ln(2.0 * Math.PI * ni(variance)) - ((feature.toDouble() - mean).pow(2.0)) / (2.0 * ni(variance))
+
+    private fun ni(v: Float) = if (v == 0f) Float.MIN_VALUE else v
 }
