@@ -9,9 +9,9 @@ class UtilsTest {
     @Test
     fun testFlipVertical() {
 
-        val bitboard = 1L shl 4
+        val bitboard = 1UL shl 4
 
-        val flipped = flipVertical(bitboard.toULong())
+        val flipped = flipVertical(bitboard)
         assertEquals(bitboard, flipVertical(flipped))
     }
 }
