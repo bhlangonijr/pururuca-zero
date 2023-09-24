@@ -4,6 +4,7 @@ import com.github.bhlangonijr.chesslib.pgn.PgnIterator
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.nd4j.linalg.string.NDArrayStrings
 
 class PgnDatasetIteratorTest {
 
@@ -11,7 +12,6 @@ class PgnDatasetIteratorTest {
     fun testPgnLoading() {
 
         val filename = "src/test/resources/one-win.pgn"
-
         val batchSize = 32
         val pgnIterator = PgnDatasetIterator(
             pgnFile = filename,
@@ -30,6 +30,10 @@ class PgnDatasetIteratorTest {
             assertEquals(batchSize, rows.toInt())
             assertEquals(952, dataset.features.shape()[1])
             assertEquals(8, dataset.features.shape()[2])
+            println(dataset.features.shape().toList())
+            println(dataset.labels.shape().toList())
+
+            //println(dataset.features.toString(NDArrayStrings(100000000L, false, 2)))
         }
         assertTrue(count >= totalMoves)
     }

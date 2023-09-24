@@ -22,12 +22,12 @@ class Nd4jEncoderTest {
             board.doMove(move)
         }
 
-        val encoded = encodeToArray(board, board.sideToMove)
+        val encoded = encodeToArray(board)
 
         assertEquals(1f, encoded[0][4]) // side king position
         assertEquals(1f, encoded[5 * 8][3]) // opposite side king position
         assertEquals(1f, encoded[8 + 4][4]) // side pawn advanced
-        assertEquals(1f, encoded[7 * 8 + 4][3]) // opposite pawn advanced
+        assertEquals(1f, encoded[7 * 8 + 3][3]) // opposite pawn advanced
         assertEquals(1f, encoded[12 * 8][0]) // any square populated with first repetition
         assertEquals(0f, encoded[13 * 8][0]) // any square not populated with second repetition
     }
@@ -47,11 +47,11 @@ class Nd4jEncoderTest {
         moves.forEach { move ->
             board.doMove(move)
         }
-
-        val encoded = encodeToArray(board, board.sideToMove)
+        println(board.fen)
+        val encoded = encodeToArray(board)
 
         assertEquals(1f, encoded[0][6]) // side king position
-        assertEquals(1f, encoded[6 * 8 + 7][5]) // opposite side king position
+        assertEquals(1f, encoded[6 * 8][5]) // opposite side king position
         assertEquals(1f, encoded[12 * 8][0]) // any square populated with first repetition
         assertEquals(1f, encoded[13 * 8][0]) // any square populated with second repetition
     }
@@ -73,7 +73,7 @@ class Nd4jEncoderTest {
         assertEquals(1f, encoded.getRow(0).getFloat(4)) // side king position
         assertEquals(1f, encoded.getRow(5 * 8).getFloat(3)) // opposite side king position
         assertEquals(1f, encoded.getRow(8 + 4).getFloat(4)) // side pawn advanced
-        assertEquals(1f, encoded.getRow(7 * 8 + 4).getFloat(3)) // opposite pawn advanced
+        assertEquals(1f, encoded.getRow(7 * 8 + 3).getFloat(3)) // opposite pawn advanced
         assertEquals(1f, encoded.getRow(12 * 8).getFloat(0)) // any square populated with first repetition
         assertEquals(0f, encoded.getRow(13 * 8).getFloat(0)) // any square not populated with second repetition
     }

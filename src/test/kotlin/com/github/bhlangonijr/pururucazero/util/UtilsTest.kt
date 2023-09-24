@@ -11,7 +11,7 @@ class UtilsTest {
 
         val bitboard = 1L shl 4
 
-        val flipped = flipVertical(bitboard)
+        val flipped = flipVertical(bitboard.toULong())
         assertEquals(bitboard, flipVertical(flipped))
     }
 }

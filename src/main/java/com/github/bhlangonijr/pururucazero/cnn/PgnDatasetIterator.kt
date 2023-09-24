@@ -8,8 +8,12 @@ import org.nd4j.linalg.dataset.DataSet
 import org.nd4j.linalg.dataset.api.DataSetPreProcessor
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator
 import org.nd4j.linalg.factory.Nd4j
+import org.nd4j.linalg.indexing.NDArrayIndex
 import java.util.*
 
+private const val featuresDimensions = Nd4jEncoder.size * Nd4jEncoder.totalBoardPlanes *
+        Nd4jEncoder.totalTimeSteps + Nd4jEncoder.size *
+        Nd4jEncoder.extraFeaturesSize
 
 class PgnDatasetIterator(
     val pgnFile: String,
@@ -133,10 +137,10 @@ class PgnDatasetIterator(
     private fun mapGameResult(result: String, side: Side): Int {
 
         return when {
-            result == "1-0" && side == Side.WHITE -> 1
-            result == "0-1" && side == Side.WHITE -> 2
-            result == "0-1" && side == Side.BLACK -> 1
-            result == "1-0" && side == Side.BLACK -> 2
+            result == "1-0" && side == Side.WHITE -> -1
+            result == "0-1" && side == Side.WHITE -> +1
+            result == "0-1" && side == Side.BLACK -> -1
+            result == "1-0" && side == Side.BLACK -> +1
             else -> 0
         }
     }
@@ -145,8 +149,9 @@ class PgnDatasetIterator(
         val rows: Int,
         val labelNames: MutableList<String>,
         val inputs: INDArray = Nd4j.create(
-            rows, Nd4jEncoder.size * 14 * Nd4jEncoder.totalTimeSteps +
-                    Nd4jEncoder.size * 7, Nd4jEncoder.size
+            rows,
+            featuresDimensions,
+            Nd4jEncoder.size
         ),
         val outputs: INDArray = Nd4j.create(
             rows, labelNames.size
@@ -164,7 +169,7 @@ class PgnDatasetIterator(
             vector.putScalar(label.toLong(), 1)
             outputs.putRow(lines.toLong(), vector)
             val features = Nd4jEncoder.encode(board)
-            inputs.putRow(lines.toLong(), features)
+            inputs.put(NDArrayIndex.indexesFor(lines.toLong()), features)
             lines++
         }
     }
