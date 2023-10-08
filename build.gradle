@@ -106,4 +106,7 @@ task integrationTest(type: Test) {
             println "Test suite ${desc.name}: ${result.resultType}"
         }
     }
+    testLogging {
+        showStandardStreams = true
+    }
 }

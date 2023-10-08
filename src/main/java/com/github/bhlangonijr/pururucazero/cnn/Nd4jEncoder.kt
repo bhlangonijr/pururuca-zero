@@ -52,24 +52,25 @@ object Nd4jEncoder {
     }
 
     fun encodeToArray(board: Board): Array<Array<FloatArray>> {
-
+        val side = board.sideToMove
+        val other = side.flip()
         val result = Array(totalBoardPlanes) { index ->
             when (index) {
-                0 -> getPlane(board, PieceType.KING, Side.WHITE)
-                1 -> getPlane(board, PieceType.PAWN, Side.WHITE)
-                2 -> getPlane(board, PieceType.BISHOP, Side.WHITE)
-                3 -> getPlane(board, PieceType.KNIGHT, Side.WHITE)
-                4 -> getPlane(board, PieceType.ROOK, Side.WHITE)
-                5 -> getPlane(board, PieceType.QUEEN, Side.WHITE)
-                6 -> getPlane(board, PieceType.KING, Side.BLACK)
-                7 -> getPlane(board, PieceType.PAWN, Side.BLACK)
-                8 -> getPlane(board, PieceType.BISHOP, Side.BLACK)
-                9 -> getPlane(board, PieceType.KNIGHT, Side.BLACK)
-                10 -> getPlane(board, PieceType.ROOK, Side.BLACK)
-                11 -> getPlane(board, PieceType.QUEEN, Side.BLACK)
+                0 -> getPlane(board, PieceType.KING, side)
+                1 -> getPlane(board, PieceType.PAWN, side)
+                2 -> getPlane(board, PieceType.BISHOP, side)
+                3 -> getPlane(board, PieceType.KNIGHT, side)
+                4 -> getPlane(board, PieceType.ROOK, side)
+                5 -> getPlane(board, PieceType.QUEEN, side)
+                6 -> getPlane(board, PieceType.KING, other)
+                7 -> getPlane(board, PieceType.PAWN, other)
+                8 -> getPlane(board, PieceType.BISHOP, other)
+                9 -> getPlane(board, PieceType.KNIGHT, other)
+                10 -> getPlane(board, PieceType.ROOK, other)
+                11 -> getPlane(board, PieceType.QUEEN, other)
                 12 -> repetitionToPlane(if (board.isRepetition(2)) 1 else 0)
                 13 -> repetitionToPlane(if (board.isRepetition(3)) 1 else 0)
-                else -> emptyPlane()
+                else -> throw IllegalArgumentException("Invalid index")
             }
         }
         return result

@@ -3,11 +3,8 @@ package com.github.bhlangonijr.pururucazero.cnn
 import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.chesslib.move.MoveList
 import com.github.bhlangonijr.pururucazero.cnn.Nd4jEncoder.encode
-import com.github.bhlangonijr.pururucazero.cnn.Nd4jEncoder.encodeToArray
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.util.*
 
 class Nd4jEncoderTest {
 
@@ -22,18 +19,13 @@ class Nd4jEncoderTest {
             board.doMove(move)
         }
 
-        val encoded = encodeToArray(board)
+        val encoded = encode(board)
 
-        val encoded2 = encode(board)
-
-        println(encoded2.shape().toList())
-
-        assertEquals(1f, encoded[0][0][4]) // side king position
-        assertEquals(1f, encoded[5][0][3]) // opposite side king position
-        assertEquals(1f, encoded[1][4][4]) // side pawn advanced
-        assertEquals(1f, encoded[7][3][3]) // opposite pawn advanced
-        assertEquals(1f, encoded[12][0][0]) // any square populated with first repetition
-        assertEquals(0f, encoded[13][0][0]) // any square not populated with second repetition
+        assertEquals(1f, encoded.getFloat(0, 0, 4)) // side king position
+        assertEquals(1f, encoded.getFloat(1, 4, 4)) // side pawn advanced
+        assertEquals(1f, encoded.getFloat(7, 3, 3)) // opposite pawn advanced
+        assertEquals(1f, encoded.getFloat(12, 0, 0)) // any square populated with first repetition
+        assertEquals(0f, encoded.getFloat(13, 0, 0)) // any square not populated with second repetition
     }
 
     @Test
@@ -51,12 +43,11 @@ class Nd4jEncoderTest {
         moves.forEach { move ->
             board.doMove(move)
         }
-        println(board.fen)
-        val encoded = encodeToArray(board)
+        val encoded = encode(board)
 
-        assertEquals(1f, encoded[0][0][6]) // side king position
-        assertEquals(1f, encoded[6][0][5]) // opposite side king position
-        assertEquals(1f, encoded[12][0][0]) // any square populated with first repetition
-        assertEquals(1f, encoded[13][0][0]) // any square populated with second repetition
+        assertEquals(1f, encoded.getFloat(0, 0, 6)) // side king position
+        assertEquals(1f, encoded.getFloat(6, 0, 5)) // opposite side king position
+        assertEquals(1f, encoded.getFloat(12, 0, 0)) // any square populated with first repetition
+        assertEquals(1f, encoded.getFloat(13, 0, 0)) // any square populated with second repetition
     }
 }

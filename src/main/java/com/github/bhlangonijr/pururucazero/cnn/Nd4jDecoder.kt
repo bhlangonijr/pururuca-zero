@@ -1,11 +1,9 @@
 package com.github.bhlangonijr.pururucazero.cnn
 
 import com.github.bhlangonijr.chesslib.*
-import com.github.bhlangonijr.chesslib.Bitboard.bitboardToString
 import com.github.bhlangonijr.pururucazero.cnn.Nd4jEncoder.extraFeaturesSize
 import com.github.bhlangonijr.pururucazero.cnn.Nd4jEncoder.totalBoardPlanes
 import com.github.bhlangonijr.pururucazero.cnn.Nd4jEncoder.totalTimeSteps
-import com.github.bhlangonijr.pururucazero.util.Utils
 import com.github.bhlangonijr.pururucazero.util.Utils.flipVertical
 import org.nd4j.linalg.api.ndarray.INDArray
 
@@ -28,31 +26,19 @@ object Nd4jDecoder {
         board.clear()
         board.castleRight[Side.WHITE] = CastleRight.NONE
         board.castleRight[Side.BLACK] = CastleRight.NONE
-        var row = 0
-        var col = Nd4jEncoder.size
-
+        var index = 0
         val bitboards = mutableListOf<Long>()
-        for (i in 1 .. totalTimeSteps) {
-            for (j in 1..totalBoardPlanes) {
-                val bb = planeToBitboard(encoded, row, col)
-//                println("($i,$j)")
-//                println(bitboardToString(bb))
-                bitboards += bb
-                row += Nd4jEncoder.size
-                col += Nd4jEncoder.size
-            }
+        for (i in 0 until totalTimeSteps * totalBoardPlanes) {
+            index = i
+            val bb = planeToBitboard(encoded, index)
+            bitboards += bb
         }
-//        println(encoded.get(NDArrayIndex.interval(0, 8), NDArrayIndex.all()).toString())
-//        println("----")
-//        println(encoded.get(NDArrayIndex.interval(0+8, 8+8), NDArrayIndex.all()).toString())
-//        println("----")
+        index++
         val extraFeaturesList = mutableListOf<Float>()
         for (i in 1 .. extraFeaturesSize) {
-            val number = planeToNumber(encoded, row, col)
-            row += Nd4jEncoder.size
-            col += Nd4jEncoder.size
+            val number = planeToNumber(encoded, index)
             extraFeaturesList += number
-            //println("($i)=$number")
+            index += 1
         }
         var featureIndex = 0
         val side = Side.allSides[extraFeaturesList[featureIndex++].toInt()]
@@ -97,8 +83,9 @@ object Nd4jDecoder {
         }
     }
 
-    private fun planeToBitboard(plane: INDArray, row: Int, col: Int): Long {
-        return planeToBitboard(plane.get(NDArrayIndex.interval(row, col), NDArrayIndex.all()))
+    private fun planeToBitboard(input: INDArray, index: Int): Long {
+        val plane = input.get(NDArrayIndex.indices(index.toLong()))
+        return planeToBitboard(plane)
     }
 
     private fun planeToBitboard(plane: INDArray): Long {
@@ -106,7 +93,7 @@ object Nd4jDecoder {
 
         for (i in 0..7) {
             for (j in 0..7) {
-                val value = plane.getFloat(i, j)
+                val value = plane.getFloat(0, i, j)
                 if (value > 0) {
                     bitboard = bitboard xor (1UL shl (j + i * Nd4jEncoder.size))
                 }
@@ -115,15 +102,16 @@ object Nd4jDecoder {
         return bitboard.toLong()
     }
 
-    private fun planeToNumber(plane: INDArray, row: Int, col: Int): Float {
-        return planeToNumber(plane.get(NDArrayIndex.interval(row, col), NDArrayIndex.all()))
+    private fun planeToNumber(input: INDArray, index: Int): Float {
+        val plane = input.get(NDArrayIndex.indices(index.toLong()))
+        return planeToNumber(plane)
     }
 
     private fun planeToNumber(plane: INDArray): Float {
-        if (!plane.shape().contentEquals(longArrayOf(8, 8))) {
-            throw IllegalArgumentException("Plane should have shape 8x8")
+        if (!plane.shape().contentEquals(longArrayOf(1, 8, 8))) {
+            throw IllegalArgumentException("Plane should have shape 1x8x8")
         }
-        return plane.getFloat(0, 0)
+        return plane.getFloat(0, 0, 0)
     }
 
 }
