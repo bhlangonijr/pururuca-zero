@@ -102,9 +102,6 @@ object Nd4jDecoder {
     }
 
     private fun planeToBitboard(plane: INDArray): Long {
-        if (!plane.shape().contentEquals(longArrayOf(8, 8))) {
-            throw IllegalArgumentException("Plane should have shape 8x8")
-        }
         var bitboard = 0UL
 
         for (i in 0..7) {

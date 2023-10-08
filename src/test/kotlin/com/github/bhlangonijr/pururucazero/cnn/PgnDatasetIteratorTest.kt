@@ -28,7 +28,7 @@ class PgnDatasetIteratorTest {
             count += dataset.features.shape()[0].toInt()
             val rows = dataset.features.size(0)
             assertEquals(batchSize, rows.toInt())
-            assertEquals(952, dataset.features.shape()[1])
+            assertEquals(119, dataset.features.shape()[1])
             assertEquals(8, dataset.features.shape()[2])
             println(dataset.features.shape().toList())
             println(dataset.labels.shape().toList())

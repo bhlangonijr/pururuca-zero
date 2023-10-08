@@ -12,7 +12,7 @@ object Nd4jEncoder {
     const val totalTimeSteps = 8
     const val totalBoardPlanes = 14
     const val extraFeaturesSize = 7
-    val emptyPlanes = createEmptyPlanes()
+    const val numberOfPlanes = totalBoardPlanes * totalTimeSteps + extraFeaturesSize // 119 as per alphazero paper
     private val emptyBoardPlaneCache = emptyBoardPlane()
 
 
@@ -51,37 +51,36 @@ object Nd4jEncoder {
         return Nd4j.create(planes)
     }
 
-    fun encodeToArray(board: Board): Array<FloatArray> {
+    fun encodeToArray(board: Board): Array<Array<FloatArray>> {
 
-        return getPlane(board, PieceType.KING, Side.WHITE) +
-                getPlane(board, PieceType.PAWN, Side.WHITE) +
-                getPlane(board, PieceType.BISHOP, Side.WHITE) +
-                getPlane(board, PieceType.KNIGHT, Side.WHITE) +
-                getPlane(board, PieceType.ROOK, Side.WHITE) +
-                getPlane(board, PieceType.QUEEN, Side.WHITE) +
-                getPlane(board, PieceType.KING, Side.BLACK) +
-                getPlane(board, PieceType.PAWN, Side.BLACK) +
-                getPlane(board, PieceType.BISHOP, Side.BLACK) +
-                getPlane(board, PieceType.KNIGHT, Side.BLACK) +
-                getPlane(board, PieceType.ROOK, Side.BLACK) +
-                getPlane(board, PieceType.QUEEN, Side.BLACK) +
-                repetitionToPlane(if (board.isRepetition(2)) 1 else 0) +
-                repetitionToPlane(if (board.isRepetition(3)) 1 else 0)
+        val result = Array(totalBoardPlanes) { index ->
+            when (index) {
+                0 -> getPlane(board, PieceType.KING, Side.WHITE)
+                1 -> getPlane(board, PieceType.PAWN, Side.WHITE)
+                2 -> getPlane(board, PieceType.BISHOP, Side.WHITE)
+                3 -> getPlane(board, PieceType.KNIGHT, Side.WHITE)
+                4 -> getPlane(board, PieceType.ROOK, Side.WHITE)
+                5 -> getPlane(board, PieceType.QUEEN, Side.WHITE)
+                6 -> getPlane(board, PieceType.KING, Side.BLACK)
+                7 -> getPlane(board, PieceType.PAWN, Side.BLACK)
+                8 -> getPlane(board, PieceType.BISHOP, Side.BLACK)
+                9 -> getPlane(board, PieceType.KNIGHT, Side.BLACK)
+                10 -> getPlane(board, PieceType.ROOK, Side.BLACK)
+                11 -> getPlane(board, PieceType.QUEEN, Side.BLACK)
+                12 -> repetitionToPlane(if (board.isRepetition(2)) 1 else 0)
+                13 -> repetitionToPlane(if (board.isRepetition(3)) 1 else 0)
+                else -> emptyPlane()
+            }
+        }
+        return result
     }
 
-    private fun createEmptyPlanes(): INDArray {
+    private fun emptyBoardPlane(): Array<Array<FloatArray>> {
 
-        return Nd4j.create(Array(
-            size * totalBoardPlanes * totalTimeSteps +
-                    size * extraFeaturesSize) {
-            FloatArray(size) { 0f }
-        })
-    }
-
-    private fun emptyBoardPlane(): Array<FloatArray> {
-
-        return Array(size * totalBoardPlanes) {
-            FloatArray(size) { 0f }
+        return Array(totalBoardPlanes) {
+            Array(size) {
+                FloatArray(size) { 0f }
+            }
         }
     }
 
@@ -107,16 +106,20 @@ object Nd4jEncoder {
     }
 
     private fun numberToPlane(number: Int) =
-        Array(size) {
-            FloatArray(size) {
-                number.toFloat()
+        Array(1) {
+            Array(size) {
+                FloatArray(size) {
+                    number.toFloat()
+                }
             }
         }
 
     private fun sideToPlane(side: Side) =
-        Array(size) {
-            FloatArray(size) {
-                side.ordinal.toFloat()
+        Array(1) {
+            Array(size) {
+                FloatArray(size) {
+                    side.ordinal.toFloat()
+                }
             }
         }
 

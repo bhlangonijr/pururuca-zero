@@ -11,10 +11,6 @@ import org.nd4j.linalg.factory.Nd4j
 import org.nd4j.linalg.indexing.NDArrayIndex
 import java.util.*
 
-private const val featuresDimensions = Nd4jEncoder.size * Nd4jEncoder.totalBoardPlanes *
-        Nd4jEncoder.totalTimeSteps + Nd4jEncoder.size *
-        Nd4jEncoder.extraFeaturesSize
-
 class PgnDatasetIterator(
     val pgnFile: String,
     val batchSize: Int = 32,
@@ -150,7 +146,8 @@ class PgnDatasetIterator(
         val labelNames: MutableList<String>,
         val inputs: INDArray = Nd4j.create(
             rows,
-            featuresDimensions,
+            Nd4jEncoder.numberOfPlanes,
+            Nd4jEncoder.size,
             Nd4jEncoder.size
         ),
         val outputs: INDArray = Nd4j.create(

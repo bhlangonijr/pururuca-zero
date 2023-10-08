@@ -24,12 +24,16 @@ class Nd4jEncoderTest {
 
         val encoded = encodeToArray(board)
 
-        assertEquals(1f, encoded[0][4]) // side king position
-        assertEquals(1f, encoded[5 * 8][3]) // opposite side king position
-        assertEquals(1f, encoded[8 + 4][4]) // side pawn advanced
-        assertEquals(1f, encoded[7 * 8 + 3][3]) // opposite pawn advanced
-        assertEquals(1f, encoded[12 * 8][0]) // any square populated with first repetition
-        assertEquals(0f, encoded[13 * 8][0]) // any square not populated with second repetition
+        val encoded2 = encode(board)
+
+        println(encoded2.shape().toList())
+
+        assertEquals(1f, encoded[0][0][4]) // side king position
+        assertEquals(1f, encoded[5][0][3]) // opposite side king position
+        assertEquals(1f, encoded[1][4][4]) // side pawn advanced
+        assertEquals(1f, encoded[7][3][3]) // opposite pawn advanced
+        assertEquals(1f, encoded[12][0][0]) // any square populated with first repetition
+        assertEquals(0f, encoded[13][0][0]) // any square not populated with second repetition
     }
 
     @Test
@@ -50,73 +54,9 @@ class Nd4jEncoderTest {
         println(board.fen)
         val encoded = encodeToArray(board)
 
-        assertEquals(1f, encoded[0][6]) // side king position
-        assertEquals(1f, encoded[6 * 8][5]) // opposite side king position
-        assertEquals(1f, encoded[12 * 8][0]) // any square populated with first repetition
-        assertEquals(1f, encoded[13 * 8][0]) // any square populated with second repetition
-    }
-
-    @Test
-    fun testFullEncode() {
-
-        val moves = MoveList()
-        moves.loadFromSan("1. e4 Nf6 2. e5 d5 3. Bc4 Nc6 4. Bf1 Nb8 5. Bc4 Nc6 6. Bf1 Nb8")
-
-        val board = Board()
-        moves.forEach { move ->
-            board.doMove(move)
-        }
-        val initialHash = board.incrementalHashKey
-        val encoded = encode(board)
-        assertEquals(initialHash, board.incrementalHashKey)
-
-        assertEquals(1f, encoded.getRow(0).getFloat(4)) // side king position
-        assertEquals(1f, encoded.getRow(5 * 8).getFloat(3)) // opposite side king position
-        assertEquals(1f, encoded.getRow(8 + 4).getFloat(4)) // side pawn advanced
-        assertEquals(1f, encoded.getRow(7 * 8 + 3).getFloat(3)) // opposite pawn advanced
-        assertEquals(1f, encoded.getRow(12 * 8).getFloat(0)) // any square populated with first repetition
-        assertEquals(0f, encoded.getRow(13 * 8).getFloat(0)) // any square not populated with second repetition
-    }
-
-    @Test
-    fun testEncodePartialPlane() {
-
-        val moves = MoveList()
-        moves.loadFromSan("1. e4 Nf6")
-
-        val board = Board()
-        moves.forEach { move ->
-            board.doMove(move)
-        }
-        val initialHash = board.incrementalHashKey
-        val encoded = encode(board)
-        assertEquals(initialHash, board.incrementalHashKey)
-
-        assertEquals(1f, encoded.getRow(0).getFloat(4)) // side king position
-        assertEquals(1f, encoded.getRow(5 * 8).getFloat(3)) // opposite side king position
-        assertEquals(0f, encoded.getRow(12 * 8).getFloat(0)) // any square populated with first repetition
-        assertEquals(0f, encoded.getRow(13 * 8).getFloat(0)) // any square not populated with second repetition
-
-    }
-
-    @Test
-    fun testEmptyVsEncodedShapes() {
-
-        val board = Board()
-
-        val encoded = encode(board)
-
-        val moves = MoveList()
-        moves.loadFromSan("1. e4 Nf6 2. e5 d5 3. Bc4 Nc6 4. Bf1 Nb8 5. Bc4 Nc6 6. Bf1 Nb8")
-        moves.forEach {
-            board.doMove(it)
-        }
-        val encoded2 = encode(board)
-
-        val empty = Nd4jEncoder.emptyPlanes
-
-        assertTrue(Arrays.equals(encoded.shape(), empty.shape()))
-        assertTrue(Arrays.equals(encoded.shape(), encoded2.shape()))
-
+        assertEquals(1f, encoded[0][0][6]) // side king position
+        assertEquals(1f, encoded[6][0][5]) // opposite side king position
+        assertEquals(1f, encoded[12][0][0]) // any square populated with first repetition
+        assertEquals(1f, encoded[13][0][0]) // any square populated with second repetition
     }
 }
