@@ -19,6 +19,7 @@ import org.nd4j.linalg.activations.Activation
 import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization
 import org.nd4j.linalg.dataset.api.preprocessor.NormalizerMinMaxScaler
 import org.nd4j.linalg.dataset.api.preprocessor.serializer.NormalizerSerializer
+import org.nd4j.linalg.factory.Nd4j
 import org.nd4j.linalg.learning.config.AdaDelta
 import org.nd4j.linalg.lossfunctions.LossFunctions
 import java.io.File
@@ -35,6 +36,7 @@ class CnnTrainner(
         epochs: Int = 100,
         seed: Long = 123L
     ): Pair<Array<FloatArray>, FloatArray> {
+
         val outputNum = trainDatasetIterator.labelNames.size
         trainDatasetIterator.reset()
         testDatasetIterator.reset()

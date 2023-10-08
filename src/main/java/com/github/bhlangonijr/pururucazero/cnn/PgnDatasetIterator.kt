@@ -47,7 +47,7 @@ class PgnDatasetIterator(
                         board.doMove(move)
                         val result = mapGameResult(game.result.description, board.sideToMove)
                         val dataStack = datasetQueue.peekLast()
-                        println("Iterator: ${board.fen}")
+                        //println("Iterator: ${board.fen}")
                         dataStack.add(result, board)
                         if (dataStack.lines >= rows) {
                             datasetQueue.add(DataStack(rows, labelNames))
