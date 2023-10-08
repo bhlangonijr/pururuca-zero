@@ -66,10 +66,10 @@ object Nd4jDecoder {
 
         var planeIndex = 0
         for (pieceType in pieceList) {
-            updateBoardWithBbb(board, bitboards[planeIndex++], pieceType, Side.WHITE)
+            updateBoardWithBbb(board, bitboards[planeIndex++], pieceType, side)
         }
         for (pieceType in pieceList) {
-            updateBoardWithBbb(board, bitboards[planeIndex++], pieceType, Side.BLACK)
+            updateBoardWithBbb(board, bitboards[planeIndex++], pieceType, side.flip())
         }
         return board
     }
