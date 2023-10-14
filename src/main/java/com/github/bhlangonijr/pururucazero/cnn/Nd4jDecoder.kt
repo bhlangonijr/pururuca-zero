@@ -42,6 +42,7 @@ object Nd4jDecoder {
         }
         var featureIndex = 0
         val side = Side.allSides[extraFeaturesList[featureIndex++].toInt()]
+        val other = side.flip()
         board.sideToMove = side
         board.moveCounter = extraFeaturesList[featureIndex++].toInt()
         if (extraFeaturesList[featureIndex++] == 1f) {
@@ -69,13 +70,13 @@ object Nd4jDecoder {
             updateBoardWithBbb(board, bitboards[planeIndex++], pieceType, side)
         }
         for (pieceType in pieceList) {
-            updateBoardWithBbb(board, bitboards[planeIndex++], pieceType, side.flip())
+            updateBoardWithBbb(board, bitboards[planeIndex++], pieceType, other)
         }
         return board
     }
 
     private fun updateBoardWithBbb(board: Board, bb: Long, pieceType: PieceType, side: Side) {
-        if (bb > 0L) {
+        if (bb != 0L) {
             val bitboard = if (side == Side.WHITE) bb else flipVertical(bb.toULong()).toLong()
             Bitboard.bbToSquareList(bitboard).forEach {
                 board.setPiece(Piece.make(side, pieceType), it)
