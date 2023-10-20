@@ -131,14 +131,14 @@ class PgnDatasetIterator(
         return labelNames
     }
 
-    private fun mapGameResult(result: String, side: Side): Int {
+    private fun mapGameResult(result: String, side: Side): Float {
 
         return when {
-            result == "1-0" && side == Side.WHITE -> -1
-            result == "0-1" && side == Side.WHITE -> +1
-            result == "0-1" && side == Side.BLACK -> -1
-            result == "1-0" && side == Side.BLACK -> +1
-            else -> 0
+            result == "1-0" && side == Side.WHITE -> +1f
+            result == "0-1" && side == Side.BLACK -> +1f
+            result == "0-1" && side == Side.WHITE -> 0f
+            result == "1-0" && side == Side.BLACK -> 0f
+            else -> 0.5f
         }
     }
 
@@ -157,14 +157,14 @@ class PgnDatasetIterator(
         var lines: Int = 0
     ) {
         fun add(
-            label: Int,
+            label: Float,
             board: Board
         ) {
             if (lines >= rows) {
                 throw IllegalArgumentException("INDArray is full. Size: $lines")
             }
             val vector = Nd4j.zeros(1, labelNames.size)
-            vector.putScalar(label.toLong(), 1)
+            vector.putScalar(0, label)
             outputs.putRow(lines.toLong(), vector)
             val features = Nd4jEncoder.encode(board)
             inputs.put(NDArrayIndex.indexesFor(lines.toLong()), features)

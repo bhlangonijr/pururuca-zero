@@ -18,7 +18,7 @@ class PgnDatasetIteratorTest {
         val pgnIterator = PgnDatasetIterator(
             pgnFile = filename,
             batchSize = batchSize,
-            labelNames = mutableListOf("win", "lost", "draw")
+            labelNames = mutableListOf("win prob")
         )
 
         //val totalGames = PgnIterator(filename).sumOf { 1L }
@@ -34,7 +34,7 @@ class PgnDatasetIteratorTest {
             assertEquals(8, dataset.features.shape()[2])
             println(dataset.features.shape().toList())
             println(dataset.labels.shape().toList())
-
+            println(dataset.labels)
             for (i in 0 until batchSize) {
                 val features = dataset.features.get(NDArrayIndex.point(i.toLong()) ,NDArrayIndex.interval(0, 119))
                 //println("Features shape: ${features.shape().toList()}")

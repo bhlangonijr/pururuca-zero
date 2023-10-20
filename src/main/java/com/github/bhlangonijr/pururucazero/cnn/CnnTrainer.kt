@@ -1,15 +1,19 @@
 package com.github.bhlangonijr.pururucazero.cnn
 
 import com.github.bhlangonijr.pururucazero.cnn.Nd4jEncoder.numberOfPlanes
+import org.deeplearning4j.nn.api.Model
 import org.deeplearning4j.nn.api.OptimizationAlgorithm
+import org.deeplearning4j.nn.conf.ConvolutionMode
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration
 import org.deeplearning4j.nn.conf.inputs.InputType
 import org.deeplearning4j.nn.conf.layers.BatchNormalization
 import org.deeplearning4j.nn.conf.layers.ConvolutionLayer
+import org.deeplearning4j.nn.conf.layers.DenseLayer
 import org.deeplearning4j.nn.conf.layers.OutputLayer
 import org.deeplearning4j.nn.conf.layers.SubsamplingLayer
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.nn.weights.WeightInit
+import org.deeplearning4j.optimize.api.BaseTrainingListener
 import org.deeplearning4j.optimize.api.InvocationType
 import org.deeplearning4j.optimize.listeners.EvaluativeListener
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener
@@ -19,12 +23,12 @@ import org.nd4j.linalg.activations.Activation
 import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization
 import org.nd4j.linalg.dataset.api.preprocessor.NormalizerMinMaxScaler
 import org.nd4j.linalg.dataset.api.preprocessor.serializer.NormalizerSerializer
-import org.nd4j.linalg.factory.Nd4j
 import org.nd4j.linalg.learning.config.AdaDelta
+import org.nd4j.linalg.learning.config.Adam
 import org.nd4j.linalg.lossfunctions.LossFunctions
 import java.io.File
 
-class CnnTrainner(
+class CnnTrainer(
     private val modelPath: String,
     private val normalizerPath: String?
 ) {
@@ -33,7 +37,7 @@ class CnnTrainner(
     fun train(
         trainDatasetIterator: PgnDatasetIterator,
         testDatasetIterator: PgnDatasetIterator,
-        epochs: Int = 100,
+        epochs: Int = 20,
         seed: Long = 123L
     ): Pair<Array<FloatArray>, FloatArray> {
 
@@ -50,102 +54,50 @@ class CnnTrainner(
         println("Building convolutional network...")
         val conf = NeuralNetConfiguration.Builder()
             .seed(seed)
-            .updater(AdaDelta())
+            .updater(Adam())
             .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
             .weightInit(WeightInit.XAVIER)
             .list()
             .layer(
                 ConvolutionLayer.Builder()
-                    .kernelSize(5, 5)
+                    .kernelSize(3, 3)
                     .stride(1, 1)
-                    .padding(1, 1)
-                    .activation(Activation.LEAKYRELU)
+                    .activation(Activation.RELU)
                     .nIn(numberOfPlanes)
-                    .nOut(64)
+                    .nOut(256)
+                    .convolutionMode(ConvolutionMode.Same)
                     .build()
             )
             .layer(BatchNormalization())
             .layer(
-                SubsamplingLayer.Builder()
-                    .kernelSize(2, 2)
-                    .stride(2, 2)
-                    .poolingType(SubsamplingLayer.PoolingType.MAX)
+                ConvolutionLayer.Builder()
+                    .kernelSize(3, 3)
+                    .stride(1, 1)
+                    .activation(Activation.RELU)
+                    .nOut(256)
+                    .build()
+            )
+            .layer(BatchNormalization())
+            .layer(
+                ConvolutionLayer.Builder()
+                    .kernelSize(3, 3)
+                    .stride(1, 1)
+                    .activation(Activation.RELU)
+                    .nOut(512)
+                    .build()
+            )
+            .layer(BatchNormalization())
+            .layer(
+                DenseLayer.Builder()
+                    .nOut(512)
+                    .activation(Activation.RELU)
                     .build()
             )
             .layer(
-                ConvolutionLayer.Builder()
-                    .kernelSize(1, 1)
-                    .stride(1, 1)
-                    .padding(1, 1)
-                    .activation(Activation.LEAKYRELU)
-                    .nOut(32).build()
-            )
-            .layer(BatchNormalization())
-            .layer(
-                ConvolutionLayer.Builder()
-                    .kernelSize(5, 5)
-                    .stride(1, 1)
-                    .padding(1, 1)
-                    .activation(Activation.LEAKYRELU)
-                    .nOut(64).build()
-            )
-            .layer(BatchNormalization())
-            .layer(
-                SubsamplingLayer.Builder()
-                    .kernelSize(2, 2)
-                    .stride(2, 2)
-                    .poolingType(SubsamplingLayer.PoolingType.MAX)
-                    .build()
-            )
-            .layer(
-                ConvolutionLayer.Builder()
-                    .kernelSize(1, 1)
-                    .stride(1, 1)
-                    .padding(1, 1)
-                    .activation(Activation.LEAKYRELU)
-                    .nOut(32).build()
-            )
-            .layer(BatchNormalization())
-            .layer(
-                ConvolutionLayer.Builder()
-                    .kernelSize(5, 5)
-                    .stride(1, 1)
-                    .padding(1, 1)
-                    .activation(Activation.LEAKYRELU)
-                    .nOut(256).build()
-            )
-            .layer(BatchNormalization())
-            .layer(
-                ConvolutionLayer.Builder()
-                    .kernelSize(1, 1)
-                    .stride(1, 1)
-                    .padding(1, 1)
-                    .activation(Activation.LEAKYRELU)
-                    .nOut(128).build()
-            )
-            .layer(BatchNormalization())
-            .layer(
-                ConvolutionLayer.Builder()
-                    .kernelSize(1, 1)
-                    .stride(1, 1)
-                    .padding(1, 1)
-                    .activation(Activation.LEAKYRELU)
-                    .nOut(outputNum).build()
-            )
-            .layer(BatchNormalization())
-            .layer(
-                SubsamplingLayer.Builder()
-                    .kernelSize(2, 2)
-                    .stride(2, 2)
-                    .poolingType(SubsamplingLayer.PoolingType.AVG)
-                    .build()
-            )
-            .layer(
-                OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                OutputLayer.Builder(LossFunctions.LossFunction.XENT)
                     .name("output")
                     .nOut(outputNum)
-                    .dropOut(0.8)
-                    .activation(Activation.SOFTMAX)
+                    .activation(Activation.SIGMOID)
                     .build()
             )
             .setInputType(
@@ -159,8 +111,23 @@ class CnnTrainner(
         val model = MultiLayerNetwork(conf)
         model.init()
         model.setListeners(
-            ScoreIterationListener(1),
-            EvaluativeListener(testDatasetIterator, 1, InvocationType.EPOCH_END)
+            //ScoreIterationListener(1),
+            object: BaseTrainingListener() {
+                override fun onEpochStart(model: Model?) {
+                    println("Epoch start: ${model?.score()}")
+                    super.onEpochStart(model)
+                }
+
+                override fun onEpochEnd(model: Model?) {
+                    println("Epoch end: ${model?.score()}")
+                    super.onEpochEnd(model)
+                }
+
+                override fun iterationDone(model: Model?, iteration: Int, epoch: Int) {
+                    println("Iteration done: ${model?.score()}, $iteration, $epoch")
+                    super.iterationDone(model, iteration, epoch)
+                }
+            }
         )
         println("Total num of params: ${model.numParams()}")
         model.fit(trainDatasetIterator, epochs)
