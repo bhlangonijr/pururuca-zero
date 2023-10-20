@@ -10,7 +10,7 @@ class CnnTrainerIntegrationTest {
         val trainDatasetFile = "src/test/resources/Stockfish_DD_64-bit_4CPU.pgn"
         val testDatasetFile = "src/test/resources/pt54.pgn"
 
-        val batchSize = 100
+        val batchSize = 64
         val trainPgnIterator = PgnDatasetIterator(
             pgnFile = trainDatasetFile,
             batchSize = batchSize,

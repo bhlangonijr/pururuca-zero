@@ -136,9 +136,9 @@ class PgnDatasetIterator(
         return when {
             result == "1-0" && side == Side.WHITE -> +1f
             result == "0-1" && side == Side.BLACK -> +1f
-            result == "0-1" && side == Side.WHITE -> 0f
-            result == "1-0" && side == Side.BLACK -> 0f
-            else -> 0.5f
+            result == "0-1" && side == Side.WHITE -> -1f
+            result == "1-0" && side == Side.BLACK -> -1f
+            else -> 0f
         }
     }
 
