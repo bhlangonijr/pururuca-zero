@@ -1,0 +1,617 @@
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.18"]
+[Round "1"]
+[White "Arminius"]
+[Black "RofChade"]
+[Result "0-1"]
+[Annotator "6... -0.17"]
+[ECO "C80"]
+[EventDate "2019.05.18"]
+[TimeControl "2640+9"]
+
+1.e4 e5 2.Nf3 Nc6 3.Bb5 a6 4.Ba4 Nf6 5.O-O Nxe4 6.Re1 Nc5 7.Bxc6 dxc6 8.d4
+Ne6 9.Rxe5 Be7 10.Nc3 O-O 11.Re1 b5 12.Be3 Bb7 13.Ne5 f5 14.f4 Bf6 15.a3 Re8
+16.Qd3 Bxe5 17.fxe5 Rf8 18.Bf2 f4 19.Kh1 Qe8 20.Qf3 Ng5 21.Qg4 h6 22.Bh4 Bc8
+23.Qd1 f3 24.Bxg5 fxg2+ 25.Kxg2 hxg5 26.a4 b4 27.Ne4 Rf4 28.Re3 Qg6 29.Nc5
+Bg4 30.Qd3 Qh5 31.Ne4 Raf8 32.Kg1 Qh4 33.Rg3 Be6 34.Nxg5 Bd5 35.e6 Rg4
+36.Qh7+ Qxh7 37.Nxh7 Rxg3+ 38.hxg3 Kxh7 39.e7 Re8 40.Re1 Kg6 41.Kf2 Kf6
+42.Rc1 Rxe7 43.c3 bxc3 44.bxc3 Bc4 45.Rc2 Kf5 46.Kf3 Bd5+ 47.Kf2 Kg4 48.c4
+Bf3 49.c5 g5 50.Rb2 Re2+ 0-1
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.18"]
+[Round "1"]
+[White "Komodo"]
+[Black "FrankWalter"]
+[Result "1-0"]
+[Annotator "6... -0.17"]
+[ECO "B66"]
+[EventDate "2019.05.18"]
+[TimeControl "2640+9"]
+
+1.e4 c5 2.Nf3 Nc6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3 d6 6.Bg5 e6 7.Qd2 a6 8.O-O-O h6
+9.Nxc6 bxc6 10.Bf4 d5 11.Qe3 Bb4 12.Be2 Qa5 13.Be5 Bxc3 14.Bxc3 Qxa2 15.Bd3
+Bb7 16.Qb6 Rb8 17.Qc5 Rd8 18.Bb4 Rd7 19.e5 Nh5 20.Kd2 Nf4 21.b3 Nxd3 22.Kxd3
+Rg8 23.Ra1 Qb2 24.Bc3 Qxa1 25.Rxa1 f6 26.exf6 gxf6 27.Bxf6 Kf7 28.Bc3 Rg5
+29.Bb4 Rg8 30.Qd4 Bc8 31.Re1 Rb7 32.Qf4+ Kg7 33.Bd2 d4 34.Re4 Rb5 35.Qxh6+
+Kf7 36.g4 e5 37.g5 Rg6 38.Qh7+ Rg7 39.g6+ Kf6 40.Bg5+ Kxg5 41.Qxg7 Be6 42.Qf8
+Kxg6 43.Rh4 Rxb3+ 44.cxb3 Bf5+ 45.Kd2 d3 46.f4 exf4 47.Rh6+ Kg5 48.Qg7+ Bg6
+49.Qxg6# 1-0
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.18"]
+[Round "1"]
+[White "Nemeton"]
+[Black "The Baron"]
+[Result "0-1"]
+[Annotator "6... -0.17"]
+[ECO "C01"]
+[EventDate "2019.05.18"]
+[TimeControl "2640+9"]
+
+1.e4 e6 2.d4 d5 3.exd5 exd5 4.Nf3 Nf6 5.Bb5+ c6 6.Bd3 c5 7.O-O c4 8.Be2 Nc6
+9.b3 cxb3 10.axb3 Be7 11.Bg5 O-O 12.Ne5 h6 13.Bf4 Bd6 14.Nc3 Bf5 15.Nb5 Bb8
+16.Bd3 Bxd3 17.Qxd3 Nh5 18.Nxc6 bxc6 19.Bxb8 Qxb8 20.Nc3 Nf4 21.Qf3 Re8
+22.Ra4 a5 23.Rfa1 Ra7 24.Kf1 Ne6 25.g3 Ng5 26.Qg4 Rae7 27.Kg2 f5 28.Qxf5 Rf7
+29.Qg4 Nf3 30.Rc1 Qd6 31.Kh1 Qf6 32.Raa1 h5 33.Qxh5 Qxd4 34.Na4 Re6 35.Rd1
+Qxf2 36.Rf1 Qe3 37.Qg4 Qe2 38.Rxf3 Rxf3 39.Rg1 Re4 40.Qh5 Qf2 41.Qh3 Qxc2
+42.Qc8+ Rf8 43.Qxf8+ Kxf8 0-1
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.18"]
+[Round "1"]
+[White "Spartacus"]
+[Black "The King"]
+[Result "0-1"]
+[Annotator "6... -0.17"]
+[ECO "B16"]
+[EventDate "2019.05.18"]
+[TimeControl "2640+9"]
+
+1.e4 c6 2.d4 d5 3.Nc3 dxe4 4.Nxe4 Nf6 5.Nxf6+ gxf6 6.g3 e5 7.Nf3 Be6 8.Bg2 e4
+9.Ng1 f5 10.Ne2 c5 11.f3 Nc6 12.fxe4 fxe4 13.Bxe4 cxd4 14.Bxc6+ bxc6 15.Qxd4
+Rg8 16.Qxd8+ Rxd8 17.Be3 Bg7 18.c3 a5 19.Bd4 Bh6 20.Rf1 Rg4 21.Rf6 Bg5 22.Rf2
+Re4 23.h4 Be7 24.Rf4 f5 25.Rxe4 fxe4 26.Nf4 Bg4 27.Kf2 c5 28.Be3 a4 29.c4 Bf6
+30.Rb1 Bd4 31.Nd5 Kf7 32.Re1 Bf3 33.Nb6 a3 34.bxa3 Be5 35.Rb1 Rd3 36.Rb3 Rd1
+37.Nd5 Ra1 38.Nc3 Bd4 39.a4 Ke6 40.Rb1 Bxc3 41.Rxa1 Bxa1 42.a5 Kd6 43.a6 Kc6
+44.a7 Kb7 45.Bxc5 Be5 46.Bb6 Bg4 47.a4 h5 48.Ke3 Bxg3 49.Kxe4 Bxh4 50.c5 Bd7
+51.a5 Bc6+ 52.Ke5 Bg3+ 53.Kf5 Be1 54.Bd8 h4 55.Be7 h3 56.a8=Q+ Kxa8 57.Bd6
+Bf3 58.Bh2 Bxa5 59.Kf4 Bg2 60.Kg5 Kb7 61.Kg4 Bb4 62.Kg3 Bxc5 63.Kg4 Kc6
+64.Kh4 Bd6 65.Bg3 Bf1 66.Kg4 Kd5 67.Bxd6 Kxd6 68.Kg3 Ke5 69.Kh2 Kf4 70.Kg1
+Kf3 71.Kxf1 h2 72.Ke1 Ke3 73.Kd1 h1=Q+ 74.Kc2 Qc6+ 75.Kb3 Kd4 76.Kb2 Qc3+
+77.Kb1 Qd2 78.Ka1 Kc3 79.Kb1 Qb2# 0-1
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.18"]
+[Round "2"]
+[White "FrankWalter"]
+[Black "The Baron"]
+[Result "0-1"]
+[Annotator "6... -0.17"]
+[ECO "C06"]
+[EventDate "2019.05.18"]
+[TimeControl "2640+9"]
+
+1.e4 e6 2.d4 d5 3.Nd2 Nf6 4.e5 Nfd7 5.c3 c5 6.Bd3 Nc6 7.Ne2 cxd4 8.cxd4 f6
+9.exf6 Nxf6 10.O-O Qc7 11.Nf3 Bd6 12.Nc3 a6 13.Bd2 O-O 14.Rc1 Bd7 15.Re1 Ng4
+16.h3 Bh2+ 17.Kf1 Nxf2 18.Qc2 Nh1 19.Be3 Qg3 20.Qe2 g6 21.Bg1 Rf4 22.Be4 Nb4
+23.Qe3 Raf8 24.Ra1 dxe4 25.Bxh2 Qxh2 26.Re2 exf3 27.Ke1 fxe2 28.Kd2 Ng3
+29.Nd5 Nxd5 30.Re1 Nxe3 31.Kc3 Rc8+ 32.Kb3 Qxg2 33.Rc1 Qd5+ 34.Ka3 Qa5+
+35.Kb3 Qa4# 0-1
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.18"]
+[Round "2"]
+[White "Komodo"]
+[Black "Arminius"]
+[Result "1-0"]
+[Annotator "6... -0.17"]
+[ECO "D06"]
+[EventDate "2019.05.18"]
+[TimeControl "2640+9"]
+
+1.d4 d5 2.Nf3 Bf5 3.c4 e6 4.Nc3 Bb4 5.cxd5 exd5 6.Qb3 Nc6 7.Bg5 Nge7 8.a3
+Bxc3+ 9.Qxc3 f6 10.Bf4 g5 11.Bg3 h5 12.h4 g4 13.Nd2 a5 14.e3 a4 15.Bb5 Kf7
+16.O-O Bh7 17.Rac1 Kg7 18.b3 axb3 19.a4 Bf5 20.Nxb3 Qc8 21.a5 Bd7 22.Rfe1 Rd8
+23.Qd2 Be8 24.e4 dxe4 25.Rxe4 Rd5 26.Nc5 Bg6 27.Ree1 Bf7 28.a6 Rxa6 29.Bxc6
+Rxc5 30.Rxc5 Nxc6 31.d5 Qd8 32.Bf4 Rb6 33.Qc3 Qd7 34.Bh6+ Kxh6 35.Qxf6+ Kh7
+36.dxc6 Rxc6 37.Rxc6 bxc6 1-0
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.18"]
+[Round "2"]
+[White "The King"]
+[Black "Nemeton"]
+[Result "1-0"]
+[Annotator "6... -0.17"]
+[ECO "C65"]
+[EventDate "2019.05.18"]
+[TimeControl "2640+9"]
+
+1.Nf3 Nc6 2.e4 e5 3.Bb5 Nf6 4.O-O Bc5 5.Nxe5 Nxe5 6.d4 Qe7 7.dxc5 c6 8.Be2
+Nxe4 9.Re1 Qxc5 10.Be3 Qd5 11.Bd3 Nxd3 12.cxd3 Nf6 13.Nc3 Qf5 14.Bd4+ Kf8
+15.Qe2 h5 16.Qe7+ Kg8 17.Re5 Qg6 18.Re3 Ng4 19.Ne4 f6 20.Rae1 d5 21.Nxf6+
+Nxf6 22.Bxf6 Bg4 23.Qxb7 Kh7 24.Be5 Rad8 25.Qxa7 Rd7 26.Qd4 Ra8 27.a4 Rb7
+28.b3 Re7 29.h3 Bd7 30.a5 Bf5 31.b4 Qg5 32.Qc3 Qg6 33.Rg3 Qh6 34.Bd4 Rf7
+35.Re5 Rg8 36.Rf3 Qg6 37.a6 Ra8 38.a7 h4 39.Qc1 Kg8 40.Qe3 Rf6 41.b5 cxb5
+42.Rxd5 Re6 43.Qf4 Be4 1-0
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.18"]
+[Round "2"]
+[White "RofChade"]
+[Black "Spartacus"]
+[Result "1-0"]
+[Annotator "6... -0.17"]
+[ECO "B90"]
+[EventDate "2019.05.18"]
+[TimeControl "2640+9"]
+
+1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3 a6 6.Be3 Ng4 7.Bg5 h6 8.Bh4 g5
+9.Bg3 Bg7 10.h3 Ne5 11.Nf5 Bxf5 12.exf5 Nbc6 13.Nd5 e6 14.fxe6 fxe6 15.Ne3
+Qa5+ 16.c3 Nf3+ 17.Qxf3 Bxc3+ 18.Kd1 Bxb2 19.Qe4 Bxa1 20.Qxe6+ Kd8 21.Qxd6+
+Ke8 22.Qe6+ Ne7 23.Bd6 Qa4+ 24.Nc2 Qd7 25.Qxd7+ Kxd7 26.Bxe7 Kxe7 27.Nxa1
+Rhf8 28.f3 Rf4 29.Bd3 Ra4 30.Bb1 Rd8+ 31.Ke2 Rb4 32.Nb3 a5 33.Nxa5 Rb2+
+34.Ke3 Ra8 35.Nc4 Rxg2 36.Kd4 Ra6 37.Re1+ Kd8 38.Kc5 Rh2 39.Be4 Raxa2 40.Rb1
+Ra7 41.Kd6 Rxh3 42.Ke6 Rh2 43.Nd6 b5 44.Nxb5 Raa2 45.Nd6 Ra7 46.Rd1 Ra6
+47.Rc1 Rxd6+ 48.Kxd6 Ke8 49.Ke6 Kd8 50.Bd5 h5 51.Kd6 g4 52.Ra1 Rc2 53.f4 Rc8
+54.Re1 Rc7 55.Bc6 Rxc6+ 56.Kxc6 g3 57.f5 g2 58.f6 g1=Q 59.Rxg1 Ke8 60.Rg7 h4
+61.Kd6 Kf8 62.Ke6 h3 63.Rh7 Kg8 64.Rxh3 Kf8 65.Rh8# 1-0
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.18"]
+[Round "3"]
+[White "The Baron"]
+[Black "The King"]
+[Result "1-0"]
+[Annotator "6... -0.17"]
+[ECO "E11"]
+[EventDate "2019.05.18"]
+[TimeControl "2640+9"]
+
+1.d4 Nf6 2.c4 e6 3.Nf3 Bb4+ 4.Bd2 a5 5.Nc3 O-O 6.Bg5 h6 7.Bh4 d6 8.Qc2 Nc6
+9.a3 Bxc3+ 10.Qxc3 g5 11.Bg3 Ne4 12.Qc2 f5 13.Rd1 h5 14.h4 g4 15.Ng5 Nxg3
+16.fxg3 e5 17.d5 Ne7 18.e3 c6 19.dxc6 bxc6 20.Qc3 Qc7 21.Bd3 a4 22.Bb1 Rf6
+23.O-O Kg7 24.e4 Qa5 25.Qc1 Qc5+ 26.Kh2 f4 27.gxf4 Ba6 28.Ba2 Rb8 29.f5 Bc8
+30.Rd2 Bd7 31.Qd1 Ra8 32.Rd3 Rb8 33.Qd2 Rb7 34.Rd1 Nxf5 35.exf5 Bxf5 36.Rc3
+e4 37.Kh1 Qe5 38.b4 axb3 39.Bxb3 Bg6 40.Qe3 Re7 41.Ba4 Rc7 42.Kg1 Bf5 43.Qd4
+Re7 44.Re3 d5 45.cxd5 cxd5 46.Qxd5 Qf4 47.Qd4 Bg6 48.g3 Qf5 49.Bc6 Qe5
+50.Bxe4 Qxd4 51.Rxd4 1-0
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.18"]
+[Round "3"]
+[White "Spartacus"]
+[Black "Komodo"]
+[Result "0-1"]
+[Annotator "6... -0.17"]
+[ECO "B41"]
+[EventDate "2019.05.18"]
+[TimeControl "2640+9"]
+
+1.e4 c5 2.Nf3 e6 3.d4 cxd4 4.Nxd4 a6 5.Be2 Nf6 6.Nc3 Qc7 7.a3 b5 8.Qd3 Bb7
+9.Ndxb5 axb5 10.Nxb5 Qc6 11.f3 Na6 12.c4 d5 13.exd5 exd5 14.Bg5 Bc5 15.Qc3
+dxc4 16.Bxf6 gxf6 17.Qxc4 O-O 18.Rd1 Rfe8 19.Nc3 Nc7 20.Ne4 Ba6 21.Qc3 f5
+22.Qf6 Rxe4 23.Qg5+ Kf8 24.fxe4 Bxe2 25.Rd8+ Ne8 26.Rd5 Bc4 27.Qxf5 Bb6
+28.Rd2 Bb3 29.Ke2 Rd8 30.Rxd8 Qc2+ 31.Kf3 Qf2+ 32.Kg4 Qxg2+ 33.Kf4 Bxd8
+34.Rc1 Bg5+ 35.Qxg5 Qf2+ 36.Kg4 Be6+ 37.Kh5 Qxh2+ 38.Qh4 Qe5+ 39.Qg5 Nf6+
+40.Kh6 Qh2+ 41.Qh4 Qxh4# 0-1
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.18"]
+[Round "3"]
+[White "Nemeton"]
+[Black "RofChade"]
+[Result "0-1"]
+[Annotator "6... -0.17"]
+[ECO "D47"]
+[EventDate "2019.05.18"]
+[TimeControl "2640+9"]
+
+1.d4 d5 2.c4 e6 3.Nc3 Nf6 4.Nf3 c6 5.e3 Nbd7 6.Bd3 dxc4 7.Bxc4 b5 8.Bd3 Bd6
+9.O-O O-O 10.a3 Bb7 11.Re1 a5 12.e4 e5 13.d5 b4 14.dxc6 Bxc6 15.Nd5 bxa3
+16.bxa3 h6 17.Bc2 Rc8 18.Rb1 Bxd5 19.exd5 Qc7 20.Bf5 Rb8 21.Rb2 Rxb2 22.Bxb2
+Rb8 23.Qa1 e4 24.Bxf6 Nxf6 25.Bxe4 Nxe4 26.Rxe4 Qc2 27.Re1 Bc5 28.Rf1 Bxf2+
+29.Kh1 Bc5 30.Rc1 Qd3 31.Rd1 Qe4 32.a4 Bd6 33.Qd4 Qc2 34.Rg1 Rb4 35.Qe3 Qxa4
+36.Qc3 Rc4 37.Qd3 Qc2 38.Qe3 a4 39.Qe8+ Kh7 40.Qxf7 a3 41.Qe6 Qg6 42.Qxg6+
+Kxg6 43.Ra1 Rc2 44.g3 a2 45.Nd4 Rb2 46.Nb3 Rb1+ 47.Kg2 Rxa1 48.Nxa1 Be5
+49.Nc2 a1=Q 0-1
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.18"]
+[Round "3"]
+[White "Arminius"]
+[Black "FrankWalter"]
+[Result "1-0"]
+[Annotator "6... -0.17"]
+[ECO "E56"]
+[EventDate "2019.05.18"]
+[TimeControl "2640+9"]
+
+1.d4 Nf6 2.c4 e6 3.Nc3 Bb4 4.Nf3 c5 5.e3 Nc6 6.Bd3 O-O 7.O-O d5 8.dxc5 Bxc5
+9.cxd5 exd5 10.h3 Re8 11.b3 Bd7 12.Bb2 Rc8 13.Rc1 Bd6 14.Nxd5 Nxd5 15.Bxh7+
+Kxh7 16.Qxd5 Be6 17.Qh5+ Kg8 18.Ng5 Be5 19.Qh7+ Kf8 20.Ba3+ Bd6 21.Rcd1 Bxa3
+22.Rxd8 Rcxd8 23.Qh8+ Ke7 24.Qxg7 Rg8 25.Qh6 Rh8 26.Nh7 Rdg8 27.f4 Bb2 28.Qh5
+f5 29.Kh2 Bf6 30.e4 Rg7 31.exf5 Rhxh7 32.Qe2 Nd4 33.Qe4 Nxf5 34.Re1 Nd4 35.f5
+Bh4 36.Re3 Bg3+ 37.Rxg3 Nxf5 38.Qb4+ Kf7 39.Rxg7+ Rxg7 40.g4 Ne7 41.Qxb7 Rh7
+42.Kg3 a5 43.Qf3+ Ke8 44.Qa8+ Kd7 45.Qa7+ Kd6 46.Qxa5 Nd5 47.b4 Rc7 48.b5 Rc4
+49.Qa6+ Ke5 50.Qa7 Rb4 51.Qb8+ Kf6 52.a4 Bd7 53.a5 Rxb5 54.Qd6+ Be6 55.a6
+Rb3+ 56.Kh4 Nb6 57.a7 Kf7 58.Kg5 Rb5+ 59.Kh6 Na8 60.g5 Rb3 61.g6+ Kf6 62.Qd8+
+Ke5 63.Qh8+ Kd6 64.Qxa8 Bd5 65.Qxd5+ Kxd5 66.a8=Q+ Ke5 67.Qe8+ Kd6 68.Qf8+
+Ke5 69.Qc5+ Kf6 70.Qd6+ Kf5 71.Qd5+ Kf4 72.Qxb3 Ke4 73.g7 Kd4 74.g8=Q Ke4
+75.Qge6+ Kd4 76.Qbc4# 1-0
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.19"]
+[Round "4"]
+[White "Komodo"]
+[Black "Nemeton"]
+[Result "1-0"]
+[Annotator "6... -0.17"]
+[ECO "C17"]
+[EventDate "2019.05.19"]
+[TimeControl "2640+9"]
+
+1.d4 e6 2.e4 d5 3.Nc3 Bb4 4.e5 c5 5.a3 Ba5 6.b4 cxb4 7.Nb5 bxa3+ 8.c3 a2
+9.Nd6+ Kf8 10.Qf3 f5 11.g4 Nc6 12.Ne2 Qc7 13.Kd1 Qb6 14.Kc2 Nge7 15.gxf5 exf5
+16.Qh5 Be6 17.Rg1 Nb4+ 18.cxb4 Bxb4 19.Rxg7 Qc6+ 20.Kb2 Bxd6 21.Bh6 Qb5+
+22.Kc2 Rc8+ 23.Kd2 Bb4+ 24.Ke3 f4+ 25.Nxf4 Rc3+ 26.Bd3 Nf5+ 27.Ke2 Qxd3+
+28.Nxd3 Nxg7 29.Bxg7+ Kxg7 30.Qg5+ Kf7 31.Qf6+ 1-0
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.19"]
+[Round "4"]
+[White "Arminius"]
+[Black "Spartacus"]
+[Result "1-0"]
+[Annotator "6... -0.17"]
+[ECO "D11"]
+[EventDate "2019.05.19"]
+[TimeControl "2640+9"]
+
+1.d4 d5 2.c4 c6 3.Nf3 Nf6 4.e3 Bg4 5.Qb3 Bxf3 6.Qxb7 Bxg2 7.Bxg2 Nbd7 8.Nc3
+e6 9.c5 Qc8 10.Qxc8+ Rxc8 11.b4 a6 12.a4 Be7 13.Bd2 Ra8 14.Ke2 Kd8 15.b5 axb5
+16.axb5 Kc7 17.Rhb1 Rhb8 18.e4 dxe4 19.Bf4+ e5 20.Bg3 Nd5 21.Nxd5+ cxd5
+22.Bh3 Rxa1 23.Rxa1 Nxc5 24.Bxe5+ Bd6 25.Bxd6+ Kxd6 26.dxc5+ Kxc5 27.Bd7 Rd8
+28.Bc6 Rd6 29.Ra7 Rf6 30.Rc7 h6 31.Be8+ Kb6 32.Rxf7 Rxf7 33.Bxf7 d4 34.Be8
+Kc7 35.Bc6 Kb6 36.Bxe4 Kxb5 37.Bd3+ Kc5 38.h4 Kb4 39.Bg6 Kc3 40.f4 Kc4 41.Be4
+Kc3 42.Bd3 Kb3 43.Kf3 Kb4 44.Ke4 Kc5 45.Ke5 h5 46.Bf1 Kc6 47.Ke6 Kc5 48.Kf5
+Kb4 49.Kg6 Kc3 50.Kxg7 d3 51.Bxd3 Kxd3 52.f5 Ke4 53.f6 Kd5 54.f7 Kc5 55.f8=Q+
+Kd4 56.Qb4+ Ke3 57.Kg6 Ke2 58.Qc3 Kf1 59.Qd2 Kg1 60.Kxh5 Kh1 61.Kg4 Kg1
+62.Kf3 Kh1 1-0
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.19"]
+[Round "4"]
+[White "FrankWalter"]
+[Black "The King"]
+[Result "1-0"]
+[Annotator "6... -0.17"]
+[ECO "E20"]
+[EventDate "2019.05.19"]
+[TimeControl "2640+9"]
+
+1.d4 Nf6 2.c4 e6 3.Nc3 Bb4 4.Nf3 c5 5.g3 Nc6 6.dxc5 Bxc5 7.Bg2 d5 8.cxd5 exd5
+9.Bg5 O-O 10.Bxf6 Qxf6 11.Qxd5 Bb4 12.O-O Be6 13.Qb5 Rab8 14.Rfc1 a6 15.Qg5
+Be7 16.Qxf6 Bxf6 17.Ne1 Nb4 18.a3 Nc6 19.Rab1 Rfd8 20.Rd1 a5 21.Rxd8+ Rxd8
+22.Nd3 Bd4 23.Rd1 Bb3 24.Rc1 Bc4 25.Bxc6 bxc6 26.Na4 Bb5 27.Nac5 a4 28.Kg2 g5
+29.Rc2 Bg7 30.Nb4 h6 31.Kf3 Rd4 32.h3 Kf8 33.b3 axb3 34.Nxb3 Rc4 35.Rxc4 Bxc4
+36.Na5 Bb5 37.Nd3 Bd4 38.Nb3 Bb6 39.Nbc5 Ke7 40.a4 Bc4 41.Nb7 f5 42.Ndc5 Ba7
+43.a5 Bd5+ 44.Ke3 Bc4 45.Kd2 h5 46.h4 g4 47.e3 Bd5 48.Kc3 Bg8 49.a6 Bd5
+50.Kb4 Bf3 51.Na5 Bd5 52.Nc4 Be6 53.Nxe6 Kxe6 54.Nb2 Kd5 55.Nd3 Ke4 56.Nf4
+Kf3 57.Nxh5 Kxf2 58.Ng7 f4 59.exf4 Kxg3 60.h5 Kxf4 61.h6 g3 62.Nh5+ Kg5
+63.Nxg3 Kxh6 64.Nf5+ Kg5 65.Ne7 Be3 66.Nxc6 Kf6 67.Kc4 Bb6 68.Kb5 Bf2 69.Nb4
+Ke6 70.Kc6 Ba7 71.Nd5 Kf5 72.Kb7 Bd4 73.Nb6 1-0
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.19"]
+[Round "4"]
+[White "RofChade"]
+[Black "The Baron"]
+[Result "1-0"]
+[Annotator "6... -0.17"]
+[ECO "C11"]
+[EventDate "2019.05.19"]
+[TimeControl "2640+9"]
+
+1.e4 e6 2.d4 d5 3.Nc3 Nf6 4.e5 Nfd7 5.f4 c5 6.Nf3 Be7 7.Be3 b6 8.Ne2 Nc6 9.c3
+Ba6 10.Ng3 Bxf1 11.Rxf1 Rc8 12.f5 O-O 13.Kf2 b5 14.Kg1 b4 15.Rc1 bxc3 16.bxc3
+Kh8 17.Qe2 Na5 18.f6 gxf6 19.exf6 Bxf6 20.Nh5 Nc4 21.Bh6 Rg8 22.Nxf6 Nxf6
+23.Bg5 Rc7 24.Bh4 Rg4 25.Qe1 Nd6 26.Ne5 Rxh4 27.Qxh4 Nf5 28.Qg5 h6 29.Qf4 Nh5
+30.Qf2 Nf6 31.g4 Qg8 32.Qf4 h5 33.h3 Ne4 34.c4 cxd4 35.cxd5 Rxc1 36.Qxc1 Ned6
+37.dxe6 fxe6 38.Qc7 hxg4 39.hxg4 Qg7 40.Qxg7+ Nxg7 41.Nf7+ Nxf7 42.Rxf7 a6
+43.Ra7 Kg8 44.Rxa6 1-0
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.19"]
+[Round "5"]
+[White "The Baron"]
+[Black "Komodo"]
+[Result "0-1"]
+[Annotator "6... -0.17"]
+[ECO "A91"]
+[EventDate "2019.05.19"]
+[TimeControl "2640+9"]
+
+1.d4 f5 2.g3 Nf6 3.Bg2 e6 4.c4 Be7 5.Nh3 d5 6.O-O O-O 7.cxd5 exd5 8.Nf4 c6
+9.Nd2 Re8 10.Nf3 Ne4 11.Be3 Nd7 12.Nd3 a5 13.Qc2 Nf8 14.Nfe5 Bd6 15.Rfd1 Qb6
+16.Qb3 Qc7 17.a4 Ne6 18.Rac1 Nf6 19.Rc2 Qe7 20.Bh3 g6 21.Rf1 Qg7 22.Rfc1 Bb8
+23.Kh1 Nd7 24.Nf3 Bd6 25.Kg1 Bc7 26.Qc3 Nf6 27.b3 Ne4 28.Qb2 Rf8 29.Nfe5 g5
+30.Bd2 f4 31.Bg2 h5 32.Rd1 fxg3 33.fxg3 h4 34.g4 h3 35.Bxh3 Bxe5 36.dxe5 Qh6
+37.Bg2 Qh4 38.e3 Qxg4 39.Qc1 b6 40.Be1 N6c5 41.Rb2 Bf5 42.Nxc5 bxc5 43.e6 Ra7
+44.e7 Re8 45.Rd3 Qh5 46.Qd1 Bg4 47.Qc2 Rexe7 48.Rb1 Be2 49.h3 Re6 50.Rdd1 Rf7
+0-1
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.19"]
+[Round "5"]
+[White "Nemeton"]
+[Black "Arminius"]
+[Result "0-1"]
+[Annotator "6... -0.17"]
+[ECO "C09"]
+[EventDate "2019.05.19"]
+[TimeControl "2640+9"]
+
+1.e4 e6 2.d4 d5 3.Nd2 c5 4.exd5 exd5 5.Ngf3 Nc6 6.Bb5 Qe7+ 7.Kf1 Nf6 8.Nb3 c4
+9.Na5 Qc7 10.Qe1+ Be7 11.Bf4 Qxf4 12.Nxc6 bxc6 13.Bxc6+ Bd7 14.Bxa8 Qb8
+15.Bxd5 Nxd5 16.Ne5 Be6 17.Nxc4 Nf4 18.b3 Qb5 19.Qc3 O-O 20.a4 Qa6 21.Re1 Rb8
+22.h3 Bb4 23.Rxe6 Qxe6 24.Qe3 Re8 25.c3 Qxe3 26.fxe3 Bxc3 27.Kf2 Nd5 28.Kf3
+Bb4 29.g4 Nc3 30.Ne5 Re6 31.Rc1 a5 32.h4 Rh6 33.h5 Rf6+ 34.Kg2 Re6 35.Nc4 Kf8
+36.Rh1 Rf6 37.Ne5 Ke7 38.Rf1 Rxf1 39.Kxf1 Ke6 40.Kf2 Ne4+ 41.Ke2 Bd6 42.Nc4
+Bc7 43.Kf3 Kd5 44.Ke2 g6 45.hxg6 fxg6 46.Na3 h5 47.gxh5 gxh5 48.Nb5 Bb8
+49.Kf3 Ng5+ 50.Kf2 Ke4 51.Nc3+ Kd3 52.Nd5 h4 53.Nf4+ Bxf4 54.exf4 Nh3+ 55.Kf3
+Kxd4 56.Kg4 Nxf4 0-1
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.19"]
+[Round "5"]
+[White "Spartacus"]
+[Black "FrankWalter"]
+[Result "0-1"]
+[Annotator "6... -0.17"]
+[ECO "B22"]
+[EventDate "2019.05.19"]
+[TimeControl "2640+9"]
+
+1.e4 c5 2.c3 d5 3.exd5 Nf6 4.d4 Nxd5 5.Bc4 e6 6.Nf3 Be7 7.dxc5 O-O 8.Bxd5
+exd5 9.Be3 a5 10.Ne5 Na6 11.c6 Bc5 12.O-O Bxe3 13.fxe3 bxc6 14.Nxc6 Qe8
+15.Nxa5 Nc5 16.b4 Qxe3+ 17.Kh1 Ne4 18.Qe1 Qb6 19.Nc4 Qa7 20.Ncd2 Ba6 21.Rf4
+Qc7 22.Rf3 Nf6 23.Qg1 Rfe8 24.Nb3 Be2 25.Rxf6 gxf6 26.a4 Bc4 27.Nc5 Re2
+28.Na3 Qe5 29.Nxc4 dxc4 30.b5 Kh8 31.Qd4 Re8 32.h4 Qxd4 33.cxd4 Re1+ 34.Rxe1
+Rxe1+ 35.Kh2 c3 36.b6 c2 37.Nd3 Kg7 38.h5 h6 39.Nxe1 c1=Q 40.Nf3 Qf4+ 41.Kg1
+Qf5 42.Kf2 Qc2+ 43.Kg3 Qxa4 44.Nh4 Qb5 45.b7 Qxb7 46.Nf5+ Kh8 47.Nh4 Qc8
+48.Nf3 Qc1 49.Kf2 Qb2+ 50.Kg3 Qe2 51.Kh2 Qf1 52.Kg3 Kg7 53.Nh2 Qe1+ 54.Kh3 f5
+55.Nf3 Qf2 56.Kh2 Kf6 57.Kh1 Ke6 58.Kh2 Kd5 59.Kh1 f4 60.Kh2 Ke4 61.d5 Ke3
+62.d6 Ke2 63.Nd2 Qg3+ 64.Kg1 Qe1+ 65.Kh2 Qxd2 66.Kg1 Qe1+ 67.Kh2 Qg3+ 68.Kg1
+f3 69.d7 Qxg2# 0-1
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.19"]
+[Round "5"]
+[White "The King"]
+[Black "RofChade"]
+[Result "0-1"]
+[Annotator "6... -0.17"]
+[ECO "A13"]
+[EventDate "2019.05.19"]
+[TimeControl "2640+9"]
+
+1.c4 e6 2.g3 d5 3.Bg2 d4 4.Nf3 c5 5.d3 Nc6 6.O-O Bd6 7.e3 Nf6 8.exd4 cxd4
+9.Bg5 h6 10.Bxf6 Qxf6 11.Nbd2 Qe7 12.a3 a5 13.Re1 O-O 14.Rc1 Rd8 15.Ne4 Bc7
+16.c5 Bd7 17.Nfd2 a4 18.f4 Na5 19.Qh5 Qf8 20.Nf2 Rac8 21.Rf1 f5 22.Qd1 Bb5
+23.Re1 Re8 24.Nc4 Nb3 25.Bxb7 Rb8 26.c6 Nxc1 27.Qxc1 Red8 28.Rxe6 Re8 29.Rxe8
+Rxe8 30.Ne5 Qd6 31.Qd1 Qe6 32.Qc2 Qd5 33.h4 g5 34.hxg5 hxg5 35.Qd1 gxf4
+36.gxf4 Bxe5 37.Qh5 Re7 38.Qxf5 Rg7+ 39.Kf1 Qg2+ 40.Ke2 Bc7 41.Qc8+ Kh7
+42.Qf5+ Rg6 43.Qf7+ Kh6 44.Qf8+ Kh5 45.Qf7 Bxd3+ 46.Kxd3 Qf3+ 47.Kxd4 Qxf2+
+48.Kc4 Qc2+ 49.Kb5 Qxb2+ 50.Kxa4 Qd4+ 51.Kb5 Qd3+ 52.Qc4 Qxa3 53.Qc5+ Qxc5+
+54.Kxc5 Kg4 55.f5 Rg8 56.f6 Rf8 57.f7 Kf4 58.Kd5 Kf5 59.Ba6 Kf6 60.Be2 Rb8
+61.Bh5 Rh8 62.Kd4 Ke7 63.Be2 Rh4+ 64.Kd5 Rh1 65.f8=Q+ Kxf8 66.Bg4 Rh4 67.Bf5
+Ke7 68.Bc8 Kf6 69.Kc5 Ke5 70.Bd7 Bd6+ 71.Kb6 Rh2 72.Ka6 Kd4 73.Be8 Kc5 74.Bd7
+Rb2 75.Ka7 Rb8 76.Ka6 Bc7 77.Ka7 Rb6 78.Ka8 Be5 79.c7 Bxc7 80.Bf5 Bb8 81.Bd7
+Kd6 82.Bf5 Kc7 83.Bc8 Rb5 84.Ba6 Rb1 85.Bc4 Ra1+ 86.Ba6 Rxa6# 0-1
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.19"]
+[Round "6"]
+[White "FrankWalter"]
+[Black "RofChade"]
+[Result "0-1"]
+[Annotator "6... -0.17"]
+[ECO "A30"]
+[EventDate "2019.05.19"]
+[TimeControl "2640+9"]
+
+1.c4 e6 2.Nc3 Nf6 3.Nf3 c5 4.g3 b6 5.Bg2 Bb7 6.O-O d6 7.b3 Be7 8.d4 cxd4
+9.Nxd4 Bxg2 10.Kxg2 Qc7 11.h3 a6 12.Bb2 O-O 13.e4 Nc6 14.f3 h6 15.Rc1 Nxd4
+16.Qxd4 Qb7 17.Nd1 b5 18.Ne3 b4 19.Rb1 a5 20.a4 bxa3 21.Bxa3 Ra6 22.Qd2 Nd7
+23.Ng4 h5 24.Ne3 Rb6 25.c5 Nxc5 26.Nc4 Rb5 27.Nxa5 Nxe4 28.Qe1 Qa6 29.b4 Nf6
+30.Qc3 Rc8 31.Qd2 Rd5 32.Qb2 Re5 33.Rf2 h4 34.Rc1 Rxc1 35.Qxc1 hxg3 36.Kxg3
+Nh5+ 37.Kh2 Bg5 38.Qc4 Qa7 39.Qc8+ Kh7 40.Qc2+ g6 41.f4 Bxf4+ 42.Rxf4 Nxf4
+43.Nc6 Qxa3 44.Nxe5 Qxh3+ 45.Kg1 Qe3+ 46.Kf1 dxe5 47.Qc4 Nd3 48.Qc2 Qf3+
+49.Kg1 Nf4 50.Qh2+ Nh3+ 51.Qxh3+ Qxh3 52.Kf2 e4 53.Ke1 Qg2 54.Kd1 e3 55.Kc1
+Qd2+ 56.Kb1 e2 57.Ka1 e1=Q# 0-1
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.19"]
+[Round "6"]
+[White "Komodo"]
+[Black "The King"]
+[Result "1-0"]
+[Annotator "6... -0.17"]
+[ECO "D02"]
+[EventDate "2019.05.19"]
+[TimeControl "2640+9"]
+
+1.d4 d5 2.Nf3 Nf6 3.g3 Bf5 4.c4 e6 5.Nc3 dxc4 6.Ne5 c5 7.Bg2 cxd4 8.Bxb7 Nbd7
+9.Nxd7 Nxd7 10.Qxd4 Rb8 11.Bg2 Qc7 12.O-O f6 13.Be3 Rxb2 14.Rfd1 e5 15.Qh4
+Qc8 16.Be4 Be6 17.Qh5+ Kd8 18.Bd5 Bxd5 19.Rxd5 g6 20.Qf3 f5 21.Rad1 Rb7
+22.Rxe5 h6 23.Re6 Rh7 24.Rxg6 Rf7 25.Rc6 Rc7 26.Rxc7 Qxc7 27.Nb5 Qc8 28.Nxa7
+Qc7 29.Nb5 Qb8 30.Qc6 c3 31.Bb6+ Ke8 32.Nc7+ Qxc7 33.Qxc7 1-0
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.19"]
+[Round "6"]
+[White "Arminius"]
+[Black "The Baron"]
+[Result "1/2-1/2"]
+[Annotator "6... -0.17"]
+[ECO "A40"]
+[EventDate "2019.05.19"]
+[TimeControl "2640+9"]
+
+1.d4 e6 2.g3 c5 3.Nf3 Qa5+ 4.Nc3 Nf6 5.Bg2 Nc6 6.O-O d5 7.a3 cxd4 8.Nxd4 Qb6
+9.Nxc6 bxc6 10.b3 Bd6 11.Na4 Qd8 12.Bb2 O-O 13.e4 Nxe4 14.Bxe4 dxe4 15.Qd4 e5
+16.Qxe4 Qc7 17.Rfe1 f6 18.Qc4+ Kh8 19.Nc5 Qb6 20.Na4 Qb5 21.Qe4 Be6 22.Qe3 c5
+23.Nc3 Qc6 24.Qe4 Rfc8 25.Rad1 Rab8 26.f4 c4 27.b4 Bg4 28.Qxc6 Rxc6 29.Rd2
+exf4 30.gxf4 Kg8 31.b5 Bc5+ 32.Kg2 Re6 33.Rxe6 Bxe6 34.a4 Bb4 35.Rd4 Ba5
+36.Ne4 Bb6 37.Rd2 Rd8 38.Rxd8+ Bxd8 39.Kg3 Bf5 40.Kf3 Bb6 41.Bc1 Bc7 42.Be3
+Bb8 43.Bc5 Kf7 44.a5 Bd7 45.Ke3 f5 46.Ng5+ Ke8 47.b6 axb6 48.axb6 h6 49.Nf3
+g6 50.Bd4 Bd6 51.Ne5 Bxe5 52.Bxe5 Bc8 53.h4 Ba6 54.Kd4 Kd7 55.c3 Kc8 56.Kd5
+Kd7 57.Bf6 Bb5 58.h5 gxh5 59.Ke5 Kc6 60.Bd8 h4 61.Bxh4 Kxb6 62.Kxf5 h5
+63.Bd8+ Kb7 64.Ke6 Kc8 65.Bh4 Kc7 66.f5 Bd7+ 67.Ke5 Kc6 68.Bf2 Be8 69.Be1 Kb5
+70.f6 Ka4 71.Bf2 Kb3 72.Bd4 Ka4 73.Ke4 1/2-1/2
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.19"]
+[Round "6"]
+[White "Spartacus"]
+[Black "Nemeton"]
+[Result "0-1"]
+[Annotator "6... -0.17"]
+[ECO "B00"]
+[EventDate "2019.05.19"]
+[TimeControl "2640+9"]
+
+1.e4 b6 2.d4 Bb7 3.Bd3 f5 4.Nc3 Nf6 5.Qe2 Nxe4 6.Nxe4 fxe4 7.Bxe4 Bxe4 8.Qxe4
+d5 9.Qe2 Nc6 10.c3 Qd7 11.Nf3 e6 12.Ng5 O-O-O 13.O-O Re8 14.f4 Kb8 15.Qg4 h6
+16.Nf3 Bd6 17.Be3 Ne7 18.Qxg7 Qb5 19.Bd2 Nf5 20.Qf7 Qxb2 21.Rfb1 Qc2 22.Rc1
+Qd3 23.Re1 Rhg8 24.Rad1 Ref8 25.Qh5 Rf6 26.Kh1 Rfg6 27.Qh3 Rxg2 28.Qxg2 Rxg2
+29.Kxg2 Be7 30.Ne5 Nh4+ 31.Kf2 Qh3 32.Rg1 Qxh2+ 33.Ke3 Qh3+ 34.Ke2 c5 35.dxc5
+Bxc5 36.Rg8+ Kb7 37.Rf1 Qf5 38.Rg7+ Ka6 39.Rg4 Qe4+ 40.Kd1 Nf5 41.Re1 Be3
+42.Bxe3 Nxe3+ 43.Rxe3 Qxe3 44.Kc2 h5 45.Rg8 h4 46.Nc6 Qe2+ 47.Kb1 h3 48.Rh8
+h2 49.Nd4 Qg2 50.Kc1 h1=Q+ 51.Rxh1 Qxh1+ 52.Kb2 Qh2+ 53.Ka3 Qxf4 54.Kb2 e5
+55.Nc2 d4 56.cxd4 exd4 57.Kb3 Kb5 58.a4+ Kc5 59.Na3 Qc1 60.Ka2 Kb4 61.Nb5
+Qd2+ 62.Kb1 Kb3 63.Nxd4+ Qxd4 64.Kc1 a5 65.Kb1 Qg1# 0-1
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.19"]
+[Round "7"]
+[White "The King"]
+[Black "Arminius"]
+[Result "1-0"]
+[Annotator "6... -0.17"]
+[ECO "D30"]
+[EventDate "2019.05.19"]
+[TimeControl "2640+9"]
+
+1.d4 Nf6 2.c4 e6 3.Nf3 d5 4.Bg5 Bb4+ 5.Nc3 Be7 6.e3 Nbd7 7.cxd5 exd5 8.Bd3 c6
+9.O-O h6 10.Bh4 g6 11.h3 Ne4 12.Bxe7 Qxe7 13.Bxe4 dxe4 14.Nd2 f5 15.f3 exf3
+16.Qxf3 O-O 17.e4 Nb6 18.Qe3 g5 19.Qd3 f4 20.a4 a5 21.b3 Be6 22.Nc4 Nxc4
+23.bxc4 Bf7 24.d5 Qc5+ 25.Kh2 Bg6 26.Rad1 Rac8 27.d6 Rcd8 28.Qd4 Qxd4 29.Rxd4
+Rfe8 30.Re1 Re5 31.g3 fxg3+ 32.Kxg3 Bf7 33.Nb1 c5 34.Rdd1 Kg7 35.Re3 b6
+36.Ree1 Rd7 37.Re3 Kf6 38.Rf3+ Kg6 39.Re3 Bxc4 40.Nd2 Ba2 41.Nf3 Re8 42.Rd2
+Bc4 43.e5 Be6 44.Rb2 Rb7 45.Nd2 Bd5 46.Nb1 h5 47.Nc3 Bc4 48.Kh2 g4 49.Rd2 Rd7
+50.Kg3 Be6 51.hxg4 hxg4 52.Ne2 Kf7 53.Nf4 Rh8 54.Re1 c4 55.Rb2 Rb7 56.Rf2 Rh6
+57.Nh3+ Ke8 58.Ng5 Rg7 59.Nxe6 Rxe6 60.Rb2 Rb7 61.Kxg4 c3 62.Rb3 Kd7 63.Rxc3
+Rh6 64.Kf5 Rh5+ 65.Kg6 Rh8 66.e6+ Kxd6 67.e7 Rbb8 68.Kf6 Rh6+ 69.Kg7 Rhh8
+70.Rd1+ Ke5 71.Rcd3 Rhe8 72.Kf7 Rbc8 73.Rd4 Rxe7+ 74.Kxe7 Rc7+ 75.Kd8 Rc3
+76.Rh4 Rb3 77.Kc7 Rc3+ 78.Kxb6 Rc8 79.Rh5+ Kf4 80.Rxa5 Rb8+ 81.Kc7 Rb2 1-0
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.19"]
+[Round "7"]
+[White "Nemeton"]
+[Black "FrankWalter"]
+[Result "0-1"]
+[Annotator "6... -0.17"]
+[ECO "E00"]
+[EventDate "2019.05.19"]
+[TimeControl "2640+9"]
+
+1.c4 Nf6 2.d4 e6 3.e3 d5 4.Nf3 Bd6 5.Nc3 O-O 6.Bd2 b6 7.Bd3 dxc4 8.Bxc4 Bb7
+9.O-O a6 10.Be2 Nbd7 11.Qc2 c5 12.Rfd1 Rc8 13.Be1 Qc7 14.g3 cxd4 15.Nxd4 b5
+16.Rac1 b4 17.Na4 Qa5 18.Qb3 Bd5 19.Qa3 Rxc1 20.Rxc1 Rb8 21.b3 Nc5 22.f3 bxa3
+23.Bxa5 Nxa4 24.Nc6 Ra8 25.bxa4 Bxa2 26.e4 Ne8 27.Bb4 Bb3 28.e5 Bxb4 29.Nxb4
+Rd8 30.Bxa6 Rb8 31.Bb5 Bxa4 32.Bxa4 Rxb4 33.Rc8 Rb1+ 34.Kg2 g5 35.Rxe8+ Kg7
+36.Bb3 Rxb3 37.g4 Rb2+ 38.Kg3 Rb1 39.Ra8 Rg1+ 40.Kh3 Ra1 41.Ra6 h5 42.Ra8 h4
+43.Ra6 Kf8 44.Ra5 Ke8 45.Ra7 a2 46.Kg2 Kd8 47.Kh3 Kc8 48.Ra4 Kc7 49.Rc4+ Kb6
+50.Ra4 Kc5 51.Kg2 Kb6 52.Ra3 Kb5 53.Ra7 Kb4 54.Rb7+ Kc4 55.Ra7 Kd5 56.Ra5+
+Kd4 57.Ra8 Kxe5 58.Ra4 Kd5 59.Kh3 Kc5 60.Kg2 Kb5 61.Ra3 Kb4 62.Ra7 Kc3 63.Kh3
+Kd2 64.Kg2 Ke1 65.Ra4 Rd1 66.Rxa2 Rd2+ 67.Rxd2 Kxd2 68.Kf2 Kd3 69.f4 0-1
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.19"]
+[Round "7"]
+[White "RofChade"]
+[Black "Komodo"]
+[Result "1-0"]
+[Annotator "6... -0.17"]
+[ECO "B42"]
+[EventDate "2019.05.19"]
+[TimeControl "2640+9"]
+
+1.e4 c5 2.Nf3 e6 3.d4 cxd4 4.Nxd4 a6 5.Bd3 Bc5 6.Nb3 Ba7 7.Qe2 Ne7 8.Be3 O-O
+9.Bxa7 Rxa7 10.N1d2 e5 11.O-O d6 12.Nc4 Qc7 13.Rfd1 Rd8 14.a4 Be6 15.Ne3 Bxb3
+16.cxb3 Nbc6 17.Bc4 Nd4 18.Qh5 Rf8 19.Rac1 Qd8 20.Rc3 Kh8 21.a5 Ng8 22.Ra1
+Ra8 23.Nd5 Rb8 24.Rh3 h6 25.Rg3 Nf6 26.Nxf6 Qxf6 27.Qg4 b6 28.h3 g6 29.Rc3
+Kg7 30.axb6 Rxb6 31.Qd1 h5 32.Bd5 Qd8 33.Ra4 Nb5 34.Rc1 Nc7 35.Bc4 Qe7 36.Rc3
+Rfb8 37.Rf3 Rf8 38.Qa1 h4 39.Bxa6 d5 40.Bf1 d4 41.Ra7 Qd6 42.Qe1 Ne6 43.Bc4
+Ng5 44.Rd3 Qf6 45.Qc1 Rc8 46.Qa1 Rbb8 47.Qc1 Rc5 48.Rd7 Ra8 49.Qe1 Ra2 50.Qb1
+Rca5 51.Rd1 Kh6 52.Qc2 Ra1 53.b4 R5a4 54.Bd3 Rxd1+ 55.Qxd1 Rxb4 56.Qc1 Kg7
+57.Ra7 Rb8 58.Kh1 Rf8 59.Qc2 Qb6 60.Ra4 Qb7 61.Qd2 Ne6 62.Qa5 Kf6 63.b4 Nf4
+64.Ra3 Rb8 65.Rb3 Ra8 66.Qc5 Qd7 67.Bb5 Ra1+ 68.Kh2 Qe7 69.Rb2 Qxc5 70.bxc5
+Ne6 71.c6 Rc1 72.g3 Ke7 73.gxh4 Kd6 74.Kg3 Nf4 75.Ra2 Rc5 76.Ba4 Ra5 77.c7
+Kxc7 78.Rc2+ Kd8 79.Bc6 Ra3+ 80.f3 Ra1 81.Bb5 Rg1+ 82.Kh2 Rb1 83.Ba6 f6
+84.Kg3 Rg1+ 85.Kh2 Ra1 86.Bb5 Rb1 87.Bc4 Ke7 88.Kg3 Rg1+ 89.Kh2 Rd1 90.Bb5
+Rb1 91.Bc4 d3 92.Rd2 Rb4 93.Bxd3 Rd4 94.Kg3 Rxd3 95.Rc2 Rc3 96.Rd2 Rc1 97.h5
+gxh5 98.Ra2 Rh1 99.Ra7+ Kd6 100.h4 Rh3+ 101.Kf2 Rxh4 102.Ra6+ Kc5 103.Ke3 Rh1
+104.Ra5+ Kb6 1-0
+
+[Event "PT55"]
+[Site "Amersfoort"]
+[Date "2019.05.19"]
+[Round "7"]
+[White "The Baron"]
+[Black "Spartacus"]
+[Result "1-0"]
+[Annotator "6... -0.17"]
+[ECO "A80"]
+[EventDate "2019.05.19"]
+[TimeControl "2640+9"]
+
+1.d4 f5 2.Bg5 h6 3.Bd2 Nf6 4.e3 e6 5.Be2 Nc6 6.Bh5+ Ke7 7.Bg6 h5 8.Ne2 Ne4
+9.Nf4 Kf6 10.Bxh5 d5 11.Ng6 Rh6 12.Nxf8 Qxf8 13.Be2 Qd6 14.h4 Nxd2 15.Nxd2
+Qb4 16.Qc1 e5 17.c3 Qb6 18.g4 fxg4 19.e4 Be6 20.exd5 Bxd5 21.Nc4 Bxc4 22.Qg5+
+Kf7 23.Bxc4+ Kf8 24.Qf5+ Rf6 25.Qh7 Nxd4 26.Qg8+ Ke7 27.Qxg7+ Kd8 28.Rd1 Rd6
+29.Qg8+ Kd7 30.Qxg4+ Kc6 31.O-O Rad8 32.b4 Rh6 33.a4 a6 34.a5 Qa7 35.cxd4
+Rxd4 36.Qf3+ e4 37.Qf7 b5 38.Bd5+ Kd6 39.Bxe4 Re6 40.Bg2 c6 41.Qxa7 Rd5
+42.Bxd5 cxd5 43.Rfe1 Re5 44.Qf7 Kc6 45.Rxe5 d4 46.Rc5+ Kd6 47.Rxd4# 1-0
+

@@ -1,6 +1,7 @@
 package com.github.bhlangonijr.pururucazero.cnn
 
 import com.github.bhlangonijr.pururucazero.cnn.Nd4jEncoder.numberOfPlanes
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder
 import org.deeplearning4j.nn.api.Model
 import org.deeplearning4j.nn.api.OptimizationAlgorithm
 import org.deeplearning4j.nn.conf.ConvolutionMode
@@ -10,46 +11,33 @@ import org.deeplearning4j.nn.conf.layers.BatchNormalization
 import org.deeplearning4j.nn.conf.layers.ConvolutionLayer
 import org.deeplearning4j.nn.conf.layers.DenseLayer
 import org.deeplearning4j.nn.conf.layers.OutputLayer
-import org.deeplearning4j.nn.conf.layers.SubsamplingLayer
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.nn.weights.WeightInit
 import org.deeplearning4j.optimize.api.BaseTrainingListener
-import org.deeplearning4j.optimize.api.InvocationType
-import org.deeplearning4j.optimize.listeners.EvaluativeListener
-import org.deeplearning4j.optimize.listeners.ScoreIterationListener
 import org.deeplearning4j.util.ModelSerializer
 import org.nd4j.evaluation.classification.Evaluation
+import org.nd4j.evaluation.regression.RegressionEvaluation
 import org.nd4j.linalg.activations.Activation
 import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization
 import org.nd4j.linalg.dataset.api.preprocessor.NormalizerMinMaxScaler
 import org.nd4j.linalg.dataset.api.preprocessor.serializer.NormalizerSerializer
-import org.nd4j.linalg.learning.config.AdaDelta
 import org.nd4j.linalg.learning.config.Adam
 import org.nd4j.linalg.lossfunctions.LossFunctions
 import java.io.File
 
 class CnnTrainer(
-    private val modelPath: String,
-    private val normalizerPath: String?
+    private val modelPath: String
 ) {
-
-    private val scaler: DataNormalization = NormalizerMinMaxScaler()
     fun train(
         trainDatasetIterator: PgnDatasetIterator,
         testDatasetIterator: PgnDatasetIterator,
-        epochs: Int = 20,
+        epochs: Int = 50,
         seed: Long = 123L
-    ): Pair<Array<FloatArray>, FloatArray> {
+    ) {
 
         val outputNum = trainDatasetIterator.labelNames.size
         trainDatasetIterator.reset()
         testDatasetIterator.reset()
-        normalizerPath?.let {
-            scaler.fit(trainDatasetIterator)
-            scaler.fit(testDatasetIterator)
-            trainDatasetIterator.setPreProcessor(scaler)
-            testDatasetIterator.setPreProcessor(scaler)
-        }
 
         println("Building convolutional network...")
         val conf = NeuralNetConfiguration.Builder()
@@ -88,6 +76,15 @@ class CnnTrainer(
             )
             .layer(BatchNormalization())
             .layer(
+                ConvolutionLayer.Builder()
+                    .kernelSize(3, 3)
+                    .stride(1, 1)
+                    .activation(Activation.RELU)
+                    .nOut(256)
+                    .build()
+            )
+            .layer(BatchNormalization())
+            .layer(
                 DenseLayer.Builder()
                     .nOut(256)
                     .activation(Activation.RELU)
@@ -97,7 +94,7 @@ class CnnTrainer(
                 OutputLayer.Builder(LossFunctions.LossFunction.MSE)
                     .name("output")
                     .nOut(outputNum)
-                    .activation(Activation.TANH)
+                    .activation(Activation.SIGMOID)
                     .build()
             )
             .setInputType(
@@ -132,29 +129,25 @@ class CnnTrainer(
         println("Total num of params: ${model.numParams()}")
         model.fit(trainDatasetIterator, epochs)
 
-        testDatasetIterator.reset()
-        val eval: Evaluation = model.evaluate(testDatasetIterator)
-        println(eval.stats())
 
         val modelPath = File(modelPath)
         ModelSerializer.writeModel(model, modelPath, true)
         println("Model has been saved in ${modelPath.path}")
-        normalizerPath?.let {
-            NormalizerSerializer.getDefault().write(scaler, it)
-            println("Normalizer has been saved in $it")
-        }
         testDatasetIterator.reset()
-        val dataSet = testDatasetIterator.next()
-        val predicts = model.output(dataSet.features).toFloatMatrix()
+        val eval = RegressionEvaluation()
 
-        val matrix = dataSet.labels.toFloatMatrix()
-        val labels = FloatArray(matrix.size) { idx ->
-            matrix[idx].indexOfFirst { it == 1f }.toFloat()
+        while (testDatasetIterator.hasNext()) {
+            val dataSet = testDatasetIterator.next()
+            val predicts = model.output(dataSet.features)
+            val labels = dataSet.labels
+            eval.eval( dataSet.labels, model.output(dataSet.features, false))
+            println("eval: ${eval.stats()}")
+            println("Predicts: $predicts")
+            println("Labels: $labels")
+
         }
-        return Pair(
-            predicts,
-            labels
-        )
 
+        val eval2: Evaluation = model.evaluate(testDatasetIterator)
+        println("Eval2: ${eval2.stats()}")
     }
 }

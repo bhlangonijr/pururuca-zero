@@ -45,9 +45,9 @@ class PgnDatasetIterator(
                     val board = Board()
                     for (move in moves) {
                         board.doMove(move)
-                        val result = mapGameResult(game.result.description, board.sideToMove)
+                        val result = mapGameResult(game.result.description.trim(), board.sideToMove)
                         val dataStack = datasetQueue.peekLast()
-                        //println("Iterator: ${board.fen}")
+                        //println("Iterator: ${board.fen} - result: $result")
                         dataStack.add(result, board)
                         if (dataStack.lines >= rows) {
                             datasetQueue.add(DataStack(rows, labelNames))
@@ -136,9 +136,9 @@ class PgnDatasetIterator(
         return when {
             result == "1-0" && side == Side.WHITE -> +1f
             result == "0-1" && side == Side.BLACK -> +1f
-            result == "0-1" && side == Side.WHITE -> -1f
-            result == "1-0" && side == Side.BLACK -> -1f
-            else -> 0f
+            result == "0-1" && side == Side.WHITE -> 0f
+            result == "1-0" && side == Side.BLACK -> 0f
+            else -> 0.5f
         }
     }
 
